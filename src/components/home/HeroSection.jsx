@@ -1,41 +1,34 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-import video1 from "../../assets/videos/hero-1.mp4";
-import video2 from "../../assets/videos/hero-2.mp4";
-import video3 from "../../assets/videos/hero-3.mp4";
-import video4 from "../../assets/videos/hero-4.mp4";
 
 const slides = [
   {
-    video: video1,
+    video: "/videos/hero-2.mp4",
     title: "Redefining The Future Of Intelligent Engineering",
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
     description:
       "Advanced semiconductor engineering powering next-generation innovation, performance, and scalability.",
   },
-
   {
-    video: video2,
+    video: "/videos/hero-2.mp4",
     title: "Engineering Intelligence Beyond Hardware Systems",
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
     description:
       "Precision-driven embedded systems designed for connected, high-performance technologies.",
   },
-
   {
-    video: video3,
+    video: "/videos/hero-2.mp4",
     title: "Transforming Industries Through Connected Intelligence",
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
     description:
       "Building intelligent automation ecosystems that accelerate the future of smart industries.",
   },
-
   {
-    video: video4,
+    video: "/videos/hero-2.mp4",
     title: "Powering The Next Generation Of Smart Mobility",
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
