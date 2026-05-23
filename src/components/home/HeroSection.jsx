@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+import video1 from "../../assets/videos/hero-1.mp4";
+import video2 from "../../assets/videos/hero-2.mp4";
+import video3 from "../../assets/videos/hero-3.mp4";
+import video4 from "../../assets/videos/hero-4.mp4";
+
 const slides = [
   {
-    video: "/videos/hero-1.mp4",
+    video: video1,
     title: "Redefining The Future Of Intelligent Engineering",
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
@@ -12,7 +17,7 @@ const slides = [
   },
 
   {
-    video: "/videos/hero-2.mp4",
+    video: video2,
     title: "Engineering Intelligence Beyond Hardware Systems",
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
@@ -21,7 +26,7 @@ const slides = [
   },
 
   {
-    video: "/videos/hero-3.mp4",
+    video: video3,
     title: "Transforming Industries Through Connected Intelligence",
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
@@ -30,7 +35,7 @@ const slides = [
   },
 
   {
-    video: "/videos/hero-4.mp4",
+    video: video4,
     title: "Powering The Next Generation Of Smart Mobility",
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
@@ -54,7 +59,7 @@ export default function HeroSection() {
     <section className="relative h-screen overflow-hidden bg-white">
 
       {/* VIDEO BACKGROUND */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         <motion.video
           key={current}
           autoPlay
@@ -62,10 +67,10 @@ export default function HeroSection() {
           loop
           playsInline
           className="absolute inset-0 h-full w-full object-cover"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.8 }}
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.98 }}
+          transition={{ duration: 1.5, ease: "easeInOut" }}
         >
           <source src={slides[current].video} type="video/mp4" />
         </motion.video>
@@ -158,7 +163,7 @@ export default function HeroSection() {
                 <button
                   className="
                     rounded-full
-                    bg-gradient-to-r
+                    bg-linear-to-r
                     from-blue-500
                     to-cyan-500
                     px-8
