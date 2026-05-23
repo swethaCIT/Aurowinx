@@ -19,6 +19,9 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 
+  /* Default text color — fallback for all elements */
+  color: #0f172a;
+
   /* Premium Semiconductor Background */
   background:
     radial-gradient(
@@ -37,12 +40,13 @@ body {
       #f8fafc 45%,
       #f1f5f9 100%
     );
-
-  color: #0f172a;
 }
 
 /* =========================================
    TYPOGRAPHY
+   ⚠️ NO color set here — controlled via
+   Tailwind text-* classes per component.
+   body color (#0f172a) acts as fallback.
 ========================================= */
 
 h1,
@@ -53,11 +57,9 @@ h5,
 h6 {
   font-family: "Satoshi", "Inter", sans-serif;
   letter-spacing: -0.03em;
-  color: #0f172a;
 }
 
 h1 {
-  font-size: clamp(4rem, 8vw, 6rem);
   line-height: 0.92;
   font-weight: 800;
 }
@@ -75,7 +77,6 @@ h3 {
 }
 
 p {
-  color: #475569;
   line-height: 1.8;
   font-size: 1rem;
 }
