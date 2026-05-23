@@ -76,7 +76,7 @@ export default function HeroSection() {
         </motion.video>
       </AnimatePresence>
 
-      {/* DARK OVERLAY — increased darkness for white text readability */}
+      {/* DARK OVERLAY */}
       <div className="absolute inset-0 bg-black/50" />
 
       {/* SOFT PREMIUM GLOW */}
@@ -101,7 +101,7 @@ export default function HeroSection() {
               className="flex max-w-7xl flex-col items-center"
             >
 
-              {/* LABEL — single line on mobile, white text on dark overlay */}
+              {/* LABEL */}
               <div className="mb-7 mt-4">
                 <span
                   className="
@@ -126,7 +126,7 @@ export default function HeroSection() {
                 </span>
               </div>
 
-              {/* HEADING — white text on dark overlay */}
+              {/* HEADING */}
               <h1
                 className={`
                   ${slides[current].headingClass}
@@ -141,7 +141,7 @@ export default function HeroSection() {
                 {slides[current].title}
               </h1>
 
-              {/* DESCRIPTION — white text */}
+              {/* DESCRIPTION */}
               <p
                 className="
                   mb-10
@@ -159,31 +159,36 @@ export default function HeroSection() {
               {/* BUTTONS */}
               <div className="flex flex-wrap justify-center gap-4">
 
+                {/* PRIMARY — Brand gradient with glow */}
                 <button
                   className="
                     rounded-full
-                    bg-white
+                    bg-gradient-to-r
+                    from-blue-500
+                    to-cyan-500
                     px-8
                     py-3.5
                     text-[11px]
                     font-semibold
                     uppercase
                     tracking-[0.2em]
-                    text-neutral-950
+                    text-white
+                    shadow-[0_0_25px_rgba(59,130,246,0.4)]
                     transition-all
                     duration-500
                     hover:scale-105
-                    hover:shadow-xl
+                    hover:shadow-[0_0_40px_rgba(59,130,246,0.6)]
                   "
                 >
                   Explore Solutions
                 </button>
 
+                {/* SECONDARY — Clean white outline */}
                 <button
                   className="
                     rounded-full
                     border
-                    border-white/40
+                    border-white/60
                     bg-white/10
                     px-8
                     py-3.5
@@ -195,6 +200,7 @@ export default function HeroSection() {
                     backdrop-blur-md
                     transition-all
                     duration-500
+                    hover:border-white/80
                     hover:bg-white/20
                   "
                 >
