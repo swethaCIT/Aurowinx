@@ -2,10 +2,10 @@
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/home/HeroSection";
 import StatsBar from "./components/home/StatsBar";
-// import AboutSnapshot    from "./components/home/AboutSnapshot"    ← next
-// import SolutionsSection from "./components/home/SolutionsSection"
-// import ProductShowcase  from "./components/home/ProductShowcase"
-// import WhyAurowinx     from "./components/home/WhyAurowinx"
+import AboutSnapshot from "./components/home/AboutSnapshot";
+import SolutionsSection from "./components/home/SolutionsSection";
+import ProductShowcase  from "./components/home/ProductShowcase";
+import WhyAurowinx     from "./components/home/WhyAurowinx";
 // import CTASection      from "./components/home/CTASection"
 
 export default function App() {
@@ -15,7 +15,10 @@ export default function App() {
       <main>
         <HeroSection />
         <StatsBar />
-        {/* next sections mount here */}
+        <AboutSnapshot />
+        <SolutionsSection />
+        <ProductShowcase />
+        <WhyAurowinx />
       </main>
     </div>
   );
