@@ -244,19 +244,19 @@ const RightPanel = ({ item, type }) => {
   const Visual = type === 'solutions' ? ChipVisual : NodeVisual;
 
   return (
-    <div className="w-72 shrink-0 bg-[#060c13] border-l border-white/[0.06] relative overflow-hidden flex flex-col p-7">
+    <div className="w-72 shrink-0 bg-[#f0f8ff]/80 border-l border-blue-900/10 relative overflow-hidden flex flex-col p-7">
       {/* Grid bg */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          opacity: 0.07,
-          backgroundImage: `linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)`,
+          opacity: 0.05,
+          backgroundImage: `linear-gradient(rgba(15,23,42,1) 1px,transparent 1px),linear-gradient(90deg,rgba(15,23,42,1) 1px,transparent 1px)`,
           backgroundSize: '20px 20px',
         }}
       />
       {/* Glow blobs */}
-      <div className="absolute -bottom-10 -right-10 w-56 h-56 rounded-full blur-3xl pointer-events-none transition-all duration-700" style={{ background: item?.glowA, opacity: 0.7 }} />
-      <div className="absolute top-6 -left-6 w-36 h-36 rounded-full blur-2xl pointer-events-none transition-all duration-700" style={{ background: item?.glowB, opacity: 0.8 }} />
+      <div className="absolute -bottom-10 -right-10 w-56 h-56 rounded-full blur-3xl pointer-events-none transition-all duration-700" style={{ background: item?.glowA, opacity: 0.4 }} />
+      <div className="absolute top-6 -left-6 w-36 h-36 rounded-full blur-2xl pointer-events-none transition-all duration-700" style={{ background: item?.glowB, opacity: 0.5 }} />
 
       <div className="relative z-10 flex flex-col h-full">
         <AnimatePresence mode="wait">
@@ -272,15 +272,15 @@ const RightPanel = ({ item, type }) => {
             <span className="text-[10px] font-bold tracking-[0.22em] uppercase mb-4" style={{ color: accent }}>
               {item?.tag}
             </span>
-            {/* Headlines — forced white so always readable on dark bg */}
-            <h3 className="text-xl font-light leading-tight tracking-tight mb-0.5" style={{ color: 'rgba(255,255,255,0.7)' }}>
+            {/* Headlines */}
+            <h3 className="text-xl font-light leading-tight tracking-tight mb-0.5" style={{ color: 'rgba(15,23,42,0.7)' }}>
               {item?.headline}
             </h3>
-            <h3 className="text-xl font-bold leading-tight tracking-tight mb-3 text-white">
+            <h3 className="text-xl font-bold leading-tight tracking-tight mb-3 text-slate-900">
               {item?.sub}
             </h3>
-            {/* Body — explicit light colour */}
-            <p className="text-[12.5px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            {/* Body */}
+            <p className="text-[12.5px] leading-relaxed" style={{ color: 'rgba(15,23,42,0.6)' }}>
               {item?.body}
             </p>
             <Visual item={item} />
@@ -304,17 +304,37 @@ const MegaMenu = ({ isOpen, items, type }) => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0, y: -6 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute left-0 right-0 top-full w-full bg-white border-b border-slate-200/70 shadow-[0_20px_48px_-12px_rgba(0,0,0,0.1)] z-40 overflow-hidden"
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute left-0 right-0 top-full w-full z-40 overflow-hidden"
+          style={{
+            background: 'rgba(244, 248, 252, 0.95)', // White mixed with blue shade
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+            boxShadow: '0 32px 80px -16px rgba(0,0,0,0.1)',
+          }}
         >
+          {/* Top accent line */}
+          <div
+            className="absolute top-0 left-0 right-0 pointer-events-none"
+            style={{
+              height: 1,
+              background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.6) 30%, rgba(6,182,212,0.4) 70%, transparent)',
+            }}
+          />
+
           <div className="max-w-6xl mx-auto flex">
             {/* LEFT */}
             <div className="flex-1 py-7 px-8">
-              <p className="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase mb-5 flex items-center gap-2">
-                <span className="w-5 h-px bg-slate-300" />
+              {/* Section label */}
+              <p
+                className="text-[10px] font-bold tracking-[0.2em] uppercase mb-5 flex items-center gap-2"
+                style={{ color: 'rgba(96,165,250,0.6)' }}
+              >
+                <span className="w-5 h-px" style={{ background: 'rgba(96,165,250,0.35)' }} />
                 {type === 'solutions' ? 'Core Engineering Solutions' : 'Product Lines'}
               </p>
               <div className="grid gap-1">
@@ -326,38 +346,64 @@ const MegaMenu = ({ isOpen, items, type }) => {
                       href={`#${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.28, delay: idx * 0.04 }}
+                      transition={{ duration: 0.28, delay: idx * 0.045 }}
                       onMouseEnter={() => setHoveredItem(item)}
-                      className={`flex items-center gap-3.5 px-3.5 py-3 rounded-xl border transition-all duration-200 relative overflow-hidden cursor-pointer ${
-                        active ? 'bg-slate-50 border-slate-200 shadow-sm' : 'border-transparent hover:bg-slate-50/70'
-                      }`}
+                      className="flex items-center gap-3.5 px-3.5 py-3 rounded-xl relative overflow-hidden cursor-pointer transition-all duration-200"
+                      style={{
+                        border: active ? `1px solid ${item.accent}30` : '1px solid transparent',
+                        background: active
+                          ? `linear-gradient(135deg, ${item.accent}10 0%, transparent 60%)`
+                          : 'transparent',
+                      }}
                     >
-                      {/* Left accent stripe */}
+                      {/* Left accent bar */}
                       <motion.div
                         className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r"
                         style={{ background: item.accent, originY: 0.5 }}
                         animate={{ scaleY: active ? 1 : 0, opacity: active ? 1 : 0 }}
                         transition={{ duration: 0.18 }}
                       />
+
                       {/* Icon */}
-                      <div className={`p-2.5 rounded-lg shrink-0 transition-colors duration-200 ${item.bg} ${item.color}`}>
-                        <item.icon className="w-4 h-4" strokeWidth={2} />
+                      <div
+                        className="p-2.5 rounded-lg shrink-0 transition-all duration-200"
+                        style={{
+                          background: active ? `${item.accent}18` : 'rgba(0,0,0,0.04)',
+                          boxShadow: active ? `0 0 18px ${item.accent}35` : 'none',
+                        }}
+                      >
+                        <item.icon
+                          className="w-4 h-4"
+                          strokeWidth={2}
+                          style={{
+                            color: item.accent,
+                            filter: active ? `drop-shadow(0 0 5px ${item.accent})` : 'none',
+                          }}
+                        />
                       </div>
+
                       {/* Text */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
                           <span
                             className="text-[13.5px] font-bold tracking-tight transition-colors duration-200"
-                            style={{ color: active ? item.accent : '#0f172a' }}
+                            style={{ color: active ? item.accent : 'rgba(15,23,42,0.85)' }}
                           >
                             {item.name}
                           </span>
                           <ArrowRight
                             className="w-3 h-3 shrink-0 transition-all duration-200"
-                            style={{ color: item.accent, opacity: active ? 1 : 0, transform: active ? 'translateX(0)' : 'translateX(-5px)' }}
+                            style={{
+                              color: item.accent,
+                              opacity: active ? 1 : 0,
+                              transform: active ? 'translateX(0)' : 'translateX(-5px)',
+                            }}
                           />
                         </div>
-                        <p className="text-[11.5px] text-slate-500 mt-0.5 leading-snug truncate pr-2">
+                        <p
+                          className="text-[11.5px] mt-0.5 leading-snug truncate pr-2"
+                          style={{ color: 'rgba(15,23,42,0.5)' }}
+                        >
                           {item.description}
                         </p>
                       </div>
@@ -381,24 +427,28 @@ const MegaMenu = ({ isOpen, items, type }) => {
 const DesktopNavLink = ({ title, hasDropdown, isActive, onClick }) => (
   <button
     onClick={onClick}
-    className={`relative h-full px-4 flex items-center gap-1 text-[13.5px] font-semibold tracking-wide transition-colors duration-200 focus:outline-none cursor-pointer ${
-      isActive ? 'text-slate-900' : 'text-slate-500 hover:text-slate-900'
-    }`}
+    className="relative h-full px-4 flex items-center gap-1 text-[13.5px] font-semibold tracking-wide transition-colors duration-200 focus:outline-none cursor-pointer"
+    style={{ color: isActive ? '#3b82f6' : 'rgba(255,255,255,0.65)' }}
+    onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = 'rgba(255,255,255,0.95)'; }}
+    onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; }}
   >
     {title}
     {hasDropdown && (
       <ChevronDown
-        className="w-3.5 h-3.5 text-slate-400 transition-transform duration-300"
-        style={{ transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        className="w-3.5 h-3.5 transition-transform duration-300"
+        style={{
+          color: isActive ? '#3b82f6' : 'rgba(255,255,255,0.35)',
+          transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)',
+        }}
       />
     )}
     {/* Bottom underline */}
     <motion.div
-      className="absolute bottom-0 left-3 right-3 h-[2px] rounded-t bg-slate-900"
+      className="absolute bottom-0 left-3 right-3 h-[2px] rounded-t"
+      style={{ background: 'linear-gradient(90deg, #3b82f6, #06b6d4)', originX: 0.5 }}
       initial={false}
       animate={{ scaleX: isActive ? 1 : 0, opacity: isActive ? 1 : 0 }}
       transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-      style={{ originX: 0.5 }}
     />
   </button>
 );
@@ -456,7 +506,6 @@ const MobileAccordionItem = ({ sec, onClose, delay }) => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.04 }}
                   onClick={onClose}
-                  /* Each item: taller, full-width card with left accent strip */
                   className="flex items-center gap-3.5 px-3 py-3.5 rounded-xl border border-slate-100 bg-white active:bg-slate-50 transition-colors relative overflow-hidden group"
                   style={{ minHeight: 60 }}
                 >
@@ -514,7 +563,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
             onClick={(e) => e.stopPropagation()}
             className="absolute right-0 top-0 bottom-0 w-80 max-w-full bg-white shadow-2xl flex flex-col"
           >
-            {/* Header — logo only, no "Navigation" label */}
+            {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
               <span className="text-[17px] font-black tracking-[0.12em] text-slate-900">AUROWINX</span>
               <button
@@ -534,7 +583,13 @@ const MobileMenu = ({ isOpen, onClose }) => {
 
             {/* Sticky CTA */}
             <div className="absolute bottom-0 left-0 right-0 px-5 py-5 bg-white/95 backdrop-blur-sm border-t border-slate-100">
-              <button className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-slate-900 hover:bg-black rounded-lg text-white text-[13px] font-semibold tracking-wide transition-colors group">
+              <button
+                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-white text-[13px] font-semibold tracking-wide transition-all group"
+                style={{
+                  background: 'linear-gradient(135deg, #2563eb 0%, #0891b2 100%)',
+                  boxShadow: '0 0 24px rgba(37,99,235,0.35)',
+                }}
+              >
                 Talk to Experts
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </button>
@@ -552,6 +607,7 @@ export default function Navbar() {
   const [activeMenu, setActiveMenu] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [ctaHovered, setCtaHovered] = useState(false);
   const navRef = useRef(null);
 
   useEffect(() => {
@@ -581,17 +637,39 @@ export default function Navbar() {
     <>
       <nav
         ref={navRef}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'h-14 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm'
-            : 'h-16 bg-white border-b border-slate-200/60'
-        }`}
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        style={{
+          height: scrolled ? 56 : 64,
+          background: scrolled
+            ? 'rgba(255, 255, 255, 0.2)'
+            : 'rgba(255, 265, 255, 0.1)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: scrolled
+            ? '1px solid rgba(255,255,255,0.07)'
+            : '1px solid rgba(255,255,255,0.05)',
+          boxShadow: scrolled ? '0 4px 32px rgba(0,0,0,0.5)' : 'none',
+        }}
       >
+        {/* Top accent line on scroll */}
+        {scrolled && (
+          <div
+            className="absolute top-0 left-0 right-0 pointer-events-none"
+            style={{
+              height: 1,
+              background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.5) 40%, rgba(6,182,212,0.35) 60%, transparent)',
+            }}
+          />
+        )}
+
         <div className="h-full max-w-6xl mx-auto px-6 flex items-center justify-between">
 
-          {/* Logo — "AUROWINX" only, no sub-label */}
+          {/* Logo */}
           <a href="#" className="shrink-0 group">
-            <span className="text-[19px] font-black tracking-[0.12em] text-slate-900 group-hover:text-slate-700 transition-colors">
+            <span
+              className="text-[19px] font-black tracking-[0.12em] transition-colors duration-200"
+              style={{ color: 'rgba(255,255,255,0.95)' }}
+            >
               AUROWINX
             </span>
           </a>
@@ -620,7 +698,15 @@ export default function Navbar() {
           <div className="flex items-center gap-3 shrink-0">
             <a
               href="#contact"
-              className="hidden md:flex items-center gap-2 px-5 py-2 bg-slate-900 hover:bg-black text-white text-[13px] font-semibold tracking-wide rounded transition-colors group"
+              className="hidden md:flex items-center gap-2 px-5 py-2 text-white text-[13px] font-semibold tracking-wide transition-all duration-200 group"
+              style={{
+                background: 'linear-gradient(135deg, #2563eb 0%, #0891b2 100%)',
+                boxShadow: ctaHovered ? '0 0 36px rgba(37,99,235,0.55)' : '0 0 24px rgba(37,99,235,0.35)',
+                borderRadius: 8,
+                transform: ctaHovered ? 'scale(1.03)' : 'scale(1)',
+              }}
+              onMouseEnter={() => setCtaHovered(true)}
+              onMouseLeave={() => setCtaHovered(false)}
             >
               Talk to Experts
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -629,7 +715,8 @@ export default function Navbar() {
             {/* Hamburger — animated morph to X */}
             <button
               onClick={() => setMobileOpen((v) => !v)}
-              className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors text-slate-700 relative"
+              className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg transition-colors relative"
+              style={{ color: 'rgba(255,255,255,0.7)', background: 'rgba(255,255,255,0.07)' }}
               aria-label="Toggle menu"
             >
               <AnimatePresence mode="wait" initial={false}>
