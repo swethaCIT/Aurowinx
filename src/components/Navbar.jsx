@@ -244,19 +244,19 @@ const RightPanel = ({ item, type }) => {
   const Visual = type === 'solutions' ? ChipVisual : NodeVisual;
 
   return (
-    <div className="w-72 shrink-0 bg-[#060c13] border-l border-white/[0.06] relative overflow-hidden flex flex-col p-7">
+    <div className="w-72 shrink-0 bg-[#f0f8ff]/80 border-l border-blue-900/10 relative overflow-hidden flex flex-col p-7">
       {/* Grid bg */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          opacity: 0.07,
-          backgroundImage: `linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)`,
+          opacity: 0.05,
+          backgroundImage: `linear-gradient(rgba(15,23,42,1) 1px,transparent 1px),linear-gradient(90deg,rgba(15,23,42,1) 1px,transparent 1px)`,
           backgroundSize: '20px 20px',
         }}
       />
       {/* Glow blobs */}
-      <div className="absolute -bottom-10 -right-10 w-56 h-56 rounded-full blur-3xl pointer-events-none transition-all duration-700" style={{ background: item?.glowA, opacity: 0.7 }} />
-      <div className="absolute top-6 -left-6 w-36 h-36 rounded-full blur-2xl pointer-events-none transition-all duration-700" style={{ background: item?.glowB, opacity: 0.8 }} />
+      <div className="absolute -bottom-10 -right-10 w-56 h-56 rounded-full blur-3xl pointer-events-none transition-all duration-700" style={{ background: item?.glowA, opacity: 0.4 }} />
+      <div className="absolute top-6 -left-6 w-36 h-36 rounded-full blur-2xl pointer-events-none transition-all duration-700" style={{ background: item?.glowB, opacity: 0.5 }} />
 
       <div className="relative z-10 flex flex-col h-full">
         <AnimatePresence mode="wait">
@@ -273,14 +273,14 @@ const RightPanel = ({ item, type }) => {
               {item?.tag}
             </span>
             {/* Headlines */}
-            <h3 className="text-xl font-light leading-tight tracking-tight mb-0.5" style={{ color: 'rgba(255,255,255,0.7)' }}>
+            <h3 className="text-xl font-light leading-tight tracking-tight mb-0.5" style={{ color: 'rgba(15,23,42,0.7)' }}>
               {item?.headline}
             </h3>
-            <h3 className="text-xl font-bold leading-tight tracking-tight mb-3 text-white">
+            <h3 className="text-xl font-bold leading-tight tracking-tight mb-3 text-slate-900">
               {item?.sub}
             </h3>
             {/* Body */}
-            <p className="text-[12.5px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            <p className="text-[12.5px] leading-relaxed" style={{ color: 'rgba(15,23,42,0.6)' }}>
               {item?.body}
             </p>
             <Visual item={item} />
@@ -310,11 +310,11 @@ const MegaMenu = ({ isOpen, items, type }) => {
           transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
           className="absolute left-0 right-0 top-full w-full z-40 overflow-hidden"
           style={{
-            background: 'rgba(6,13,28,0.97)',
+            background: 'rgba(244, 248, 252, 0.95)', // White mixed with blue shade
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
-            borderBottom: '1px solid rgba(255,255,255,0.06)',
-            boxShadow: '0 32px 80px -16px rgba(0,0,0,0.7)',
+            borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+            boxShadow: '0 32px 80px -16px rgba(0,0,0,0.1)',
           }}
         >
           {/* Top accent line */}
@@ -368,7 +368,7 @@ const MegaMenu = ({ isOpen, items, type }) => {
                       <div
                         className="p-2.5 rounded-lg shrink-0 transition-all duration-200"
                         style={{
-                          background: active ? `${item.accent}18` : 'rgba(255,255,255,0.04)',
+                          background: active ? `${item.accent}18` : 'rgba(0,0,0,0.04)',
                           boxShadow: active ? `0 0 18px ${item.accent}35` : 'none',
                         }}
                       >
@@ -387,7 +387,7 @@ const MegaMenu = ({ isOpen, items, type }) => {
                         <div className="flex items-center gap-1.5">
                           <span
                             className="text-[13.5px] font-bold tracking-tight transition-colors duration-200"
-                            style={{ color: active ? item.accent : 'rgba(255,255,255,0.82)' }}
+                            style={{ color: active ? item.accent : 'rgba(15,23,42,0.85)' }}
                           >
                             {item.name}
                           </span>
@@ -402,7 +402,7 @@ const MegaMenu = ({ isOpen, items, type }) => {
                         </div>
                         <p
                           className="text-[11.5px] mt-0.5 leading-snug truncate pr-2"
-                          style={{ color: 'rgba(255,255,255,0.32)' }}
+                          style={{ color: 'rgba(15,23,42,0.5)' }}
                         >
                           {item.description}
                         </p>
@@ -641,8 +641,8 @@ export default function Navbar() {
         style={{
           height: scrolled ? 56 : 64,
           background: scrolled
-            ? 'rgba(6,13,28,0.97)'
-            : 'rgba(6,13,28,0.85)',
+            ? 'rgba(255, 255, 255, 0.2)'
+            : 'rgba(255, 265, 255, 0.1)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           borderBottom: scrolled
