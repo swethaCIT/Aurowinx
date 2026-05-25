@@ -424,34 +424,40 @@ const MegaMenu = ({ isOpen, items, type }) => {
 
 // ─── DESKTOP NAV LINK ─────────────────────────────────────────────────────────
 
-const DesktopNavLink = ({ title, hasDropdown, isActive, onClick }) => (
-  <button
-    onClick={onClick}
-    className="relative h-full px-4 flex items-center gap-1 text-[13.5px] font-semibold tracking-wide transition-colors duration-200 focus:outline-none cursor-pointer"
-    style={{ color: isActive ? '#3b82f6' : 'rgba(255,255,255,0.65)' }}
-    onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = 'rgba(255,255,255,0.95)'; }}
-    onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; }}
-  >
-    {title}
-    {hasDropdown && (
-      <ChevronDown
-        className="w-3.5 h-3.5 transition-transform duration-300"
-        style={{
-          color: isActive ? '#3b82f6' : 'rgba(255,255,255,0.35)',
-          transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)',
-        }}
+const DesktopNavLink = ({ title, hasDropdown, isActive, onClick, scrolled }) => {
+  const baseColor = scrolled ? 'rgba(15,23,42,0.65)' : 'rgba(255,255,255,0.65)';
+  const hoverColor = scrolled ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)';
+  const activeColor = '#3b82f6';
+
+  return (
+    <button
+      onClick={onClick}
+      className="relative h-full px-4 flex items-center gap-1 text-[13.5px] font-semibold tracking-wide transition-colors duration-200 focus:outline-none cursor-pointer"
+      style={{ color: isActive ? activeColor : baseColor }}
+      onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = hoverColor; }}
+      onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = baseColor; }}
+    >
+      {title}
+      {hasDropdown && (
+        <ChevronDown
+          className="w-3.5 h-3.5 transition-transform duration-300"
+          style={{
+            color: isActive ? activeColor : (scrolled ? 'rgba(15,23,42,0.45)' : 'rgba(255,255,255,0.35)'),
+            transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)',
+          }}
+        />
+      )}
+      {/* Bottom underline */}
+      <motion.div
+        className="absolute bottom-0 left-3 right-3 h-[2px] rounded-t"
+        style={{ background: 'linear-gradient(90deg, #3b82f6, #06b6d4)', originX: 0.5 }}
+        initial={false}
+        animate={{ scaleX: isActive ? 1 : 0, opacity: isActive ? 1 : 0 }}
+        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
       />
-    )}
-    {/* Bottom underline */}
-    <motion.div
-      className="absolute bottom-0 left-3 right-3 h-[2px] rounded-t"
-      style={{ background: 'linear-gradient(90deg, #3b82f6, #06b6d4)', originX: 0.5 }}
-      initial={false}
-      animate={{ scaleX: isActive ? 1 : 0, opacity: isActive ? 1 : 0 }}
-      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-    />
-  </button>
-);
+    </button>
+  );
+};
 
 // ─── MOBILE ACCORDION ITEM ────────────────────────────────────────────────────
 
@@ -641,14 +647,14 @@ export default function Navbar() {
         style={{
           height: scrolled ? 56 : 64,
           background: scrolled
-            ? 'rgba(255, 255, 255, 0.2)'
+            ? 'rgba(255, 255, 255, 0.85)'
             : 'rgba(255, 265, 255, 0.1)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           borderBottom: scrolled
-            ? '1px solid rgba(255,255,255,0.07)'
+            ? '1px solid rgba(0,0,0,0.05)'
             : '1px solid rgba(255,255,255,0.05)',
-          boxShadow: scrolled ? '0 4px 32px rgba(0,0,0,0.5)' : 'none',
+          boxShadow: scrolled ? '0 4px 32px rgba(0,0,0,0.05)' : 'none',
         }}
       >
         {/* Top accent line on scroll */}
@@ -668,7 +674,7 @@ export default function Navbar() {
           <a href="#" className="shrink-0 group">
             <span
               className="text-[19px] font-black tracking-[0.12em] transition-colors duration-200"
-              style={{ color: 'rgba(255,255,255,0.95)' }}
+              style={{ color: scrolled ? '#0f172a' : 'rgba(255,255,255,0.95)' }}
             >
               AUROWINX
             </span>
@@ -690,6 +696,7 @@ export default function Navbar() {
                 hasDropdown={!!menu}
                 isActive={!!menu && activeMenu === menu}
                 onClick={menu ? () => toggleMenu(menu) : undefined}
+                scrolled={scrolled}
               />
             ))}
           </div>
@@ -716,7 +723,10 @@ export default function Navbar() {
             <button
               onClick={() => setMobileOpen((v) => !v)}
               className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg transition-colors relative"
-              style={{ color: 'rgba(255,255,255,0.7)', background: 'rgba(255,255,255,0.07)' }}
+              style={{
+                color: scrolled ? 'rgba(15,23,42,0.8)' : 'rgba(255,255,255,0.7)',
+                background: scrolled ? 'rgba(15,23,42,0.05)' : 'rgba(255,255,255,0.07)'
+              }}
               aria-label="Toggle menu"
             >
               <AnimatePresence mode="wait" initial={false}>
