@@ -6,7 +6,7 @@ import AboutSnapshot from "./components/home/AboutSnapshot";
 import SolutionsSection from "./components/home/SolutionsSection";
 import ProductShowcase  from "./components/home/ProductShowcase";
 import WhyAurowinx     from "./components/home/WhyAurowinx";
-// import CTASection      from "./components/home/CTASection"
+import CTASection      from "./components/home/CTASection"
 
 export default function App() {
   return (
@@ -19,6 +19,7 @@ export default function App() {
         <SolutionsSection />
         <ProductShowcase />
         <WhyAurowinx />
+        <CTASection />
       </main>
     </div>
   );
