@@ -5,8 +5,8 @@ const fs = require('fs');
 
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
-const inputPath = path.join(__dirname, 'src', 'assets', 'videos', 'hero-1.mp4');
-const outputPath = path.join(__dirname, 'src', 'assets', 'videos', 'hero-1-compressed.mp4');
+const inputPath = path.join(__dirname, 'public', 'videos', 'hero-1.mp4');
+const outputPath = path.join(__dirname, 'public', 'videos', 'hero-1-compressed.mp4');
 
 console.log('Starting compression of hero-1.mp4 (this may take a minute)...');
 
