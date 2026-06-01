@@ -49,23 +49,17 @@ export default function HeroSection() {
   return (
     <section className="relative h-screen overflow-hidden bg-[#080f1e]">
 
-      {/* VIDEO BACKGROUND */}
-      <AnimatePresence>
-        <motion.video
-          key={current}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover"
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.98 }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
-        >
-          <source src={slides[current].video} type="video/mp4" />
-        </motion.video>
-      </AnimatePresence>
+      {/* VIDEO BACKGROUND - Rendered once for better performance */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ opacity: 0.9 }}
+      >
+        <source src={slides[0].video} type="video/mp4" />
+      </video>
 
       {/* DARK OVERLAY */}
       <div className="absolute inset-0 bg-black/55" />

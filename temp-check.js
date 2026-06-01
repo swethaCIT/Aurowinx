@@ -1,0 +1,1 @@
+const fs = require('fs'); const lines = fs.readFileSync('D:/AUROWINX-TECHNOLOGIES/src/pages/solutions/SemiconductorDesignPage.jsx', 'utf8').split('\n'); console.log(lines.slice(0, 40).join('\n')); const rootIdx = lines.findIndex(l => l.includes('export default function SemiconductorDesignPage')); if (rootIdx !== -1) console.log(lines.slice(rootIdx, rootIdx + 20).join('\n'));

@@ -12,6 +12,7 @@ const solutions = [
   {
     icon: Cpu,
     name: 'Semiconductor Design',
+    path: '/solutions/semiconductor-design',
     description: 'Advanced SoC and ASIC engineering capabilities with multi-process node support.',
     color: 'text-sky-400',
     bg: 'bg-sky-500/10',
@@ -26,6 +27,7 @@ const solutions = [
   {
     icon: Activity,
     name: 'Design Verification',
+    path: '/solutions/design-verification',
     description: 'Comprehensive pre-silicon validation using formal, simulation, and emulation.',
     color: 'text-indigo-400',
     bg: 'bg-indigo-500/10',
@@ -40,6 +42,7 @@ const solutions = [
   {
     icon: Microscope,
     name: 'DFT Engineering',
+    path: '/solutions/dft-engineering',
     description: 'Design for testability and structural yield improvement methodologies.',
     color: 'text-purple-400',
     bg: 'bg-purple-500/10',
@@ -54,6 +57,7 @@ const solutions = [
   {
     icon: Layers,
     name: 'Physical Design',
+    path: '/solutions/physical-design',
     description: 'RTL to GDSII execution from architecture to tapeout, any node.',
     color: 'text-cyan-400',
     bg: 'bg-cyan-500/10',
@@ -68,6 +72,7 @@ const solutions = [
   {
     icon: Microchip,
     name: 'Analog & IP Solutions',
+    path: '/solutions/analog-ip',
     description: 'Custom mixed-signal block design, characterisation, and IP hardening.',
     color: 'text-teal-400',
     bg: 'bg-teal-500/10',
@@ -293,33 +298,38 @@ const RightPanel = ({ item, type }) => {
 
 // ─── MEGA MENU ────────────────────────────────────────────────────────────────
 
-const MegaMenu = ({ isOpen, items, type }) => {
+const MegaMenu = ({ isOpen, items, type, onMouseEnter, onMouseLeave, onItemClick }) => {
   const [hoveredItem, setHoveredItem] = useState(items[0]);
 
-  useEffect(() => {
-    if (isOpen) setHoveredItem(items[0]);
-  }, [isOpen, items]);
+  // Reset hovered item when menu opens
+  if (isOpen && hoveredItem === null) {
+    setHoveredItem(items[0]);
+  }
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, y: 8, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 6, scale: 0.98 }}
+          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="absolute left-0 right-0 top-full w-full z-40 overflow-hidden"
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
           style={{
             background: 'rgba(244, 248, 252, 0.95)', // White mixed with blue shade
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
             borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
             boxShadow: '0 32px 80px -16px rgba(0,0,0,0.1)',
+            paddingTop: '8px', // Slightly increase hover-safe area by giving it padding
+            marginTop: '-8px'
           }}
         >
           {/* Top accent line */}
           <div
-            className="absolute top-0 left-0 right-0 pointer-events-none"
+            className="absolute top-2 left-0 right-0 pointer-events-none"
             style={{
               height: 1,
               background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.6) 30%, rgba(6,182,212,0.4) 70%, transparent)',
@@ -341,24 +351,28 @@ const MegaMenu = ({ isOpen, items, type }) => {
                 {items.map((item, idx) => {
                   const active = hoveredItem?.name === item.name;
                   return (
-                    <motion.a
+                    <motion.div
                       key={item.name}
-                      href={`#${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.28, delay: idx * 0.045 }}
                       onMouseEnter={() => setHoveredItem(item)}
+                    >
+                    <Link
+                      to={item.path || `#${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+                      onClick={() => onItemClick && onItemClick()}
                       className="flex items-center gap-3.5 px-3.5 py-3 rounded-xl relative overflow-hidden cursor-pointer transition-all duration-200"
                       style={{
                         border: active ? `1px solid ${item.accent}30` : '1px solid transparent',
                         background: active
                           ? `linear-gradient(135deg, ${item.accent}10 0%, transparent 60%)`
                           : 'transparent',
+                        textDecoration: "none"
                       }}
                     >
                       {/* Left accent bar */}
                       <motion.div
-                        className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r"
+                        className="absolute left-0 top-2 bottom-2 w-0.75 rounded-r"
                         style={{ background: item.accent, originY: 0.5 }}
                         animate={{ scaleY: active ? 1 : 0, opacity: active ? 1 : 0 }}
                         transition={{ duration: 0.18 }}
@@ -407,7 +421,8 @@ const MegaMenu = ({ isOpen, items, type }) => {
                           {item.description}
                         </p>
                       </div>
-                    </motion.a>
+                    </Link>
+                    </motion.div>
                   );
                 })}
               </div>
@@ -423,21 +438,34 @@ const MegaMenu = ({ isOpen, items, type }) => {
 };
 
 // ─── DESKTOP NAV LINK ─────────────────────────────────────────────────────────
+import { Link, useNavigate } from 'react-router-dom';
 
-const DesktopNavLink = ({ title, hasDropdown, isActive, onClick, scrolled }) => {
+const DesktopNavLink = ({ title, path, hasDropdown, isActive, onClick, onMouseEnter, onMouseLeave, scrolled }) => {
   const baseColor = scrolled ? 'rgba(15,23,42,0.65)' : 'rgba(255,255,255,0.65)';
   const hoverColor = scrolled ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)';
   const activeColor = '#3b82f6';
+  const navigate = useNavigate();
 
   return (
     <button
-      onClick={onClick}
+      onClick={(e) => {
+        if (onClick) onClick(e);
+        if (path && (!hasDropdown || e.detail === 2)) navigate(path); // Double click navigates if dropdown exists
+        else if (path && !hasDropdown) navigate(path);
+      }}
+      onDoubleClick={() => path && navigate(path)}
       className="relative h-full px-4 flex items-center gap-1 text-[13.5px] font-semibold tracking-wide transition-colors duration-200 focus:outline-none cursor-pointer"
       style={{ color: isActive ? activeColor : baseColor }}
-      onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = hoverColor; }}
-      onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = baseColor; }}
+      onMouseEnter={(e) => { 
+        if (!isActive) e.currentTarget.style.color = hoverColor; 
+        if (onMouseEnter) onMouseEnter(e);
+      }}
+      onMouseLeave={(e) => { 
+        if (!isActive) e.currentTarget.style.color = baseColor; 
+        if (onMouseLeave) onMouseLeave(e);
+      }}
     >
-      {title}
+      <Link to={path || "#"} onClick={e => e.preventDefault()} style={{ color: "currentColor", textDecoration: "none" }}>{title}</Link>
       {hasDropdown && (
         <ChevronDown
           className="w-3.5 h-3.5 transition-transform duration-300"
@@ -449,7 +477,7 @@ const DesktopNavLink = ({ title, hasDropdown, isActive, onClick, scrolled }) => 
       )}
       {/* Bottom underline */}
       <motion.div
-        className="absolute bottom-0 left-3 right-3 h-[2px] rounded-t"
+        className="absolute bottom-0 left-3 right-3 h-0.5 rounded-t"
         style={{ background: 'linear-gradient(90deg, #3b82f6, #06b6d4)', originX: 0.5 }}
         initial={false}
         animate={{ scaleX: isActive ? 1 : 0, opacity: isActive ? 1 : 0 }}
@@ -504,20 +532,17 @@ const MobileAccordionItem = ({ sec, onClose, delay }) => {
             className="overflow-hidden"
           >
             <div className="pb-3 grid gap-1.5 pl-1 mt-1">
-              {sec.items.map((item, idx) => (
-                <motion.a
+              {sec.items.map((item) => (
+                <Link
+                  to={item.path || `#${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                   key={item.name}
-                  href={`#${item.name.toLowerCase().replace(/\s+/g, '-')}`}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.04 }}
                   onClick={onClose}
                   className="flex items-center gap-3.5 px-3 py-3.5 rounded-xl border border-slate-100 bg-white active:bg-slate-50 transition-colors relative overflow-hidden group"
-                  style={{ minHeight: 60 }}
+                  style={{ minHeight: 60, textDecoration: "none" }}
                 >
                   {/* Subtle left accent on press */}
                   <div
-                    className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r opacity-0 group-active:opacity-100 transition-opacity duration-100"
+                    className="absolute left-0 top-2 bottom-2 w-0.75 rounded-r opacity-0 group-active:opacity-100 transition-opacity duration-100"
                     style={{ background: item.accent }}
                   />
                   <div className={`p-2.5 rounded-lg shrink-0 ${item.bg} ${item.color}`}>
@@ -528,7 +553,7 @@ const MobileAccordionItem = ({ sec, onClose, delay }) => {
                     <div className="text-[11.5px] text-slate-400 mt-0.5 leading-snug line-clamp-2 pr-2">{item.description}</div>
                   </div>
                   <ArrowRight className="w-3.5 h-3.5 text-slate-300 shrink-0 mr-1" />
-                </motion.a>
+                </Link>
               ))}
             </div>
           </motion.div>
@@ -615,6 +640,25 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [ctaHovered, setCtaHovered] = useState(false);
   const navRef = useRef(null);
+  const hoverTimeoutRef = useRef(null);
+
+  const openMenu = useCallback((menu) => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    setActiveMenu(menu);
+  }, []);
+
+  const closeMenu = useCallback(() => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    hoverTimeoutRef.current = setTimeout(() => {
+      setActiveMenu(null);
+    }, 40);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -637,7 +681,7 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [activeMenu, handleClickOutside]);
 
-  const toggleMenu = (menu) => setActiveMenu((prev) => (prev === menu ? null : menu));
+  
 
   return (
     <>
@@ -683,19 +727,25 @@ export default function Navbar() {
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center h-full gap-1">
             {[
-              { title: 'Home' },
-              { title: 'Solutions', menu: 'solutions' },
+              { title: 'Home', path: '/' },
+              { title: 'Solutions', menu: 'solutions', path: '/solutions' },
               { title: 'Products', menu: 'products' },
               { title: 'Company' },
               { title: 'Careers' },
               { title: 'Contact' },
-            ].map(({ title, menu }) => (
+            ].map(({ title, menu, path }) => (
               <DesktopNavLink
                 key={title}
                 title={title}
+                path={path}
                 hasDropdown={!!menu}
                 isActive={!!menu && activeMenu === menu}
-                onClick={menu ? () => toggleMenu(menu) : undefined}
+                onClick={menu ? () => {
+                  if (activeMenu === menu) setActiveMenu(null);
+                  else openMenu(menu);
+                } : null}
+                onMouseEnter={() => menu ? openMenu(menu) : closeMenu()}
+                onMouseLeave={() => menu ? closeMenu() : undefined}
                 scrolled={scrolled}
               />
             ))}
@@ -759,8 +809,22 @@ export default function Navbar() {
         </div>
 
         {/* Mega menus */}
-        <MegaMenu isOpen={activeMenu === 'solutions'} items={solutions} type="solutions" />
-        <MegaMenu isOpen={activeMenu === 'products'} items={products} type="products" />
+        <MegaMenu 
+          isOpen={activeMenu === 'solutions'} 
+          items={solutions} 
+          type="solutions" 
+          onMouseEnter={() => openMenu('solutions')}
+          onMouseLeave={closeMenu}
+          onItemClick={() => setActiveMenu(null)}
+        />
+        <MegaMenu 
+          isOpen={activeMenu === 'products'} 
+          items={products} 
+          type="products" 
+          onMouseEnter={() => openMenu('products')}
+          onMouseLeave={closeMenu}
+          onItemClick={() => setActiveMenu(null)}
+        />
       </nav>
 
       <MobileMenu isOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
