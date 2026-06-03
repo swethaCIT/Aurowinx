@@ -5,7 +5,7 @@ import { Routes, Route } from "react-router-dom";
 const SemiconductorDesignPage = lazy(() => import("../pages/solutions/SemiconductorDesignPage"));
 const DesignVerificationPage  = lazy(() => import("../pages/solutions/DesignVerificationPage"));
 const DFTEngineeringPage      = lazy(() => import("../pages/solutions/DFTEngineeringPage"));
-const PhysicalDesignPage      = lazy(() => import("../pages/solutions/PhysicalDesignPage"));
+const PhysicalDesignPage      = lazy(() => import("../pages/solutions/PhysicalPage"));
 const AnalogIPPage            = lazy(() => import("../pages/solutions/AnalogIPPage"));
 
 export default function SolutionsRoutes() {

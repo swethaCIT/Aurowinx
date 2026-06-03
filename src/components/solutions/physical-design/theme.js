@@ -1,4 +1,4 @@
-// src/theme.js — shared design tokens for AurowinX sections
+// theme.js — shared design tokens for AurowinX Design Verification sections
 
 export const C = {
   // Core palette — Indigo/Purple on light
@@ -48,6 +48,6 @@ export const STEP_COLORS = [
 
 // Framer-motion common transitions
 export const EASE = [0.22, 1, 0.36, 1];
-export const fadeUp   = { initial: { opacity: 0, y: 28  }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "-60px" } };
+export const fadeUp = { initial: { opacity: 0, y: 28 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "-60px" } };
 export const fadeLeft = { initial: { opacity: 0, x: -28 }, whileInView: { opacity: 1, x: 0 }, viewport: { once: true, margin: "-60px" } };
-export const fadeRight= { initial: { opacity: 0, x: 28  }, whileInView: { opacity: 1, x: 0 }, viewport: { once: true, margin: "-60px" } };
+export const fadeRight = { initial: { opacity: 0, x: 28 }, whileInView: { opacity: 1, x: 0 }, viewport: { once: true, margin: "-60px" } };

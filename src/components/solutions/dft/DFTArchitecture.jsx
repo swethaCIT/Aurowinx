@@ -1,19 +1,19 @@
 // DFTArchitecture.jsx
-// AurowinX — DFT Services: Architecture, Pre-Silicon, Techniques, Post-Silicon
-// Light & professional, indigo accent, tight spacing
+// AurowinX — DFT Services: Pill nav + full-width carousel, arrows outside card
 
-import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
-import { CheckCircle2, Cpu, Layers, Shield, Zap, Target, GitBranch, Activity } from "lucide-react";
+import { useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Target, Layers, Cpu, Shield, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react";
 import { C, FONT, EASE } from "./theme";
 
 const SERVICES = [
   {
+    num: "01",
     tag: "DFT Architecture",
     title: "Architecture & Planning",
     color: "#4f46e5",
     bg: "#eef2ff",
-    icon: <Target style={{ width: 22, height: 22 }} />,
+    Icon: Target,
     desc: "Strategic DFT architecture definition aligned with design complexity, test coverage goals and ATE constraints.",
     points: [
       "DFT architecture and SoC DFT partitioning",
@@ -23,11 +23,12 @@ const SERVICES = [
     ],
   },
   {
-    tag: "Pre Silicon Services",
+    num: "02",
+    tag: "Pre-Silicon",
     title: "Pre-Silicon Services",
     color: "#7c3aed",
     bg: "#f5f3ff",
-    icon: <Layers style={{ width: 22, height: 22 }} />,
+    Icon: Layers,
     desc: "Complete pre-silicon DFT implementation from scan insertion to pattern generation for maximum fault coverage.",
     points: [
       "DFT IP Insertion & Scan Stitching",
@@ -37,11 +38,12 @@ const SERVICES = [
     ],
   },
   {
-    tag: "DFT Techniques Specialty",
+    num: "03",
+    tag: "Techniques",
     title: "DFT Techniques",
     color: "#0891b2",
     bg: "#ecfeff",
-    icon: <Cpu style={{ width: 22, height: 22 }} />,
+    Icon: Cpu,
     desc: "Specialized DFT techniques covering structural, memory and logic built-in self-test methodologies.",
     points: [
       "Boundary Scan (IEEE 1149.1 JTAG)",
@@ -49,15 +51,16 @@ const SERVICES = [
       "Hard Repair for embedded memories",
       "LBIST — Logic Built-In Self Test",
       "Scan ATPG (Stuck-At & At-Speed)",
-      "Compression techniques (EDT/OPMISR)",
+      "Compression (EDT / OPMISR)",
     ],
   },
   {
-    tag: "Post Silicon Services",
+    num: "04",
+    tag: "Post-Silicon",
     title: "Post-Silicon Services",
     color: "#059669",
     bg: "#ecfdf5",
-    icon: <Shield style={{ width: 22, height: 22 }} />,
+    Icon: Shield,
     desc: "Post-silicon validation and ATE handoff ensuring test patterns translate accurately to production test.",
     points: [
       "ATE Handoff and pattern translation",
@@ -68,221 +71,220 @@ const SERVICES = [
   },
 ];
 
-function ServiceCard({ svc, i, inView, active, onClick }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, delay: i * 0.1, ease: EASE }}
-      onClick={onClick}
-      whileHover={{ y: -5 }}
-      style={{
-        background: active ? svc.color : "#fff",
-        borderRadius: 16, padding: "20px 18px",
-        border: `1.5px solid ${active ? svc.color : C.borderLight}`,
-        boxShadow: active ? `0 16px 40px ${svc.color}30` : C.shadowSm,
-        cursor: "pointer", overflow: "hidden", position: "relative",
-        transition: "all 0.25s",
-      }}
-    >
-      {/* Top bar */}
-      <motion.div
-        initial={{ scaleX: 0 }} animate={inView ? { scaleX: 1 } : {}}
-        transition={{ duration: 0.6, delay: 0.3 + i * 0.1, ease: EASE }}
-        style={{
-          position: "absolute", top: 0, left: 0, right: 0, height: 3,
-          background: active ? "rgba(255,255,255,0.4)" : `linear-gradient(90deg, ${svc.color}, ${svc.color}55)`,
-          transformOrigin: "left",
-        }}
-      />
-
-      {/* Icon */}
-      <div style={{
-        width: 44, height: 44, borderRadius: 12, marginBottom: 14,
-        background: active ? "rgba(255,255,255,0.18)" : svc.bg,
-        color: active ? "#fff" : svc.color,
-        border: `1px solid ${active ? "rgba(255,255,255,0.25)" : svc.color + "25"}`,
-        display: "flex", alignItems: "center", justifyContent: "center",
-      }}>
-        {svc.icon}
-      </div>
-
-      {/* Tag */}
-      <span style={{
-        display: "inline-block", marginBottom: 8,
-        padding: "3px 10px", borderRadius: 50,
-        background: active ? "rgba(255,255,255,0.18)" : svc.bg,
-        color: active ? "#fff" : svc.color,
-        fontSize: 10, fontWeight: 700,
-        letterSpacing: "0.1em", textTransform: "uppercase",
-        border: `1px solid ${active ? "rgba(255,255,255,0.25)" : svc.color + "20"}`,
-      }}>
-        {svc.tag}
-      </span>
-
-      <p style={{
-        fontWeight: 800, fontSize: 14,
-        color: active ? "#fff" : C.textPrimary,
-        margin: "0 0 6px", fontFamily: FONT, letterSpacing: "-0.02em",
-      }}>
-        {svc.title}
-      </p>
-      <p style={{
-        fontSize: 12, lineHeight: 1.65, margin: 0,
-        color: active ? "rgba(255,255,255,0.78)" : C.textSecondary,
-      }}>
-        {svc.desc}
-      </p>
-    </motion.div>
-  );
-}
+const arrowBtn = {
+  width: 38,
+  height: 38,
+  borderRadius: "50%",
+  border: `1px solid`,
+  background: "#fff",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexShrink: 0,
+  transition: "background 0.15s, opacity 0.15s",
+};
 
 export default function DFTArchitecture() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
   const [active, setActive] = useState(0);
+  const N = SERVICES.length;
 
-  const current = SERVICES[active];
+  const go = useCallback((i) => {
+    if (i < 0 || i >= N) return;
+    setActive(i);
+  }, [N]);
+
+  const svc = SERVICES[active];
 
   return (
     <section
-      ref={ref}
       style={{
         background: "linear-gradient(160deg, #f8fafc 0%, #f1f5f9 100%)",
-        padding: "64px 48px 56px",
-        position: "relative", overflow: "hidden", fontFamily: FONT,
+        padding: "64px 48px 72px",
+        position: "relative",
+        overflow: "hidden",
+        fontFamily: FONT,
       }}
     >
       {/* Grid bg */}
       <div style={{
         position: "absolute", inset: 0, pointerEvents: "none",
-        backgroundImage: `linear-gradient(rgba(79,70,229,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(79,70,229,0.03) 1px, transparent 1px)`,
+        backgroundImage: `linear-gradient(rgba(79,70,229,0.03) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(79,70,229,0.03) 1px, transparent 1px)`,
         backgroundSize: "48px 48px",
       }} />
 
       <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 1 }}>
 
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, ease: EASE }}
-          style={{ textAlign: "center", marginBottom: 44 }}
-        >
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 12 }}>
             <div style={{ height: 1, width: 32, background: `linear-gradient(90deg, transparent, ${C.primary})` }} />
-            <span style={{ color: C.primary, fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>DFT Services</span>
+            <span style={{ color: C.primary, fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "monospace" }}>
+              DFT Services
+            </span>
             <div style={{ height: 1, width: 32, background: `linear-gradient(90deg, ${C.primary}, transparent)` }} />
           </div>
-          <h2 style={{
-            fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 900,
-            color: C.textPrimary, margin: "0 0 10px",
-            letterSpacing: "-0.04em", fontFamily: FONT,
-          }}>
-            DFT Expertise & Services
+          <h2 style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 900, color: C.textPrimary, margin: "0 0 10px", letterSpacing: "-0.04em" }}>
+            DFT Expertise &amp; Services
           </h2>
           <p style={{ color: C.textSecondary, fontSize: 14, maxWidth: 460, margin: "0 auto", lineHeight: 1.7 }}>
-            Full-spectrum DFT from early architecture to post-silicon sign-off — maximizing fault coverage at every stage.
+            Full-spectrum DFT from early architecture to post-silicon sign-off — maximising fault coverage at every stage.
           </p>
-        </motion.div>
+        </div>
 
-        {/* 2-col layout — cards left, detail right */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.1fr", gap: 24, alignItems: "start" }}>
+        {/* Pills */}
+        <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginBottom: 28 }}>
+          {SERVICES.map((s, i) => (
+            <button
+              key={s.num}
+              onClick={() => go(i)}
+              style={{
+                fontFamily: "monospace",
+                fontSize: 10,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                padding: "7px 18px",
+                borderRadius: 100,
+                border: `1.5px solid ${active === i ? s.color : "#e2e8f0"}`,
+                background: active === i ? s.color : "#fff",
+                color: active === i ? "#fff" : C.textSecondary,
+                cursor: "pointer",
+                transition: "all 0.22s",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {s.num} — {s.tag}
+            </button>
+          ))}
+        </div>
 
-          {/* LEFT — 4 service cards (2x2 grid) */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-            {SERVICES.map((svc, i) => (
-              <ServiceCard
-                key={svc.tag} svc={svc} i={i} inView={inView}
-                active={active === i}
-                onClick={() => setActive(i)}
-              />
-            ))}
-          </div>
+        {/* Carousel row: left arrow | card | right arrow */}
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
 
-          {/* RIGHT — Detail panel */}
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, ease: EASE }}
+          {/* Left arrow */}
+          <button
+            onClick={() => go(active - 1)}
+            disabled={active === 0}
             style={{
-              background: "#fff", borderRadius: 20, padding: "28px 24px",
-              border: `1px solid ${C.borderLight}`, boxShadow: C.shadowMd,
-              position: "sticky", top: 100,
+              ...arrowBtn,
+              borderColor: active === 0 ? "#e2e8f0" : svc.color + "60",
+              color: active === 0 ? "#cbd5e1" : svc.color,
+              opacity: active === 0 ? 0.35 : 1,
             }}
           >
-            {/* Tag + icon row */}
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-              <div style={{
-                width: 48, height: 48, borderRadius: 14,
-                background: current.bg, color: current.color,
-                border: `1px solid ${current.color}25`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                {current.icon}
-              </div>
-              <div>
-                <span style={{
-                  display: "inline-block", marginBottom: 4,
-                  padding: "3px 10px", borderRadius: 50,
-                  background: current.bg, color: current.color,
-                  fontSize: 10, fontWeight: 700,
-                  letterSpacing: "0.1em", textTransform: "uppercase",
-                  border: `1px solid ${current.color}20`,
-                }}>
-                  {current.tag}
-                </span>
-                <p style={{ margin: 0, fontWeight: 900, fontSize: 17, color: C.textPrimary, fontFamily: FONT, letterSpacing: "-0.03em" }}>
-                  {current.title}
+            <ChevronLeft size={18} />
+          </button>
+
+          {/* Card */}
+          <div style={{ flex: 1, overflow: "hidden", borderRadius: 20 }}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active}
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.35, ease: EASE }}
+                style={{
+                  background: "#fff",
+                  borderRadius: 20,
+                  border: `1.5px solid ${svc.color}30`,
+                  padding: "28px 28px 26px",
+                  boxShadow: `0 12px 40px ${svc.color}15, 0 2px 8px rgba(0,0,0,0.04)`,
+                  fontFamily: FONT,
+                }}
+              >
+                {/* Top accent bar */}
+                <div style={{
+                  height: 3, borderRadius: 2,
+                  background: `linear-gradient(90deg, ${svc.color}, ${svc.color}40)`,
+                  marginBottom: 22,
+                }} />
+
+                {/* Icon + tag + title */}
+                <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
+                  <div style={{
+                    width: 50, height: 50, borderRadius: 14,
+                    background: svc.bg, color: svc.color,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    border: `1px solid ${svc.color}20`, flexShrink: 0,
+                  }}>
+                    <svc.Icon size={22} />
+                  </div>
+                  <div>
+                    <span style={{
+                      fontFamily: "monospace", fontSize: 9,
+                      textTransform: "uppercase", letterSpacing: "0.15em",
+                      padding: "2px 10px", borderRadius: 3,
+                      background: svc.bg, color: svc.color,
+                      display: "inline-block", marginBottom: 6,
+                    }}>
+                      {svc.tag}
+                    </span>
+                    <p style={{ fontSize: 20, fontWeight: 900, color: C.textPrimary, margin: 0, letterSpacing: "-0.03em" }}>
+                      {svc.title}
+                    </p>
+                  </div>
+
+                  {/* Counter top-right */}
+                  <span style={{
+                    marginLeft: "auto", fontFamily: "monospace",
+                    fontSize: 11, color: C.textSecondary, letterSpacing: "0.1em",
+                  }}>
+                    {svc.num} / 0{N}
+                  </span>
+                </div>
+
+                {/* Desc */}
+                <p style={{ fontSize: 13.5, color: C.textSecondary, lineHeight: 1.8, marginBottom: 22, maxWidth: 680 }}>
+                  {svc.desc}
                 </p>
-              </div>
-            </div>
 
-            {/* Accent line */}
-            <div style={{ height: 2, background: `linear-gradient(90deg, ${current.color}, ${current.color}30)`, borderRadius: 1, marginBottom: 18 }} />
+                {/* Points grid */}
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                  gap: 10,
+                }}>
+                  {svc.points.map((pt, j) => (
+                    <motion.div
+                      key={pt}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: j * 0.06, ease: EASE }}
+                      style={{
+                        display: "flex", alignItems: "flex-start", gap: 10,
+                        padding: "10px 14px", borderRadius: 10,
+                        background: j % 2 === 0 ? svc.bg : "#fff",
+                        border: `1px solid ${svc.color}15`,
+                      }}
+                    >
+                      <CheckCircle2 size={14} style={{ color: svc.color, flexShrink: 0, marginTop: 1 }} />
+                      <span style={{ fontSize: 13, color: C.textPrimary, fontWeight: 600, lineHeight: 1.5 }}>
+                        {pt}
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-            {/* Description */}
-            <p style={{ fontSize: 13.5, color: C.textSecondary, lineHeight: 1.8, margin: "0 0 22px" }}>
-              {current.desc}
-            </p>
-
-            {/* Points */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {current.points.map((pt, j) => (
-                <motion.div
-                  key={pt}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: j * 0.07, ease: EASE }}
-                  style={{
-                    display: "flex", alignItems: "flex-start", gap: 10,
-                    padding: "10px 14px", borderRadius: 10,
-                    background: j % 2 === 0 ? current.bg : "#fff",
-                    border: `1px solid ${current.color}15`,
-                  }}
-                >
-                  <CheckCircle2 style={{ width: 14, height: 14, color: current.color, flexShrink: 0, marginTop: 1 }} />
-                  <span style={{ fontSize: 13, color: C.textPrimary, fontWeight: 600, lineHeight: 1.5 }}>{pt}</span>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Navigation dots */}
-            <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 24 }}>
-              {SERVICES.map((s, i) => (
-                <motion.button
-                  key={i}
-                  onClick={() => setActive(i)}
-                  animate={{
-                    width: active === i ? 24 : 8,
-                    background: active === i ? s.color : C.border,
-                  }}
-                  style={{ height: 8, borderRadius: 4, border: "none", cursor: "pointer", padding: 0 }}
-                />
-              ))}
-            </div>
-          </motion.div>
+          {/* Right arrow */}
+          <button
+            onClick={() => go(active + 1)}
+            disabled={active === N - 1}
+            style={{
+              ...arrowBtn,
+              borderColor: active === N - 1 ? "#e2e8f0" : svc.color + "60",
+              color: active === N - 1 ? "#cbd5e1" : svc.color,
+              opacity: active === N - 1 ? 0.35 : 1,
+            }}
+          >
+            <ChevronRight size={18} />
+          </button>
         </div>
+
       </div>
     </section>
   );

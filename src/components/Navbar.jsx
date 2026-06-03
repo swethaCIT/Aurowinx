@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ChevronDown, Menu, X, ArrowRight,
   Cpu, Microscope, Activity, Microchip, Layers,
@@ -90,6 +91,7 @@ const products = [
   {
     icon: Wrench,
     name: 'Product Engineering',
+    path: '/products/product-engineering',
     description: 'End-to-end hardware product lifecycle management from concept to production.',
     color: 'text-sky-400',
     bg: 'bg-sky-500/10',
@@ -104,6 +106,7 @@ const products = [
   {
     icon: Zap,
     name: 'Embedded Systems',
+    path: '/products/embedded-systems',
     description: 'Firmware, RTOS, and micro-architecture solutions for resource-constrained targets.',
     color: 'text-yellow-400',
     bg: 'bg-yellow-500/10',
@@ -118,6 +121,7 @@ const products = [
   {
     icon: Fingerprint,
     name: 'IoT & Automation',
+    path: '/products/iot-automation',
     description: 'Intelligent edge computing and smart grid architectures at industrial scale.',
     color: 'text-cyan-400',
     bg: 'bg-cyan-500/10',
@@ -132,6 +136,7 @@ const products = [
   {
     icon: Lightbulb,
     name: 'Electronics Development',
+    path: '/products/electronics-development',
     description: 'High-speed PCB design, signal integrity analysis, and system integration.',
     color: 'text-orange-400',
     bg: 'bg-orange-500/10',
@@ -146,6 +151,7 @@ const products = [
   {
     icon: Network,
     name: 'Custom R&D Solutions',
+    path: '/products/custom-rd',
     description: 'Research-driven innovation, technology scouting, and rapid prototyping lab.',
     color: 'text-violet-400',
     bg: 'bg-violet-500/10',
@@ -301,11 +307,6 @@ const RightPanel = ({ item, type }) => {
 const MegaMenu = ({ isOpen, items, type, onMouseEnter, onMouseLeave, onItemClick }) => {
   const [hoveredItem, setHoveredItem] = useState(items[0]);
 
-  // Reset hovered item when menu opens
-  if (isOpen && hoveredItem === null) {
-    setHoveredItem(items[0]);
-  }
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -318,13 +319,13 @@ const MegaMenu = ({ isOpen, items, type, onMouseEnter, onMouseLeave, onItemClick
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           style={{
-            background: 'rgba(244, 248, 252, 0.95)', // White mixed with blue shade
+            background: 'rgba(244, 248, 252, 0.95)',
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
             borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
             boxShadow: '0 32px 80px -16px rgba(0,0,0,0.1)',
-            paddingTop: '8px', // Slightly increase hover-safe area by giving it padding
-            marginTop: '-8px'
+            paddingTop: '8px',
+            marginTop: '-8px',
           }}
         >
           {/* Top accent line */}
@@ -339,7 +340,6 @@ const MegaMenu = ({ isOpen, items, type, onMouseEnter, onMouseLeave, onItemClick
           <div className="max-w-6xl mx-auto flex">
             {/* LEFT */}
             <div className="flex-1 py-7 px-8">
-              {/* Section label */}
               <p
                 className="text-[10px] font-bold tracking-[0.2em] uppercase mb-5 flex items-center gap-2"
                 style={{ color: 'rgba(96,165,250,0.6)' }}
@@ -358,70 +358,74 @@ const MegaMenu = ({ isOpen, items, type, onMouseEnter, onMouseLeave, onItemClick
                       transition={{ duration: 0.28, delay: idx * 0.045 }}
                       onMouseEnter={() => setHoveredItem(item)}
                     >
-                    <Link
-                      to={item.path || `#${item.name.toLowerCase().replace(/\s+/g, '-')}`}
-                      onClick={() => onItemClick && onItemClick()}
-                      className="flex items-center gap-3.5 px-3.5 py-3 rounded-xl relative overflow-hidden cursor-pointer transition-all duration-200"
-                      style={{
-                        border: active ? `1px solid ${item.accent}30` : '1px solid transparent',
-                        background: active
-                          ? `linear-gradient(135deg, ${item.accent}10 0%, transparent 60%)`
-                          : 'transparent',
-                        textDecoration: "none"
-                      }}
-                    >
-                      {/* Left accent bar */}
-                      <motion.div
-                        className="absolute left-0 top-2 bottom-2 w-0.75 rounded-r"
-                        style={{ background: item.accent, originY: 0.5 }}
-                        animate={{ scaleY: active ? 1 : 0, opacity: active ? 1 : 0 }}
-                        transition={{ duration: 0.18 }}
-                      />
-
-                      {/* Icon */}
-                      <div
-                        className="p-2.5 rounded-lg shrink-0 transition-all duration-200"
+                      {/*
+                        FIX: Use React Router <Link> directly — no nested button, no preventDefault.
+                        onClick closes the mega menu after navigation.
+                      */}
+                      <Link
+                        to={item.path}
+                        onClick={() => onItemClick && onItemClick()}
+                        className="flex items-center gap-3.5 px-3.5 py-3 rounded-xl relative overflow-hidden cursor-pointer transition-all duration-200"
                         style={{
-                          background: active ? `${item.accent}18` : 'rgba(0,0,0,0.04)',
-                          boxShadow: active ? `0 0 18px ${item.accent}35` : 'none',
+                          border: active ? `1px solid ${item.accent}30` : '1px solid transparent',
+                          background: active
+                            ? `linear-gradient(135deg, ${item.accent}10 0%, transparent 60%)`
+                            : 'transparent',
+                          textDecoration: 'none',
                         }}
                       >
-                        <item.icon
-                          className="w-4 h-4"
-                          strokeWidth={2}
-                          style={{
-                            color: item.accent,
-                            filter: active ? `drop-shadow(0 0 5px ${item.accent})` : 'none',
-                          }}
+                        {/* Left accent bar */}
+                        <motion.div
+                          className="absolute left-0 top-2 bottom-2 w-0.5 rounded-r"
+                          style={{ background: item.accent, originY: 0.5 }}
+                          animate={{ scaleY: active ? 1 : 0, opacity: active ? 1 : 0 }}
+                          transition={{ duration: 0.18 }}
                         />
-                      </div>
 
-                      {/* Text */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <span
-                            className="text-[13.5px] font-bold tracking-tight transition-colors duration-200"
-                            style={{ color: active ? item.accent : 'rgba(15,23,42,0.85)' }}
-                          >
-                            {item.name}
-                          </span>
-                          <ArrowRight
-                            className="w-3 h-3 shrink-0 transition-all duration-200"
+                        {/* Icon */}
+                        <div
+                          className="p-2.5 rounded-lg shrink-0 transition-all duration-200"
+                          style={{
+                            background: active ? `${item.accent}18` : 'rgba(0,0,0,0.04)',
+                            boxShadow: active ? `0 0 18px ${item.accent}35` : 'none',
+                          }}
+                        >
+                          <item.icon
+                            className="w-4 h-4"
+                            strokeWidth={2}
                             style={{
                               color: item.accent,
-                              opacity: active ? 1 : 0,
-                              transform: active ? 'translateX(0)' : 'translateX(-5px)',
+                              filter: active ? `drop-shadow(0 0 5px ${item.accent})` : 'none',
                             }}
                           />
                         </div>
-                        <p
-                          className="text-[11.5px] mt-0.5 leading-snug truncate pr-2"
-                          style={{ color: 'rgba(15,23,42,0.5)' }}
-                        >
-                          {item.description}
-                        </p>
-                      </div>
-                    </Link>
+
+                        {/* Text */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span
+                              className="text-[13.5px] font-bold tracking-tight transition-colors duration-200"
+                              style={{ color: active ? item.accent : 'rgba(15,23,42,0.85)' }}
+                            >
+                              {item.name}
+                            </span>
+                            <ArrowRight
+                              className="w-3 h-3 shrink-0 transition-all duration-200"
+                              style={{
+                                color: item.accent,
+                                opacity: active ? 1 : 0,
+                                transform: active ? 'translateX(0)' : 'translateX(-5px)',
+                              }}
+                            />
+                          </div>
+                          <p
+                            className="text-[11.5px] mt-0.5 leading-snug truncate pr-2"
+                            style={{ color: 'rgba(15,23,42,0.5)' }}
+                          >
+                            {item.description}
+                          </p>
+                        </div>
+                      </Link>
                     </motion.div>
                   );
                 })}
@@ -438,44 +442,68 @@ const MegaMenu = ({ isOpen, items, type, onMouseEnter, onMouseLeave, onItemClick
 };
 
 // ─── DESKTOP NAV LINK ─────────────────────────────────────────────────────────
-import { Link, useNavigate } from 'react-router-dom';
-
-const DesktopNavLink = ({ title, path, hasDropdown, isActive, onClick, onMouseEnter, onMouseLeave, scrolled }) => {
-  const baseColor = scrolled ? 'rgba(15,23,42,0.65)' : 'rgba(255,255,255,0.65)';
-  const hoverColor = scrolled ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)';
-  const activeColor = '#3b82f6';
+//
+// FIX SUMMARY:
+//   1. Removed nested <Link> inside <button> — invalid HTML, caused preventDefault conflict.
+//   2. Single navigation path: useNavigate() only.
+//   3. Added type="button" to prevent accidental form submission.
+//   4. Dropdown items navigate via onClick; plain items navigate directly.
+//
+const DesktopNavLink = ({
+  title,
+  path,
+  hasDropdown,
+  isActive,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+  scrolled,
+}) => {
   const navigate = useNavigate();
+  const baseColor  = scrolled ? 'rgba(15,23,42,0.65)'  : 'rgba(255,255,255,0.65)';
+  const hoverColor = scrolled ? 'rgba(15,23,42,0.95)'  : 'rgba(255,255,255,0.95)';
+  const activeColor = '#3b82f6';
+
+  const handleClick = () => {
+    if (hasDropdown) {
+      // Toggle the dropdown; navigation happens via items inside the mega menu
+      if (onClick) onClick();
+    } else if (path) {
+      // Plain nav item — navigate directly
+      navigate(path);
+    }
+  };
 
   return (
     <button
-      onClick={(e) => {
-        if (onClick) onClick(e);
-        if (path && (!hasDropdown || e.detail === 2)) navigate(path); // Double click navigates if dropdown exists
-        else if (path && !hasDropdown) navigate(path);
-      }}
-      onDoubleClick={() => path && navigate(path)}
-      className="relative h-full px-4 flex items-center gap-1 text-[13.5px] font-semibold tracking-wide transition-colors duration-200 focus:outline-none cursor-pointer"
-      style={{ color: isActive ? activeColor : baseColor }}
-      onMouseEnter={(e) => { 
-        if (!isActive) e.currentTarget.style.color = hoverColor; 
+      type="button"
+      onClick={handleClick}
+      onMouseEnter={(e) => {
+        if (!isActive) e.currentTarget.style.color = hoverColor;
         if (onMouseEnter) onMouseEnter(e);
       }}
-      onMouseLeave={(e) => { 
-        if (!isActive) e.currentTarget.style.color = baseColor; 
+      onMouseLeave={(e) => {
+        if (!isActive) e.currentTarget.style.color = baseColor;
         if (onMouseLeave) onMouseLeave(e);
       }}
+      className="relative h-full px-4 flex items-center gap-1 text-[13.5px] font-semibold tracking-wide transition-colors duration-200 focus:outline-none cursor-pointer bg-transparent border-0"
+      style={{ color: isActive ? activeColor : baseColor }}
     >
-      <Link to={path || "#"} onClick={e => e.preventDefault()} style={{ color: "currentColor", textDecoration: "none" }}>{title}</Link>
+      {title}
+
       {hasDropdown && (
         <ChevronDown
           className="w-3.5 h-3.5 transition-transform duration-300"
           style={{
-            color: isActive ? activeColor : (scrolled ? 'rgba(15,23,42,0.45)' : 'rgba(255,255,255,0.35)'),
+            color: isActive
+              ? activeColor
+              : scrolled ? 'rgba(15,23,42,0.45)' : 'rgba(255,255,255,0.35)',
             transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)',
           }}
         />
       )}
-      {/* Bottom underline */}
+
+      {/* Bottom underline indicator */}
       <motion.div
         className="absolute bottom-0 left-3 right-3 h-0.5 rounded-t"
         style={{ background: 'linear-gradient(90deg, #3b82f6, #06b6d4)', originX: 0.5 }}
@@ -488,10 +516,25 @@ const DesktopNavLink = ({ title, path, hasDropdown, isActive, onClick, onMouseEn
 };
 
 // ─── MOBILE ACCORDION ITEM ────────────────────────────────────────────────────
-
+//
+// FIX SUMMARY:
+//   1. Uses useNavigate() instead of window.location.href for SPA navigation.
+//   2. Reads sec.path for plain items (no sub-items) — no more #undefined hrefs.
+//   3. Consistent with React Router navigation model.
+//
 const MobileAccordionItem = ({ sec, onClose, delay }) => {
   const [open, setOpen] = useState(false);
-  const hasItems = sec.items.length > 0;
+  const navigate = useNavigate();
+  const hasItems = sec.items && sec.items.length > 0;
+
+  const handleRowClick = () => {
+    if (hasItems) {
+      setOpen(!open);
+    } else {
+      onClose();
+      if (sec.path) navigate(sec.path);
+    }
+  };
 
   return (
     <motion.div
@@ -502,13 +545,15 @@ const MobileAccordionItem = ({ sec, onClose, delay }) => {
     >
       {/* Row */}
       <button
-        className="w-full flex items-center justify-between py-4 cursor-pointer focus:outline-none"
-        onClick={() => {
-          if (hasItems) setOpen(!open);
-          else { onClose(); window.location.href = `#${sec.name.toLowerCase()}`; }
-        }}
+        type="button"
+        className="w-full flex items-center justify-between py-4 cursor-pointer focus:outline-none bg-transparent border-0"
+        onClick={handleRowClick}
       >
-        <span className={`text-[15px] font-bold tracking-tight transition-colors duration-150 ${open ? 'text-slate-900' : 'text-slate-600'}`}>
+        <span
+          className={`text-[15px] font-bold tracking-tight transition-colors duration-150 ${
+            open ? 'text-slate-900' : 'text-slate-600'
+          }`}
+        >
           {sec.name}
         </span>
         {hasItems && (
@@ -534,15 +579,15 @@ const MobileAccordionItem = ({ sec, onClose, delay }) => {
             <div className="pb-3 grid gap-1.5 pl-1 mt-1">
               {sec.items.map((item) => (
                 <Link
-                  to={item.path || `#${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  to={item.path}
                   key={item.name}
                   onClick={onClose}
                   className="flex items-center gap-3.5 px-3 py-3.5 rounded-xl border border-slate-100 bg-white active:bg-slate-50 transition-colors relative overflow-hidden group"
-                  style={{ minHeight: 60, textDecoration: "none" }}
+                  style={{ minHeight: 60, textDecoration: 'none' }}
                 >
                   {/* Subtle left accent on press */}
                   <div
-                    className="absolute left-0 top-2 bottom-2 w-0.75 rounded-r opacity-0 group-active:opacity-100 transition-opacity duration-100"
+                    className="absolute left-0 top-2 bottom-2 w-0.5 rounded-r opacity-0 group-active:opacity-100 transition-opacity duration-100"
                     style={{ background: item.accent }}
                   />
                   <div className={`p-2.5 rounded-lg shrink-0 ${item.bg} ${item.color}`}>
@@ -550,7 +595,9 @@ const MobileAccordionItem = ({ sec, onClose, delay }) => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-[13.5px] font-bold text-slate-900 leading-snug">{item.name}</div>
-                    <div className="text-[11.5px] text-slate-400 mt-0.5 leading-snug line-clamp-2 pr-2">{item.description}</div>
+                    <div className="text-[11.5px] text-slate-400 mt-0.5 leading-snug line-clamp-2 pr-2">
+                      {item.description}
+                    </div>
                   </div>
                   <ArrowRight className="w-3.5 h-3.5 text-slate-300 shrink-0 mr-1" />
                 </Link>
@@ -564,15 +611,20 @@ const MobileAccordionItem = ({ sec, onClose, delay }) => {
 };
 
 // ─── MOBILE MENU PANEL ────────────────────────────────────────────────────────
-
+//
+// FIX SUMMARY:
+//   1. All section entries now use 'name' key (not 'title') — MobileAccordionItem reads sec.name.
+//   2. All plain items include a 'path' field so navigate(sec.path) works correctly.
+//
 const MobileMenu = ({ isOpen, onClose }) => {
+  // Every entry uses 'name' (not 'title') and includes a 'path' for non-dropdown items
   const sections = [
-    { name: 'Home', items: [] },
-    { name: 'Solutions', items: solutions },
-    { name: 'Products', items: products },
-    { name: 'Company', items: [] },
-    { name: 'Careers', items: [] },
-    { name: 'Contact', items: [] },
+    { name: 'Home',      items: [],        path: '/'          },
+    { name: 'Solutions', items: solutions, path: '/solutions'  },
+    { name: 'Products',  items: products,  path: '/products'   },
+    { name: 'Company',   items: [],        path: '/company'    },
+    { name: 'Careers',   items: [],        path: '/careers'    },
+    { name: 'Contact',   items: [],        path: '/contact'    },
   ];
 
   return (
@@ -598,6 +650,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
               <span className="text-[17px] font-black tracking-[0.12em] text-slate-900">AUROWINX</span>
               <button
+                type="button"
                 onClick={onClose}
                 className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
               >
@@ -608,13 +661,19 @@ const MobileMenu = ({ isOpen, onClose }) => {
             {/* Scrollable list */}
             <div className="flex-1 overflow-y-auto px-5 py-3 pb-28">
               {sections.map((sec, i) => (
-                <MobileAccordionItem key={sec.name} sec={sec} onClose={onClose} delay={0.04 + i * 0.035} />
+                <MobileAccordionItem
+                  key={sec.name}
+                  sec={sec}
+                  onClose={onClose}
+                  delay={0.04 + i * 0.035}
+                />
               ))}
             </div>
 
             {/* Sticky CTA */}
             <div className="absolute bottom-0 left-0 right-0 px-5 py-5 bg-white/95 backdrop-blur-sm border-t border-slate-100">
               <button
+                type="button"
                 className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-white text-[13px] font-semibold tracking-wide transition-all group"
                 style={{
                   background: 'linear-gradient(135deg, #2563eb 0%, #0891b2 100%)',
@@ -681,7 +740,17 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [activeMenu, handleClickOutside]);
 
-  
+  // Desktop nav items configuration
+  // - items WITH a 'menu' key open a mega-menu dropdown (hasDropdown = true)
+  // - items WITHOUT a 'menu' key navigate directly to their 'path' on click
+  const desktopNavItems = [
+    { title: 'Home',      path: '/'         },
+    { title: 'Solutions', path: '/solutions', menu: 'solutions' },
+    { title: 'Products',  path: '/products',  menu: 'products'  },
+    { title: 'Company',   path: '/company'   },
+    { title: 'Careers',   path: '/careers'   },
+    { title: 'Contact',   path: '/contact'   },
+  ];
 
   return (
     <>
@@ -692,7 +761,7 @@ export default function Navbar() {
           height: scrolled ? 56 : 64,
           background: scrolled
             ? 'rgba(255, 255, 255, 0.85)'
-            : 'rgba(255, 265, 255, 0.1)',
+            : 'rgba(255, 255, 255, 0.1)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           borderBottom: scrolled
@@ -707,45 +776,43 @@ export default function Navbar() {
             className="absolute top-0 left-0 right-0 pointer-events-none"
             style={{
               height: 1,
-              background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.5) 40%, rgba(6,182,212,0.35) 60%, transparent)',
+              background:
+                'linear-gradient(90deg, transparent, rgba(59,130,246,0.5) 40%, rgba(6,182,212,0.35) 60%, transparent)',
             }}
           />
         )}
 
         <div className="h-full max-w-6xl mx-auto px-6 flex items-center justify-between">
 
-          {/* Logo */}
-          <a href="#" className="shrink-0 group">
+          {/* Logo — use Link for SPA navigation */}
+          <Link to="/" className="shrink-0 group" style={{ textDecoration: 'none' }}>
             <span
               className="text-[19px] font-black tracking-[0.12em] transition-colors duration-200"
               style={{ color: scrolled ? '#0f172a' : 'rgba(255,255,255,0.95)' }}
             >
               AUROWINX
             </span>
-          </a>
+          </Link>
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center h-full gap-1">
-            {[
-              { title: 'Home', path: '/' },
-              { title: 'Solutions', menu: 'solutions', path: '/solutions' },
-              { title: 'Products', menu: 'products' },
-              { title: 'Company' },
-              { title: 'Careers' },
-              { title: 'Contact' },
-            ].map(({ title, menu, path }) => (
+            {desktopNavItems.map(({ title, menu, path }) => (
               <DesktopNavLink
                 key={title}
                 title={title}
                 path={path}
                 hasDropdown={!!menu}
                 isActive={!!menu && activeMenu === menu}
-                onClick={menu ? () => {
-                  if (activeMenu === menu) setActiveMenu(null);
-                  else openMenu(menu);
-                } : null}
-                onMouseEnter={() => menu ? openMenu(menu) : closeMenu()}
-                onMouseLeave={() => menu ? closeMenu() : undefined}
+                onClick={
+                  menu
+                    ? () => {
+                        if (activeMenu === menu) setActiveMenu(null);
+                        else openMenu(menu);
+                      }
+                    : undefined
+                }
+                onMouseEnter={() => (menu ? openMenu(menu) : closeMenu())}
+                onMouseLeave={() => (menu ? closeMenu() : undefined)}
                 scrolled={scrolled}
               />
             ))}
@@ -753,29 +820,35 @@ export default function Navbar() {
 
           {/* CTA + Hamburger */}
           <div className="flex items-center gap-3 shrink-0">
-            <a
-              href="#contact"
+            <Link
+              to="/contact"
               className="hidden md:flex items-center gap-2 px-5 py-2 text-white text-[13px] font-semibold tracking-wide transition-all duration-200 group"
               style={{
                 background: 'linear-gradient(135deg, #2563eb 0%, #0891b2 100%)',
-                boxShadow: ctaHovered ? '0 0 36px rgba(37,99,235,0.55)' : '0 0 24px rgba(37,99,235,0.35)',
+                boxShadow: ctaHovered
+                  ? '0 0 36px rgba(37,99,235,0.55)'
+                  : '0 0 24px rgba(37,99,235,0.35)',
                 borderRadius: 8,
                 transform: ctaHovered ? 'scale(1.03)' : 'scale(1)',
+                textDecoration: 'none',
               }}
               onMouseEnter={() => setCtaHovered(true)}
               onMouseLeave={() => setCtaHovered(false)}
             >
               Talk to Experts
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </a>
+            </Link>
 
             {/* Hamburger — animated morph to X */}
             <button
+              type="button"
               onClick={() => setMobileOpen((v) => !v)}
               className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg transition-colors relative"
               style={{
                 color: scrolled ? 'rgba(15,23,42,0.8)' : 'rgba(255,255,255,0.7)',
-                background: scrolled ? 'rgba(15,23,42,0.05)' : 'rgba(255,255,255,0.07)'
+                background: scrolled
+                  ? 'rgba(15,23,42,0.05)'
+                  : 'rgba(255,255,255,0.07)',
               }}
               aria-label="Toggle menu"
             >
@@ -809,18 +882,18 @@ export default function Navbar() {
         </div>
 
         {/* Mega menus */}
-        <MegaMenu 
-          isOpen={activeMenu === 'solutions'} 
-          items={solutions} 
-          type="solutions" 
+        <MegaMenu
+          isOpen={activeMenu === 'solutions'}
+          items={solutions}
+          type="solutions"
           onMouseEnter={() => openMenu('solutions')}
           onMouseLeave={closeMenu}
           onItemClick={() => setActiveMenu(null)}
         />
-        <MegaMenu 
-          isOpen={activeMenu === 'products'} 
-          items={products} 
-          type="products" 
+        <MegaMenu
+          isOpen={activeMenu === 'products'}
+          items={products}
+          type="products"
           onMouseEnter={() => openMenu('products')}
           onMouseLeave={closeMenu}
           onItemClick={() => setActiveMenu(null)}
