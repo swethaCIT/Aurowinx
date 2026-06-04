@@ -176,7 +176,7 @@ function AccItem({ sol, isOpen, onToggle }) {
             borderLeft: `1.5px solid ${C.sandBorder}`,
           }}>
             <div>
-              <p style={{ fontSize: "12.5px", color: C.body, lineHeight: 1.85, marginBottom: 22 }}>
+              <p style={{ fontSize: "12.5px", color: C.inkSoft, lineHeight: 1.85, marginBottom: 22 }}>
                 {sol.desc}
               </p>
 
@@ -208,7 +208,7 @@ function AccItem({ sol, isOpen, onToggle }) {
                 {sol.tools.map(t => (
                   <span key={t} style={{
                     background: C.sandMid, borderRadius: 100,
-                    padding: "4px 12px", fontSize: "10px", color: C.body, fontWeight: 500,
+                    padding: "4px 12px", fontSize: "10px", color: C.inkSoft, fontWeight: 500,
                   }}>
                     {t}
                   </span>
@@ -270,7 +270,7 @@ export default function SolutionsSection() {
 
         <div style={{ textAlign: "right" }}>
           <div style={{ fontSize: "3.5rem", fontWeight: 900, color: C.terra, lineHeight: 1 }}>3</div>
-          <div style={{ fontSize: "9px", color: C.sandDeep, letterSpacing: "0.15em", textTransform: "uppercase", marginTop: 4 }}>
+          <div style={{ fontSize: "9px", color: C.inkSoft, letterSpacing: "0.15em", textTransform: "uppercase", marginTop: 4 }}>
             Divisions
           </div>
           <p style={{ fontSize: "12px", color: C.muted, lineHeight: 1.75, maxWidth: 220, marginLeft: "auto", marginTop: 14 }}>

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const slides = [
   {
-    video: "/videos/hero-2.mp4",
+    video: "/videos/AboutAuro.mp4",
     badge: "Enlightening Tech World",
     title: "End-To-End Silicon Design From Concept To Tapeout",
     headingClass:
@@ -12,7 +12,7 @@ const slides = [
       "Delivering high-quality, low-power, high-performance SoC solutions across the full silicon lifecycle — Architecture to GDSII.",
   },
   {
-    video: "/videos/hero-2.mp4",
+    video: "/videos/AboutAuro.mp4",
     badge: "Spec2GDSII Expertise",
     title: "Proven Silicon Success Across Advanced Technology Nodes",
     headingClass:
@@ -21,7 +21,7 @@ const slides = [
       "Successful tapeouts at 7nm, 5nm, and 3nm FinFET nodes — trusted by Tier 1 semiconductor companies worldwide.",
   },
   {
-    video: "/videos/hero-2.mp4",
+    video: "/videos/AboutAuro.mp4",
     badge: "Domain-Focused Engineering",
     title: "Deep Expertise Across Verification, DFT And Physical Design",
     headingClass:
@@ -30,7 +30,7 @@ const slides = [
       "Specialists in SV-UVM verification, DFT architecture, and low-power PNR — backed by engineers with 8–20 years of hands-on experience.",
   },
   {
-    video: "/videos/hero-2.mp4",
+    video: "/videos/AboutAuro.mp4",
     badge: "Established 2020 · Chennai",
     title: "Your Extended Engineering Arm For Silicon Product Success",
     headingClass:

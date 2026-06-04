@@ -80,7 +80,7 @@ export default function HeroSection() {
           objectFit: "cover", zIndex: 0,
         }}
       >
-        <source src="/videos/Physical.mp4" type="video/mp4" />
+        <source src="/videos/PD.mp4" type="video/mp4" />
       </video>
 
       {/* ── DARK OVERLAY ── */}

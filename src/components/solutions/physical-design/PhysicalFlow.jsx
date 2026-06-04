@@ -16,7 +16,7 @@ const PHASES = [
     color: "#4f46e5",
     bg: "#eef2ff",
     icon: <Layers style={{ width: 24, height: 24 }} />,
-    img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80",
+    img: "https://images.unsplash.com/photo-1743090661053-3d1feb2beab7?w=600&q=80",
     desc: "Transform RTL descriptions into optimized gate-level netlists with full DFT insertion, targeting area, timing and power constraints.",
     points: [
       { label: "Flat Synthesis",        sub: "Single-block full-chip netlist" },
@@ -35,7 +35,7 @@ const PHASES = [
     color: "#7c3aed",
     bg: "#f5f3ff",
     icon: <Cpu style={{ width: 24, height: 24 }} />,
-    img: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&q=80",
+    img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80",
     desc: "Full physical implementation from floorplanning through detailed routing — optimized for timing closure, power and signal integrity.",
     points: [
       { label: "Floorplanning & Power Planning", sub: "PDN, macro placement, voltage domains" },
@@ -55,7 +55,7 @@ const PHASES = [
     color: "#0891b2",
     bg: "#ecfeff",
     icon: <Zap style={{ width: 24, height: 24 }} />,
-    img: "https://images.unsplash.com/photo-1601132359864-c974e79890ac?w=600&q=80",
+    img: "https://images.unsplash.com/photo-1543727166-222902a0c7d2?w=600&q=80",
     desc: "Comprehensive sign-off analysis covering timing, power, reliability and physical verification — ensuring first-pass tape-out success.",
     points: [
       { label: "STA Sign-Off",         sub: "Multi-corner multi-mode timing closure" },
@@ -187,14 +187,20 @@ function DetailPanel({ phase, inView }) {
         transition={{ duration: 0.45, ease: EASE }}
         style={{
           display: "grid", gridTemplateColumns: "1fr 1.1fr",
-          gap: 24, alignItems: "start",
+          gap: 24,
+          /* KEY: stretch both columns to the same height */
+          alignItems: "stretch",
         }}
       >
-        {/* LEFT — Image + output chips */}
-        <div>
+        {/* LEFT — Image + output chips, full-height flex column */}
+        <div style={{ display: "flex", flexDirection: "column" }}>
+
+          {/* Image — grows to fill whatever height the right card needs */}
           <div style={{
             borderRadius: 20, overflow: "hidden",
-            position: "relative", height: 260,
+            position: "relative",
+            flex: 1,                        /* ← fills remaining height */
+            minHeight: 300,                 /* ← never collapses too small */
             boxShadow: `0 16px 48px ${phase.color}20`,
           }}>
             <img src={phase.img} alt={phase.title}
@@ -224,8 +230,8 @@ function DetailPanel({ phase, inView }) {
             </div>
           </div>
 
-          {/* Output chips */}
-          <div style={{ marginTop: 14, display: "flex", gap: 10 }}>
+          {/* Output chips — pinned to bottom, never stretches */}
+          <div style={{ marginTop: 14, display: "flex", gap: 10, flexShrink: 0 }}>
             {phase.outputs.map((out, i) => (
               <motion.div
                 key={out}
