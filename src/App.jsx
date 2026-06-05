@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 // Pages
 import HomePage from "./pages/HomePage";
 import CompanyPage from "./pages/CompanyPage";
+import CareerPage from "./pages/CareerPage";
 
 // Feature Routes
 const SolutionsRoutes = lazy(() => import("./routes/SolutionsRoutes"));
@@ -29,6 +30,7 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/solutions/*" element={<SolutionsRoutes />} />
             <Route path="/company" element={<CompanyPage />} />
+            <Route path="/careers" element={<CareerPage />} />
           </Routes>
         </Suspense>
       </div>
