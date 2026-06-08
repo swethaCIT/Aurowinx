@@ -100,7 +100,7 @@ export default function Hero() {
           zIndex: 0,
         }}
       >
-        <source src="/videos/hero-3.mp4" type="video/mp4" />
+        <source src="/videos/Careers.mp4" type="video/mp4" />
         {/* swap to your career video when ready — same path convention */}
       </video>
 

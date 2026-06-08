@@ -1,3 +1,5 @@
+// src/routes/SolutionsRoutes.jsx
+
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
@@ -12,7 +14,6 @@ export default function SolutionsRoutes() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center">Loading...</div>}>
       <Routes>
-        {/* These paths are relative to the parent "/solutions/*" route */}
         <Route path="semiconductor-design" element={<SemiconductorDesignPage />} />
         <Route path="design-verification"  element={<DesignVerificationPage />} />
         <Route path="dft-engineering"      element={<DFTEngineeringPage />} />

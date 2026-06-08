@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import SDHero from "../../components/solutions/semiconductor/SDHero";
 
-const SDTicker = lazy(() => import("../../components/solutions/semiconductor/SDTicker"));
 const SDMetrics = lazy(() => import("../../components/solutions/semiconductor/SDMetrics"));
 const SDProcessFlow = lazy(() => import("../../components/solutions/semiconductor/SDProcessFlow"));
 const SDCapabilities = lazy(() => import("../../components/solutions/semiconductor/SDCapabilities"));
@@ -15,7 +14,6 @@ export default function SemiconductorDesignPage() {
   return (
     <div className="min-h-screen overflow-x-hidden">
       <SDHero />
-      <Suspense fallback={<div style={{ minHeight: 160 }} />}><SDTicker /></Suspense>
       <Suspense fallback={<div style={{ minHeight: 220 }} />}><SDMetrics /></Suspense>
       <Suspense fallback={<div style={{ minHeight: 260 }} />}><SDProcessFlow /></Suspense>
       <Suspense fallback={<div style={{ minHeight: 260 }} />}><SDCapabilities /></Suspense>
