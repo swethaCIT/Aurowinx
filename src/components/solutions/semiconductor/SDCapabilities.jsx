@@ -546,8 +546,7 @@ function Spotlight({ cap, inView }) {
 // ─────────────────────────────────────────────
 // Mobile accordion — for < 768px
 // ─────────────────────────────────────────────
-function MobileAccordion({ cap, inView }) {
-  const [open, setOpen] = useState(false);
+function MobileAccordion({ cap, inView, open, onToggle }) {
   const Icon = cap.icon;
 
   return (
@@ -567,7 +566,7 @@ function MobileAccordion({ cap, inView }) {
     >
       {/* Header row */}
       <button
-        onClick={() => setOpen(v => !v)}
+        onClick={onToggle}
         style={{
           all: "unset",
           display: "flex",
@@ -663,11 +662,12 @@ export default function SDCapabilities() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [active, setActive] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isCompact, setIsCompact] = useState(false);
+  const [openAccordion, setOpenAccordion] = useState(0);
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 768px)");
-    const handler = () => setIsMobile(mq.matches);
+    const mq = window.matchMedia("(max-width: 1024px)");
+    const handler = () => setIsCompact(mq.matches);
     handler();
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
@@ -710,7 +710,7 @@ export default function SDCapabilities() {
       <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 1 }}>
 
         {/* ── HEADER: left-aligned, editorial ── */}
-        <div style={{
+        <div className="sd-caps-header-grid" style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: 32,
@@ -772,8 +772,8 @@ export default function SDCapabilities() {
             }}>
               Full-spectrum ASIC expertise under one roof — from RTL to GDSII, verification to tape-out.
             </p>
-            {/* Capability count strip */}
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {/* Capability count strip — hidden on compact (accordion has its own headers) */}
+            <div className="sd-caps-index-pills" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               {CAPS.map(c => {
                 const Icon = c.icon;
                 return (
@@ -805,16 +805,20 @@ export default function SDCapabilities() {
           </motion.div>
         </div>
 
-        {/* ── BODY: desktop 2-col / mobile accordion ── */}
-        {isMobile ? (
-          // Mobile: stacked accordions
+        {/* BODY: desktop 2-col / compact accordion */}
+        {isCompact ? (
           <div>
             {CAPS.map(cap => (
-              <MobileAccordion key={cap.id} cap={cap} inView={inView} />
+              <MobileAccordion
+                key={cap.id}
+                cap={cap}
+                inView={inView}
+                open={openAccordion === cap.id}
+                onToggle={() => setOpenAccordion(openAccordion === cap.id ? -1 : cap.id)}
+              />
             ))}
           </div>
         ) : (
-          // Desktop: process strip left + spotlight right
           <div className="sd-caps-desktop-grid" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1.05fr",
@@ -884,20 +888,22 @@ export default function SDCapabilities() {
         }
         @media (max-width: 960px) {
           .sd-caps-section {
-            padding: 56px 28px 64px !important;
+            padding: 48px 28px 52px !important;
           }
-          .sd-caps-desktop-grid {
-            grid-template-columns: 1fr !important;
-            gap: 20px !important;
+          .sd-caps-header-grid {
+            margin-bottom: 32px !important;
           }
         }
         @media (max-width: 768px) {
           .sd-caps-section {
-            padding: 44px 16px 52px !important;
+            padding: 40px 16px 44px !important;
           }
-          section[aria-label="AurowinX ASIC capabilities"] > div > div:first-child {
+          .sd-caps-header-grid {
             grid-template-columns: 1fr !important;
-            gap: 20px !important;
+            gap: 16px !important;
+          }
+          .sd-caps-index-pills {
+            display: none !important;
           }
         }
       `}</style>

@@ -263,6 +263,7 @@ export default function SDHero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.38 }}
+          className="sol-hero-pills"
           style={{
             display: "flex",
             flexWrap: "wrap",
@@ -274,6 +275,7 @@ export default function SDHero() {
           {PILLS.map((p, i) => (
             <motion.span
               key={p}
+              data-pill-index={i}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.42 + i * 0.07, ease: EASE }}
@@ -336,12 +338,14 @@ export default function SDHero() {
           }}
         >
           <Activity style={{ width: 13, height: 13, color: "#4ade80" }} />
-          <span>Trusted by Qualcomm · TI · ISRO · MediaTek · Samsung · Marvell</span>
+          <span className="sol-hero-trust-line">Trusted by Tier-1 silicon teams worldwide</span>
+          <span className="sol-hero-trust-full">Trusted by Qualcomm · TI · ISRO · MediaTek · Samsung · Marvell</span>
         </motion.p>
       </div>
 
       {/* ── SCROLL INDICATOR ── */}
       <motion.div
+        className="sol-hero-scroll-cue"
         animate={{ y: [0, 8, 0] }}
         transition={{ duration: 2.2, repeat: Infinity }}
         style={{
@@ -376,7 +380,7 @@ export default function SDHero() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.70 }}
-        className="sol-hero-stats"
+        className="sol-hero-stats sol-hero-stats-grid"
         style={{
           position: "absolute",
           bottom: 0, left: 0, right: 0,
@@ -431,41 +435,101 @@ export default function SDHero() {
       </motion.div>
 
       <style>{`
+        .sol-hero-trust-line { display: none; }
+        .sol-hero-trust-full { display: inline; }
+
         @media (max-width: 960px) {
           .sol-hero-section {
             padding-bottom: 0px !important;
             min-height: auto !important;
             padding-top: 80px !important;
           }
-          .sol-hero-stats {
-            grid-template-columns: repeat(2, 1fr) !important;
-            position: relative !important;
-            margin-top: 40px;
+          .sol-hero-scroll-cue {
+            display: none !important;
           }
-          .sol-hero-stat-item {
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            padding: 16px 12px !important;
+          .sol-hero-trust-line { display: inline; }
+          .sol-hero-trust-full { display: none; }
+          .sol-hero-pills [data-pill-index="3"],
+          .sol-hero-pills [data-pill-index="4"] {
+            display: none;
           }
-          .sol-hero-stat-item:nth-child(even) {
-            border-right: none !important;
+          .sol-hero-stats-grid {
+            display: none !important;
           }
-          .sol-hero-stat-item:nth-child(3), .sol-hero-stat-item:nth-child(4) {
-            border-bottom: none !important;
+          .sol-hero-stats-scroll {
+            display: flex !important;
           }
         }
         @media (max-width: 480px) {
-          .sol-hero-stats {
-            grid-template-columns: 1fr !important;
-          }
-          .sol-hero-stat-item {
-            border-right: none !important;
-            border-bottom: 1px solid rgba(255,255,255,0.06) !important;
-          }
-          .sol-hero-stat-item:last-child {
-            border-bottom: none !important;
+          .sol-hero-pills [data-pill-index="2"] {
+            display: none;
           }
         }
       `}</style>
+
+      {/* Mobile: horizontal swipe stat strip */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.70 }}
+        className="sol-hero-stats sol-hero-stats-scroll"
+        style={{
+          display: "none",
+          position: "relative",
+          zIndex: 3,
+          marginTop: 32,
+          width: "100%",
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none",
+          gap: 10,
+          padding: "0 16px 4px",
+        }}
+      >
+        {[
+          { value: "200+", label: "Tape-outs Delivered"  },
+          { value: "28nm", label: "Advanced Process Node" },
+          { value: "12+",  label: "Years of Expertise"   },
+          { value: "E2E",  label: "Full Ownership"        },
+        ].map((s) => (
+          <div
+            key={s.label}
+            className="sol-hero-stat-item"
+            style={{
+              flex: "0 0 72%",
+              scrollSnapAlign: "start",
+              padding: "18px 16px",
+              textAlign: "center",
+              background: "rgba(0,0,0,0.48)",
+              backdropFilter: "blur(20px)",
+              borderRadius: 14,
+              border: "1px solid rgba(255,255,255,0.07)",
+            }}
+          >
+            <p style={{
+              margin: 0,
+              fontSize: "clamp(1.4rem, 2.5vw, 1.9rem)",
+              fontWeight: 900,
+              color: "#fff",
+              letterSpacing: "-0.04em",
+              fontFamily: FONT,
+            }}>
+              {s.value}
+            </p>
+            <p style={{
+              margin: "4px 0 0",
+              fontSize: 11,
+              color: "rgba(148,163,184,0.50)",
+              fontWeight: 600,
+              letterSpacing: "0.07em",
+              textTransform: "uppercase",
+            }}>
+              {s.label}
+            </p>
+          </div>
+        ))}
+      </motion.div>
     </section>
   );
 }

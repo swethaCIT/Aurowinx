@@ -213,6 +213,7 @@ export default function SDFAQ() {
         <motion.div
           initial={{ opacity: 0, y: 10 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.15, ease: EASE }}
+          className="sd-faq-cats"
           style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginBottom: 32 }}
         >
           {CATEGORIES.map((cat, i) => (
@@ -268,9 +269,32 @@ export default function SDFAQ() {
         .sd-faq-section {
           padding: 72px 48px 64px;
         }
+        @media (max-width: 960px) {
+          .sd-faq-section {
+            padding: 48px 24px 52px !important;
+          }
+        }
         @media (max-width: 768px) {
           .sd-faq-section {
-            padding: 44px 16px 52px !important;
+            padding: 40px 16px 44px !important;
+          }
+          .sd-faq-cats {
+            flex-wrap: nowrap !important;
+            justify-content: flex-start !important;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            margin-left: -16px;
+            margin-right: -16px;
+            padding: 0 16px 4px;
+          }
+          .sd-faq-cats::-webkit-scrollbar { display: none; }
+          .sd-faq-cats > button {
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            padding: 6px 14px !important;
+            font-size: 11px !important;
           }
         }
       `}</style>

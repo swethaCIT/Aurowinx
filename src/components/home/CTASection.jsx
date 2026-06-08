@@ -527,8 +527,10 @@ const CSS = `
   .footer-socials { display: flex; gap: 10px; }
 
   .sec-pad { padding: 88px 48px 72px; }
+  .sec-pad-compact { padding: 48px 48px 40px; }
   .img-pad { padding: 0 48px 72px; }
   .con-pad { padding: 0 48px 72px; }
+  .con-pad-compact { padding: 0 48px 48px; }
 
   @media (max-width: 1100px) {
     .hero-grid    { grid-template-columns: 1fr; gap: 36px; min-height: unset; }
@@ -553,8 +555,10 @@ const CSS = `
     .footer-top   { grid-template-columns: 1fr 1fr; gap: 28px; padding: 40px 20px 32px; }
     .footer-bottom { flex-direction: column; align-items: flex-start; padding: 16px 20px 22px; }
     .sec-pad { padding: 52px 20px 44px; }
+    .sec-pad-compact { padding: 36px 20px 28px; }
     .img-pad { padding: 0 20px 44px; }
     .con-pad { padding: 0 20px 44px; }
+    .con-pad-compact { padding: 0 20px 32px; }
   }
 
   @media (max-width: 480px) {
@@ -570,7 +574,7 @@ const CSS = `
 /* ════════════════════════════════════════════════════════
    MAIN EXPORT
 ════════════════════════════════════════════════════════ */
-export default function CTASection() {
+export default function CTASection({ compact = false }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
@@ -603,7 +607,7 @@ export default function CTASection() {
           filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
 
         {/* ════ HERO ════ */}
-        <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 2 }} className="sec-pad">
+        <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 2 }} className={compact ? "sec-pad-compact" : "sec-pad"}>
           <div className="hero-grid">
 
             {/* LEFT */}
@@ -693,6 +697,7 @@ export default function CTASection() {
             </motion.div>
 
             {/* RIGHT — chip canvas */}
+            {!compact && (
             <div className="canvas-wrap">
               <div style={{ position: "absolute", inset: 0, borderRadius: 24,
                 background: "linear-gradient(145deg,#e8f0fe 0%,#eef9ff 45%,#f0ecff 100%)",
@@ -728,11 +733,13 @@ export default function CTASection() {
                 </motion.div>
               </motion.div>
             </div>
+            )}
 
           </div>
         </div>
 
         {/* ════ IMAGE MOSAIC ════ */}
+        {!compact && (
         <motion.div style={{ y: parallaxY }}>
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="img-pad">
             <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.28 }}
@@ -747,9 +754,10 @@ export default function CTASection() {
             </div>
           </div>
         </motion.div>
+        )}
 
         {/* ════ CONTACT STRIP ════ */}
-        <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 2 }} className="con-pad">
+        <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 2 }} className={compact ? "con-pad-compact" : "con-pad"}>
           <div className="contact-grid">
             {[
               { icon: "⚡", label: "Start a Project", sub: "Tell us what you're building", href: "/contact",                accent: "#3b82f6" },

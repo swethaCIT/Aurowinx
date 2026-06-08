@@ -55,16 +55,17 @@ const CATEGORY_META = {
 /* ── Floating tool bubble ── */
 function ToolBubble({ tool, i, inView }) {
   const [hovered, setHovered] = useState(false);
+  const [tapped, setTapped] = useState(false);
   const isPrimary = tool.tier === "primary";
   const size = isPrimary ? 72 : 56;
+  const showLabel = hovered || tapped;
 
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0 }}
-      animate={inView ? { opacity: 1, scale: 1 } : {}}
-      transition={{ duration: 0.45, delay: i * 0.04, ease: [0.34, 1.56, 0.64, 1] }}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
+      onClick={() => setTapped(v => !v)}
       animate={inView ? {
         opacity: 1, scale: 1,
         y: [0, -(4 + (i % 3) * 3), 0],
@@ -74,7 +75,7 @@ function ToolBubble({ tool, i, inView }) {
         scale: { duration: 0.45, delay: i * 0.04, ease: [0.34, 1.56, 0.64, 1] },
         y: { duration: 3 + (i % 4), delay: i * 0.15, repeat: Infinity, ease: "easeInOut" },
       }}
-      style={{ position: "relative", cursor: "default" }}
+      style={{ position: "relative", cursor: "pointer", flexShrink: 0 }}
     >
       <motion.div
         animate={{
@@ -104,9 +105,9 @@ function ToolBubble({ tool, i, inView }) {
         </span>
       </motion.div>
 
-      {/* Tooltip */}
+      {/* Tooltip / tap label */}
       <AnimatePresence>
-        {hovered && (
+        {showLabel && (
           <motion.div
             initial={{ opacity: 0, y: 6, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -134,6 +135,23 @@ function ToolBubble({ tool, i, inView }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Mobile: persistent label below bubble */}
+      <span className="sd-tool-mobile-label" style={{
+        display: "none",
+        position: "absolute",
+        top: "100%",
+        left: "50%",
+        transform: "translateX(-50%)",
+        marginTop: 6,
+        fontSize: 9,
+        fontWeight: 700,
+        color: C.textMuted,
+        whiteSpace: "nowrap",
+        fontFamily: FONT,
+      }}>
+        {tool.abbr}
+      </span>
     </motion.div>
   );
 }
@@ -230,19 +248,24 @@ export default function SDTools() {
           </p>
         </motion.div>
 
-        {/* Category cards */}
+        {/* Category cards — horizontal scroll on mobile */}
         <div
-          className="sd-tools-cats-grid"
-          style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10, marginBottom: 36 }}
+          className="sd-tools-cats-scroll"
+          style={{ marginBottom: 36 }}
         >
-          {Object.entries(CATEGORY_META).map(([cat, meta], i) => (
-            <CategoryCard
-              key={cat} cat={cat} meta={meta}
-              count={meta.count} active={active}
-              onClick={() => setActive(active === cat ? "All" : cat)}
-              inView={inView} i={i}
-            />
-          ))}
+          <div
+            className="sd-tools-cats-grid"
+            style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10 }}
+          >
+            {Object.entries(CATEGORY_META).map(([cat, meta], i) => (
+              <CategoryCard
+                key={cat} cat={cat} meta={meta}
+                count={meta.count} active={active}
+                onClick={() => setActive(active === cat ? "All" : cat)}
+                inView={inView} i={i}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Tools bubble wall */}
@@ -274,6 +297,7 @@ export default function SDTools() {
                 gap: 16, alignItems: "center", justifyContent: "center",
                 position: "relative", zIndex: 1,
               }}
+              className="sd-tools-bubble-wall"
             >
               {filtered.map((tool, i) => (
                 <ToolBubble key={tool.name} tool={tool} i={i} inView={inView} />
@@ -299,6 +323,7 @@ export default function SDTools() {
         <motion.div
           initial={{ opacity: 0, y: 14 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.6, ease: EASE }}
+          className="sd-tools-method-strip"
           style={{
             marginTop: 20, display: "flex", flexWrap: "wrap",
             gap: 8, justifyContent: "center",
@@ -330,23 +355,66 @@ export default function SDTools() {
           padding: 72px 48px 64px;
         }
         @media (max-width: 900px) {
+          .sd-tools-section {
+            padding: 48px 24px 52px !important;
+          }
           .sd-tools-cats-grid {
             grid-template-columns: repeat(3, 1fr) !important;
           }
         }
         @media (max-width: 768px) {
           .sd-tools-section {
-            padding: 44px 16px 52px !important;
+            padding: 40px 16px 44px !important;
           }
-        }
-        @media (max-width: 600px) {
-          .sd-tools-cats-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
+          .sd-tools-cats-scroll {
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            margin-left: -16px;
+            margin-right: -16px;
+            padding: 0 16px 4px;
           }
-        }
-        @media (max-width: 400px) {
+          .sd-tools-cats-scroll::-webkit-scrollbar { display: none; }
           .sd-tools-cats-grid {
-            grid-template-columns: 1fr !important;
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            gap: 8px !important;
+            min-width: min-content;
+          }
+          .sd-tools-cats-grid > button {
+            flex: 0 0 140px;
+            scroll-snap-align: start;
+          }
+          .sd-tools-bubble-wall {
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            justify-content: flex-start !important;
+            padding: 8px 4px 28px;
+            gap: 20px !important;
+          }
+          .sd-tools-bubble-wall::-webkit-scrollbar { display: none; }
+          .sd-tools-bubble-wall > div {
+            scroll-snap-align: center;
+          }
+          .sd-tool-mobile-label {
+            display: block !important;
+          }
+          .sd-tools-method-strip {
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            justify-content: flex-start !important;
+            scrollbar-width: none;
+            margin-left: -16px;
+            margin-right: -16px;
+            padding: 0 16px;
+          }
+          .sd-tools-method-strip::-webkit-scrollbar { display: none; }
+          .sd-tools-method-strip > span {
+            flex-shrink: 0;
           }
         }
       `}</style>

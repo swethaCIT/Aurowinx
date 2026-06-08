@@ -116,6 +116,7 @@ function DomainStrip({ active, onChange }) {
     <div
       role="tablist"
       aria-label="Select testimonial"
+      className="sd-testimonial-domain-strip"
       style={{
         display: "flex",
         gap: 0,
@@ -411,7 +412,7 @@ export default function SDTestimonials() {
               lineHeight: 1.8, margin: "0 0 20px", maxWidth: 360,
             }}>
               Engineers and architects at leading semiconductor companies share
-              their experience working with AurowinX on analog IP.
+              their experience working with AurowinX on ASIC delivery.
             </p>
             {/* Domain strip nav */}
             <DomainStrip active={active} onChange={pick} />
@@ -432,7 +433,7 @@ export default function SDTestimonials() {
           }}
         >
           {/* Top accent line — progress bar */}
-          <div style={{
+          <div className="sd-testimonial-progress-row" style={{
             background: "#fff",
             borderBottom: `1px solid ${C.borderLight}`,
             padding: "14px 36px",
@@ -683,7 +684,7 @@ export default function SDTestimonials() {
       {/* Responsive styles */}
       <style>{`
         .sd-testimonials-section {
-          padding: clamp(64px, 8vw, 112px) clamp(20px, 5vw, 60px);
+          padding: clamp(48px, 6vw, 88px) clamp(20px, 5vw, 60px);
         }
         @media (max-width: 860px) {
           section[aria-label="Client testimonials"] > div > div:first-child {
@@ -696,7 +697,7 @@ export default function SDTestimonials() {
         }
         @media (max-width: 680px) {
           .sd-testimonials-section {
-            padding: 44px 16px 52px !important;
+            padding: 40px 16px 44px !important;
           }
           .sd-testimonial-body-grid {
             grid-template-columns: 1fr !important;
@@ -705,12 +706,28 @@ export default function SDTestimonials() {
             display: none !important;
           }
           .sd-testimonial-bottom-strip {
-            grid-template-columns: repeat(2, 1fr) !important;
+            display: none !important;
           }
-        }
-        @media (max-width: 400px) {
-          .sd-testimonial-bottom-strip {
-            grid-template-columns: 1fr !important;
+          .sd-testimonial-domain-strip {
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+          }
+          .sd-testimonial-domain-strip::-webkit-scrollbar { display: none; }
+          .sd-testimonial-domain-strip button {
+            flex: 0 0 auto;
+            min-width: 72px;
+            scroll-snap-align: start;
+          }
+          .sd-testimonial-progress-row {
+            flex-wrap: wrap;
+            padding: 12px 16px !important;
+            gap: 10px !important;
+          }
+          .sd-testimonial-progress-row > div:nth-child(2) {
+            order: 3;
+            flex: 1 1 100%;
           }
         }
       `}</style>

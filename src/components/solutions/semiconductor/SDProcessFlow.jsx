@@ -86,7 +86,7 @@ const STAGES = [
 /* ── Progress pipeline strip ── */
 function Pipeline({ active, stages, onSelect, inView }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: 28, overflowX: "auto", paddingBottom: 4 }}>
+    <div className="sd-flow-pipeline" style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: 28, overflowX: "auto", paddingBottom: 4, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
       {stages.map((s, i) => (
         <div key={s.num} style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
           <motion.button
@@ -363,20 +363,31 @@ export default function SDProcessFlow() {
         .sd-flow-section {
           padding: 72px 48px 64px;
         }
+        .sd-flow-pipeline {
+          scrollbar-width: none;
+          mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+        }
+        .sd-flow-pipeline::-webkit-scrollbar { display: none; }
+        .sd-flow-pipeline > div { scroll-snap-align: center; }
         @media (max-width: 960px) {
           .sd-flow-section {
-            padding: 56px 24px 64px !important;
+            padding: 48px 24px 52px !important;
           }
         }
-        @media (max-width: 768px) {
-          .sd-flow-section {
-            padding: 44px 16px 52px !important;
-          }
+        @media (max-width: 900px) {
           .sd-flow-detail-grid {
             grid-template-columns: 1fr !important;
           }
           .sd-flow-img-container {
-            min-height: 240px !important;
+            min-height: 200px !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .sd-flow-section {
+            padding: 40px 16px 44px !important;
+          }
+          .sd-flow-img-container {
+            min-height: 180px !important;
           }
         }
       `}</style>

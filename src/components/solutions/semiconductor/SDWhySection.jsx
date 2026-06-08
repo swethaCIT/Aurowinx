@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import {
   Shield, Zap, TrendingUp, Users, Award, Clock,
@@ -143,8 +143,57 @@ function ReasonTab({ reason, active, onClick, i, inView }) {
   );
 }
 
+/* ── Horizontal tab strip (tablet / mobile) ── */
+function ReasonTabStrip({ active, onSelect }) {
+  return (
+    <div className="sd-why-tabstrip" role="tablist" aria-label="Why AurowinX reasons">
+      {REASONS.map((reason) => {
+        const isActive = active === reason.id;
+        return (
+          <button
+            key={reason.id}
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => onSelect(reason.id)}
+            style={{
+              all: "unset",
+              flexShrink: 0,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "10px 14px",
+              borderRadius: 12,
+              cursor: "pointer",
+              background: isActive ? "#fff" : "transparent",
+              border: `1.5px solid ${isActive ? reason.color + "40" : C.borderLight}`,
+              boxShadow: isActive ? C.shadowSm : "none",
+              transition: "all 0.2s",
+            }}
+          >
+            <div style={{
+              width: 28, height: 28, borderRadius: 8, flexShrink: 0,
+              background: isActive ? reason.bg : C.bgSoft,
+              color: isActive ? reason.color : C.textMuted,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              {reason.icon}
+            </div>
+            <span style={{
+              fontFamily: FONT, fontSize: 12, fontWeight: 700,
+              color: isActive ? C.textPrimary : C.textSecondary,
+              whiteSpace: "nowrap",
+            }}>
+              {reason.title}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ── Detail panel ── */
-function DetailView({ reason }) {
+function DetailView({ reason, compact }) {
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -160,7 +209,7 @@ function DetailView({ reason }) {
         }}
       >
         {/* Image header */}
-        <div style={{ position: "relative", height: 240, overflow: "hidden" }}>
+        <div className="sd-why-detail-img" style={{ position: "relative", height: 240, overflow: "hidden" }}>
           <motion.img
             src={reason.img} alt={reason.title}
             initial={{ scale: 1.06 }} animate={{ scale: 1 }}
@@ -234,12 +283,33 @@ function DetailView({ reason }) {
             ))}
           </div>
 
+          {/* Inline quick stats on compact */}
+          {compact && (
+            <div className="sd-why-inline-stats" style={{
+              display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16,
+            }}>
+              {[
+                { val: "99%+", label: "Retention" },
+                { val: "0", label: "Escapes" },
+                { val: "12+", label: "Years" },
+              ].map(s => (
+                <span key={s.label} style={{
+                  padding: "6px 12px", borderRadius: 50,
+                  background: reason.bg, border: `1px solid ${reason.color}20`,
+                  fontSize: 11, fontWeight: 700, color: C.textPrimary,
+                }}>
+                  <span style={{ color: reason.color }}>{s.val}</span> {s.label}
+                </span>
+              ))}
+            </div>
+          )}
+
           {/* CTA */}
           <motion.a
             href="/contact" whileHover={{ x: 4 }}
             style={{
               display: "inline-flex", alignItems: "center", gap: 8,
-              marginTop: 18, padding: "10px 20px", borderRadius: 50,
+              marginTop: compact ? 0 : 18, padding: "10px 20px", borderRadius: 50,
               background: reason.color, color: "#fff",
               fontWeight: 700, fontSize: 13, textDecoration: "none",
               boxShadow: `0 6px 20px ${reason.color}35`, fontFamily: FONT,
@@ -290,6 +360,15 @@ export default function SDWhySection() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [active, setActive] = useState(0);
+  const [compact, setCompact] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const handler = () => setCompact(mq.matches);
+    handler();
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   return (
     <section
@@ -314,6 +393,7 @@ export default function SDWhySection() {
         <motion.div
           initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, ease: EASE }}
+          className="sd-why-header"
           style={{ textAlign: "center", marginBottom: 48 }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 12 }}>
@@ -329,11 +409,14 @@ export default function SDWhySection() {
           </p>
         </motion.div>
 
+        {/* Horizontal tabs — tablet / mobile */}
+        <ReasonTabStrip active={active} onSelect={setActive} />
+
         {/* 3-col layout: tabs | detail | side */}
         <div className="sd-why-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr 0.8fr", gap: 20, alignItems: "start" }}>
 
-          {/* LEFT — Tab list */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {/* LEFT — Tab list (desktop only) */}
+          <div className="sd-why-tabs-vertical" style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {REASONS.map((reason, i) => (
               <ReasonTab
                 key={reason.id} reason={reason} active={active}
@@ -343,10 +426,10 @@ export default function SDWhySection() {
           </div>
 
           {/* MIDDLE — Detail view */}
-          <DetailView reason={REASONS[active]} />
+          <DetailView reason={REASONS[active]} compact={compact} />
 
           {/* RIGHT — Side panel */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div className="sd-why-side-panel" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
 
             {/* Review badge */}
             <ReviewBadge inView={inView} />
@@ -419,21 +502,50 @@ export default function SDWhySection() {
         .sd-why-section {
           padding: 72px 48px 64px;
         }
-        @media (max-width: 990px) {
-          .sd-why-section {
-            padding: 56px 24px 64px !important;
+        .sd-why-tabstrip {
+          display: none;
+        }
+        @media (max-width: 1024px) {
+          .sd-why-tabs-vertical {
+            display: none !important;
           }
+          .sd-why-tabstrip {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            margin-bottom: 20px;
+            padding-bottom: 4px;
+          }
+          .sd-why-tabstrip::-webkit-scrollbar { display: none; }
+          .sd-why-tabstrip > button { scroll-snap-align: start; }
           .sd-why-grid {
             grid-template-columns: 1fr !important;
-            gap: 24px !important;
+            gap: 0 !important;
+          }
+          .sd-why-header {
+            margin-bottom: 28px !important;
+          }
+        }
+        @media (max-width: 990px) {
+          .sd-why-section {
+            padding: 48px 24px 52px !important;
           }
         }
         @media (max-width: 768px) {
           .sd-why-section {
-            padding: 44px 16px 52px !important;
+            padding: 40px 16px 44px !important;
+          }
+          .sd-why-side-panel {
+            display: none !important;
+          }
+          .sd-why-detail-img {
+            height: 160px !important;
           }
         }
-        @media (max-width: 480px) {
+        @media (max-width: 640px) {
           .sd-why-proof-grid {
             grid-template-columns: 1fr !important;
           }

@@ -21,7 +21,7 @@ export default function SemiconductorDesignPage() {
       <Suspense fallback={<div style={{ minHeight: 260 }} />}><SDTools /></Suspense>
       <Suspense fallback={<div style={{ minHeight: 260 }} />}><SDTestimonials /></Suspense>
       <Suspense fallback={<div style={{ minHeight: 260 }} />}><SDFAQ /></Suspense>
-      <Suspense fallback={<div style={{ minHeight: 260 }} />}><CTASection /></Suspense>
+      <Suspense fallback={<div style={{ minHeight: 260 }} />}><CTASection compact /></Suspense>
     </div>
   );
 }

@@ -427,6 +427,7 @@ export default function SDMetrics() {
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.5, ease: EASE }}
+          className="sd-metrics-header-row"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr auto",
@@ -507,9 +508,18 @@ export default function SDMetrics() {
         </motion.div>
 
         {/* ── ROW 1: Big stat cells (grid-seam layout) ── */}
-        <div className="sd-metrics-grid" style={gridSeamStyle}>
+        <div className="sd-metrics-grid sd-metrics-grid-desktop" style={gridSeamStyle}>
           {BIG_STATS.map((s, i) => (
             <StatCell key={s.label} s={s} i={i} inView={inView} />
+          ))}
+        </div>
+
+        {/* Mobile: horizontal swipe carousel */}
+        <div className="sd-metrics-carousel">
+          {BIG_STATS.map((s, i) => (
+            <div key={s.label} className="sd-metrics-carousel-slide">
+              <StatCell s={s} i={i} inView={inView} />
+            </div>
           ))}
         </div>
 
@@ -706,31 +716,33 @@ export default function SDMetrics() {
           padding: 72px 48px 80px;
         }
 
+        .sd-metrics-carousel {
+          display: none;
+        }
+
         /* ── Responsive breakpoints ── */
 
-        /* Tablet: stack big row 2+2, keep bottom 2-col */
         @media (max-width: 960px) {
           .sd-metrics-section {
-            padding: 52px 28px 64px !important;
+            padding: 48px 28px 52px !important;
           }
         }
 
         @media (max-width: 900px) {
-          .sd-metrics-grid {
+          .sd-metrics-grid-desktop {
             grid-template-columns: 1fr 1fr !important;
           }
         }
 
-        /* Narrow tablet: full-stack */
         @media (max-width: 820px) {
-          section[aria-label="AurowinX performance metrics"] > div > div:nth-child(2) {
-            /* header */
+          .sd-metrics-header-row {
             grid-template-columns: 1fr !important;
+            margin-bottom: 28px !important;
           }
-          section[aria-label="AurowinX performance metrics"] > div > div:nth-child(2) > div:last-child {
+          .sd-metrics-header-row > div:last-child {
             text-align: left;
           }
-          section[aria-label="AurowinX performance metrics"] > div > div:nth-child(2) > div:last-child p {
+          .sd-metrics-header-row > div:last-child p {
             margin-left: 0;
           }
         }
@@ -741,16 +753,36 @@ export default function SDMetrics() {
           }
         }
 
-        /* Mobile: single column everywhere */
         @media (max-width: 680px) {
           .sd-metrics-section {
-            padding: 40px 16px 52px !important;
+            padding: 40px 16px 44px !important;
           }
         }
 
         @media (max-width: 560px) {
-          .sd-metrics-grid {
-            grid-template-columns: 1fr !important;
+          .sd-metrics-grid-desktop {
+            display: none !important;
+          }
+          .sd-metrics-carousel {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            margin-bottom: 20px;
+            padding-bottom: 4px;
+          }
+          .sd-metrics-carousel::-webkit-scrollbar { display: none; }
+          .sd-metrics-carousel-slide {
+            flex: 0 0 82%;
+            scroll-snap-align: start;
+            border-radius: 20;
+            overflow: hidden;
+            border: 1.5px solid ${C.borderLight};
+          }
+          .sd-metrics-carousel-slide > div {
+            border-radius: 20px !important;
           }
         }
       `}</style>
