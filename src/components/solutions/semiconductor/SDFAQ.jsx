@@ -174,9 +174,9 @@ export default function SDFAQ() {
   return (
     <section
       ref={ref}
+      className="sd-faq-section"
       style={{
         background: "linear-gradient(160deg, #f8fafc 0%, #f1f5f9 100%)",
-        padding: "72px 48px 64px",
         position: "relative", overflow: "hidden", fontFamily: FONT,
       }}
     >
@@ -263,6 +263,17 @@ export default function SDFAQ() {
         </div>
 
       </div>
+
+      <style>{`
+        .sd-faq-section {
+          padding: 72px 48px 64px;
+        }
+        @media (max-width: 768px) {
+          .sd-faq-section {
+            padding: 44px 16px 52px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

@@ -195,9 +195,9 @@ export default function SDTools() {
   return (
     <section
       ref={ref}
+      className="sd-tools-section"
       style={{
         background: "linear-gradient(160deg, #f8fafc 0%, #f1f5f9 100%)",
-        padding: "72px 48px 64px",
         position: "relative", overflow: "hidden", fontFamily: FONT,
       }}
     >
@@ -231,7 +231,10 @@ export default function SDTools() {
         </motion.div>
 
         {/* Category cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10, marginBottom: 36 }}>
+        <div
+          className="sd-tools-cats-grid"
+          style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10, marginBottom: 36 }}
+        >
           {Object.entries(CATEGORY_META).map(([cat, meta], i) => (
             <CategoryCard
               key={cat} cat={cat} meta={meta}
@@ -321,6 +324,32 @@ export default function SDTools() {
         </motion.div>
 
       </div>
+
+      <style>{`
+        .sd-tools-section {
+          padding: 72px 48px 64px;
+        }
+        @media (max-width: 900px) {
+          .sd-tools-cats-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .sd-tools-section {
+            padding: 44px 16px 52px !important;
+          }
+        }
+        @media (max-width: 600px) {
+          .sd-tools-cats-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (max-width: 400px) {
+          .sd-tools-cats-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

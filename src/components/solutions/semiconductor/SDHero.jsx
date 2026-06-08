@@ -85,6 +85,7 @@ export default function SDHero() {
   return (
     <section
       id="sd-hero"
+      className="sol-hero-section"
       style={{
         position: "relative",
         minHeight: "100vh",
@@ -330,10 +331,12 @@ export default function SDHero() {
             alignItems: "center",
             gap: 6,
             justifyContent: "center",
+            flexWrap: "wrap",
+            textAlign: "center",
           }}
         >
           <Activity style={{ width: 13, height: 13, color: "#4ade80" }} />
-          Trusted by Qualcomm · TI · ISRO · MediaTek · Samsung · Marvell
+          <span>Trusted by Qualcomm · TI · ISRO · MediaTek · Samsung · Marvell</span>
         </motion.p>
       </div>
 
@@ -373,6 +376,7 @@ export default function SDHero() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.70 }}
+        className="sol-hero-stats"
         style={{
           position: "absolute",
           bottom: 0, left: 0, right: 0,
@@ -395,6 +399,7 @@ export default function SDHero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.78 + i * 0.08 }}
+            className="sol-hero-stat-item"
             style={{
               padding: "22px 16px",
               textAlign: "center",
@@ -425,6 +430,42 @@ export default function SDHero() {
         ))}
       </motion.div>
 
+      <style>{`
+        @media (max-width: 960px) {
+          .sol-hero-section {
+            padding-bottom: 0px !important;
+            min-height: auto !important;
+            padding-top: 80px !important;
+          }
+          .sol-hero-stats {
+            grid-template-columns: repeat(2, 1fr) !important;
+            position: relative !important;
+            margin-top: 40px;
+          }
+          .sol-hero-stat-item {
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 16px 12px !important;
+          }
+          .sol-hero-stat-item:nth-child(even) {
+            border-right: none !important;
+          }
+          .sol-hero-stat-item:nth-child(3), .sol-hero-stat-item:nth-child(4) {
+            border-bottom: none !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .sol-hero-stats {
+            grid-template-columns: 1fr !important;
+          }
+          .sol-hero-stat-item {
+            border-right: none !important;
+            border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+          }
+          .sol-hero-stat-item:last-child {
+            border-bottom: none !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

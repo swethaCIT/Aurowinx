@@ -153,9 +153,9 @@ export default function SDProcessFlow() {
   return (
     <section
       ref={ref}
+      className="sd-flow-section"
       style={{
         background: "linear-gradient(160deg, #f8fafc 0%, #f1f5f9 100%)",
-        padding: "72px 48px 64px",
         position: "relative", overflow: "hidden", fontFamily: FONT,
       }}
     >
@@ -201,6 +201,7 @@ export default function SDProcessFlow() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
             transition={{ duration: 0.4, ease: EASE }}
+            className="sd-flow-detail-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "1.1fr 1fr",
@@ -210,7 +211,7 @@ export default function SDProcessFlow() {
             }}
           >
             {/* LEFT — Image */}
-            <div style={{ position: "relative", minHeight: 420, overflow: "hidden" }}>
+            <div className="sd-flow-img-container" style={{ position: "relative", minHeight: 420, overflow: "hidden" }}>
               <motion.img
                 src={stage.img} alt={stage.title}
                 initial={{ scale: 1.06 }} animate={{ scale: 1 }}
@@ -357,6 +358,28 @@ export default function SDProcessFlow() {
         </AnimatePresence>
 
       </div>
+
+      <style>{`
+        .sd-flow-section {
+          padding: 72px 48px 64px;
+        }
+        @media (max-width: 960px) {
+          .sd-flow-section {
+            padding: 56px 24px 64px !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .sd-flow-section {
+            padding: 44px 16px 52px !important;
+          }
+          .sd-flow-detail-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .sd-flow-img-container {
+            min-height: 240px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

@@ -59,17 +59,20 @@ const pills = [
 
 export default function HeroSection() {
   return (
-    <section style={{
-      position: "relative",
-      minHeight: "100vh",
-      overflow: "hidden",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      fontFamily: FONT,
-      paddingBottom: 110, /* space for stat strip at bottom */
-    }}>
+    <section
+      className="sol-hero-section"
+      style={{
+        position: "relative",
+        minHeight: "100vh",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: FONT,
+        paddingBottom: 110, /* space for stat strip at bottom */
+      }}
+    >
 
       {/* ── VIDEO BACKGROUND — z-index 0 ── */}
       <video
@@ -279,6 +282,7 @@ export default function HeroSection() {
       <motion.div
         initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.7 }}
+        className="sol-hero-stats"
         style={{
           position: "absolute",
           bottom: 0, left: 0, right: 0,
@@ -300,6 +304,7 @@ export default function HeroSection() {
             key={s.label}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             transition={{ delay: 0.75 + i * 0.08 }}
+            className="sol-hero-stat-item"
             style={{
               padding: "22px 16px",
               textAlign: "center",
@@ -321,6 +326,42 @@ export default function HeroSection() {
         ))}
       </motion.div>
 
+      <style>{`
+        @media (max-width: 768px) {
+          .sol-hero-section {
+            padding-bottom: 0px !important;
+            min-height: auto !important;
+            padding-top: 80px !important;
+          }
+          .sol-hero-stats {
+            grid-template-columns: repeat(2, 1fr) !important;
+            position: relative !important;
+            margin-top: 40px;
+          }
+          .sol-hero-stat-item {
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 16px 12px !important;
+          }
+          .sol-hero-stat-item:nth-child(even) {
+            border-right: none !important;
+          }
+          .sol-hero-stat-item:nth-child(3), .sol-hero-stat-item:nth-child(4) {
+            border-bottom: none !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .sol-hero-stats {
+            grid-template-columns: 1fr !important;
+          }
+          .sol-hero-stat-item {
+            border-right: none !important;
+            border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+          }
+          .sol-hero-stat-item:last-child {
+            border-bottom: none !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

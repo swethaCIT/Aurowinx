@@ -677,9 +677,9 @@ export default function SDCapabilities() {
     <section
       ref={ref}
       aria-label="AurowinX ASIC capabilities"
+      className="sd-caps-section"
       style={{
         background: "#fff",
-        padding: "80px 48px 88px",
         position: "relative",
         overflow: "hidden",
         fontFamily: FONT,
@@ -815,7 +815,7 @@ export default function SDCapabilities() {
           </div>
         ) : (
           // Desktop: process strip left + spotlight right
-          <div style={{
+          <div className="sd-caps-desktop-grid" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1.05fr",
             gap: 28,
@@ -879,14 +879,21 @@ export default function SDCapabilities() {
 
       {/* Responsive CSS */}
       <style>{`
+        .sd-caps-section {
+          padding: 80px 48px 88px;
+        }
         @media (max-width: 960px) {
-          section[aria-label="AurowinX ASIC capabilities"] {
-            padding: 56px 28px 64px;
+          .sd-caps-section {
+            padding: 56px 28px 64px !important;
+          }
+          .sd-caps-desktop-grid {
+            grid-template-columns: 1fr !important;
+            gap: 20px !important;
           }
         }
         @media (max-width: 768px) {
-          section[aria-label="AurowinX ASIC capabilities"] {
-            padding: 44px 16px 52px;
+          .sd-caps-section {
+            padding: 44px 16px 52px !important;
           }
           section[aria-label="AurowinX ASIC capabilities"] > div > div:first-child {
             grid-template-columns: 1fr !important;

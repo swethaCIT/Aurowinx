@@ -214,7 +214,7 @@ function DetailView({ reason }) {
           </p>
 
           {/* Proof points 2x2 grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          <div className="sd-why-proof-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             {reason.proof.map((pt, j) => (
               <motion.div
                 key={pt}
@@ -294,9 +294,9 @@ export default function SDWhySection() {
   return (
     <section
       ref={ref}
+      className="sd-why-section"
       style={{
         background: "linear-gradient(160deg, #eef2ff 0%, #f5f3ff 30%, #ffffff 70%, #f8fafc 100%)",
-        padding: "72px 48px 64px",
         position: "relative", overflow: "hidden", fontFamily: FONT,
       }}
     >
@@ -330,7 +330,7 @@ export default function SDWhySection() {
         </motion.div>
 
         {/* 3-col layout: tabs | detail | side */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr 0.8fr", gap: 20, alignItems: "start" }}>
+        <div className="sd-why-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr 0.8fr", gap: 20, alignItems: "start" }}>
 
           {/* LEFT — Tab list */}
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -414,6 +414,31 @@ export default function SDWhySection() {
           </div>
         </div>
       </div>
+
+      <style>{`
+        .sd-why-section {
+          padding: 72px 48px 64px;
+        }
+        @media (max-width: 990px) {
+          .sd-why-section {
+            padding: 56px 24px 64px !important;
+          }
+          .sd-why-grid {
+            grid-template-columns: 1fr !important;
+            gap: 24px !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .sd-why-section {
+            padding: 44px 16px 52px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .sd-why-proof-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

@@ -224,6 +224,7 @@ function ProjectPanel({ project, i, inView, isOpen, onToggle }) {
         }}
       >
         <div
+          className="dft-project-header-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "72px 1fr auto auto auto",
@@ -335,12 +336,15 @@ function ProjectPanel({ project, i, inView, isOpen, onToggle }) {
             transition={{ duration: 0.38, ease: EASE }}
             style={{ overflow: "hidden" }}
           >
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "72px 1fr 220px",
-              gap: 16,
-              paddingBottom: 28,
-            }}>
+            <div
+              className="dft-project-body-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "72px 1fr 220px",
+                gap: 16,
+                paddingBottom: 28,
+              }}
+            >
               {/* Left accent bar */}
               <div style={{
                 display: "flex", justifyContent: "flex-end", paddingTop: 2,
@@ -948,6 +952,53 @@ export default function ProjectsList() {
         {/* Bottom padding */}
         <div style={{ height: 60 }} />
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .dft-project-header-grid {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding: 16px 8px !important;
+          }
+          .dft-project-header-grid > span:first-child {
+            font-size: 1.4rem !important;
+          }
+          .dft-project-header-grid > div:nth-child(2) {
+            flex: 1 1 auto !important;
+            min-width: 150px;
+          }
+          .dft-project-header-grid > div:nth-child(3) {
+            flex-direction: row !important;
+            padding: 4px 10px !important;
+            align-items: center !important;
+            gap: 6px !important;
+          }
+          .dft-project-header-grid > span:nth-child(4) {
+            padding: 4px 10px !important;
+          }
+          .dft-project-header-grid > div:last-child {
+            margin-left: auto !important;
+          }
+
+          .dft-project-body-grid {
+            grid-template-columns: 1fr !important;
+            gap: 20px !important;
+            padding: 0 16px 20px !important;
+          }
+          .dft-project-body-grid > div:first-child {
+            display: none !important;
+          }
+          .dft-project-body-grid > div:nth-child(2) {
+            padding-left: 0 !important;
+          }
+          .dft-project-body-grid > div:nth-child(3) {
+            width: 100% !important;
+            box-sizing: border-box !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

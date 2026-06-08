@@ -318,11 +318,11 @@ export default function SDTestimonials() {
     <section
       ref={ref}
       aria-label="Client testimonials"
+      className="sd-testimonials-section"
       style={{
         position: "relative",
         background: C.bgWhite,
         overflow: "hidden",
-        padding: "clamp(64px, 8vw, 112px) clamp(20px, 5vw, 60px)",
         fontFamily: FONT,
       }}
     >
@@ -473,7 +473,7 @@ export default function SDTestimonials() {
           </div>
 
           {/* Quote body */}
-          <div style={{
+          <div className="sd-testimonial-body-grid" style={{
             display: "grid",
             gridTemplateColumns: "1fr auto",
             gap: 0,
@@ -531,7 +531,7 @@ export default function SDTestimonials() {
             </div>
 
             {/* Right: control column */}
-            <div style={{
+            <div className="sd-testimonial-control-col" style={{
               width: 72,
               borderLeft: `1px solid ${C.borderLight}`,
               display: "flex",
@@ -608,6 +608,7 @@ export default function SDTestimonials() {
           initial={{ opacity: 0, y: 12 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.35, ease: EASE }}
+          className="sd-testimonial-bottom-strip"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
@@ -681,6 +682,9 @@ export default function SDTestimonials() {
 
       {/* Responsive styles */}
       <style>{`
+        .sd-testimonials-section {
+          padding: clamp(64px, 8vw, 112px) clamp(20px, 5vw, 60px);
+        }
         @media (max-width: 860px) {
           section[aria-label="Client testimonials"] > div > div:first-child {
             grid-template-columns: 1fr !important;
@@ -691,18 +695,21 @@ export default function SDTestimonials() {
           }
         }
         @media (max-width: 680px) {
-          section[aria-label="Client testimonials"] > div > div:nth-child(3) {
+          .sd-testimonials-section {
+            padding: 44px 16px 52px !important;
+          }
+          .sd-testimonial-body-grid {
             grid-template-columns: 1fr !important;
           }
-          section[aria-label="Client testimonials"] > div > div:nth-child(3) > div:last-child {
+          .sd-testimonial-control-col {
             display: none !important;
           }
-          section[aria-label="Client testimonials"] > div > div:nth-child(4) {
+          .sd-testimonial-bottom-strip {
             grid-template-columns: repeat(2, 1fr) !important;
           }
         }
         @media (max-width: 400px) {
-          section[aria-label="Client testimonials"] > div > div:nth-child(4) {
+          .sd-testimonial-bottom-strip {
             grid-template-columns: 1fr !important;
           }
         }

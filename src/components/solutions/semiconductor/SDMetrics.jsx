@@ -393,9 +393,9 @@ export default function SDMetrics() {
     <section
       ref={ref}
       aria-label="AurowinX performance metrics"
+      className="sd-metrics-section"
       style={{
         background: C.bgLight,
-        padding: "72px 48px 80px",
         position: "relative",
         overflow: "hidden",
         fontFamily: FONT,
@@ -507,14 +507,14 @@ export default function SDMetrics() {
         </motion.div>
 
         {/* ── ROW 1: Big stat cells (grid-seam layout) ── */}
-        <div style={gridSeamStyle}>
+        <div className="sd-metrics-grid" style={gridSeamStyle}>
           {BIG_STATS.map((s, i) => (
             <StatCell key={s.label} s={s} i={i} inView={inView} />
           ))}
         </div>
 
         {/* ── ROW 2: Coverage + Right panel ── */}
-        <div style={{
+        <div className="sd-metrics-row2" style={{
           display: "grid",
           gridTemplateColumns: "1.3fr 1fr",
           gap: 20,
@@ -702,12 +702,22 @@ export default function SDMetrics() {
           50%       { opacity: 0.3; }
         }
 
+        .sd-metrics-section {
+          padding: 72px 48px 80px;
+        }
+
         /* ── Responsive breakpoints ── */
 
         /* Tablet: stack big row 2+2, keep bottom 2-col */
         @media (max-width: 960px) {
-          section[aria-label="AurowinX performance metrics"] {
-            padding: 52px 28px 64px;
+          .sd-metrics-section {
+            padding: 52px 28px 64px !important;
+          }
+        }
+
+        @media (max-width: 900px) {
+          .sd-metrics-grid {
+            grid-template-columns: 1fr 1fr !important;
           }
         }
 
@@ -725,10 +735,22 @@ export default function SDMetrics() {
           }
         }
 
+        @media (max-width: 760px) {
+          .sd-metrics-row2 {
+            grid-template-columns: 1fr !important;
+          }
+        }
+
         /* Mobile: single column everywhere */
         @media (max-width: 680px) {
-          section[aria-label="AurowinX performance metrics"] {
-            padding: 40px 16px 52px;
+          .sd-metrics-section {
+            padding: 40px 16px 52px !important;
+          }
+        }
+
+        @media (max-width: 560px) {
+          .sd-metrics-grid {
+            grid-template-columns: 1fr !important;
           }
         }
       `}</style>
