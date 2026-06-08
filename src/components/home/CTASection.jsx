@@ -697,7 +697,6 @@ export default function CTASection({ compact = false }) {
             </motion.div>
 
             {/* RIGHT — chip canvas */}
-            {!compact && (
             <div className="canvas-wrap">
               <div style={{ position: "absolute", inset: 0, borderRadius: 24,
                 background: "linear-gradient(145deg,#e8f0fe 0%,#eef9ff 45%,#f0ecff 100%)",
@@ -733,7 +732,6 @@ export default function CTASection({ compact = false }) {
                 </motion.div>
               </motion.div>
             </div>
-            )}
 
           </div>
         </div>
