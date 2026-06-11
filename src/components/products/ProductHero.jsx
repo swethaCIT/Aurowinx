@@ -130,7 +130,7 @@ export default function ProductHero() {
           zIndex: 0,
         }}
       >
-        <source src="/videos/products-hero.mp4" type="video/mp4" />
+        <source src="/videos/Company.mp4" type="video/mp4" />
       </video>
 
       {/* ── DARK OVERLAY ── */}
