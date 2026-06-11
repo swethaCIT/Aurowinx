@@ -309,8 +309,8 @@ function ProductCard({ p, index, inView }) {
       {/* ── BODY ── */}
       <div style={{ padding: "22px 24px 24px" }}>
 
-        {/* features 2-col grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7, marginBottom: 18 }}>
+        {/* features grid — 1 col on narrow screens */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: 7, marginBottom: 18 }}>
           {p.feats.map((f) => (
             <div
               key={f.label}
@@ -318,7 +318,8 @@ function ProductCard({ p, index, inView }) {
                 display: "flex", alignItems: "center", gap: 8,
                 padding: "8px 10px", borderRadius: 10,
                 background: p.pale,
-                fontSize: 11.5, fontWeight: 500, color: "#1e293b",
+                fontSize: "clamp(10px, 2.8vw, 11.5px)", fontWeight: 500, color: "#1e293b",
+                minWidth: 0,
               }}
             >
               <div
@@ -404,7 +405,7 @@ export default function ProductShowcase() {
       style={{
         position: "relative",
         background: "linear-gradient(170deg,#f8fafc 0%,#ffffff 45%,#f0fdf4 100%)",
-        padding: "80px 0 100px",
+        padding: "clamp(3rem, 8vw, 5rem) 0 clamp(4rem, 10vw, 6.25rem)",
         overflow: "hidden",
         fontFamily: "'Outfit', sans-serif",
       }}
@@ -467,13 +468,26 @@ export default function ProductShowcase() {
         @keyframes gridPan { from { background-position: 0 0; } to { background-position: 64px 64px; } }
         @keyframes blink    { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
         @keyframes gradShift{ 0%{background-position:0%} 100%{background-position:200%} }
+        .product-stats-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        @media (min-width: 768px) {
+          .product-stats-row { display: flex; }
+          .product-stats-row > div { flex: 1; border-bottom: none !important; }
+          .product-stats-row > div:not(:last-child) { border-right: 1px solid #f1f5f9; }
+        }
+        @media (min-width: 1280px) {
+          .product-showcase-inner { max-width: 90rem; }
+        }
+        @media (min-width: 768px) {
+          .product-cta-banner { flex-direction: row; align-items: center; }
+          .product-cta-banner a { width: auto; }
+        }
       `}</style>
 
-      <div style={{ position: "relative", zIndex: 10, maxWidth: 1140, margin: "0 auto", padding: "0 28px" }}>
+      <div className="product-showcase-inner" style={{ position: "relative", zIndex: 10, maxWidth: "min(1140px, 100%)", margin: "0 auto", padding: "0 clamp(1rem, 4vw, 1.75rem)" }}>
 
         {/* ── HEADER ── */}
         <motion.div
-          style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: 64 }}
+          style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "clamp(2.5rem, 6vw, 4rem)" }}
           initial={{ opacity: 0, y: 35, scale: 0.95 }}
           animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
@@ -533,12 +547,15 @@ export default function ProductShowcase() {
           initial={{ opacity: 0, y: 35, scale: 0.98 }}
           animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+          className="product-stats-row"
           style={{
-            display: "flex", marginBottom: 60,
-            background: "#fff", borderRadius: 20,
-            border: "1px solid #e2e8f0", overflow: "hidden",
+            marginBottom: "clamp(2rem, 5vw, 3.75rem)",
+            background: "#fff",
+            borderRadius: 20,
+            border: "1px solid #e2e8f0",
+            overflow: "hidden",
             boxShadow: "0 10px 40px -10px rgba(0,0,0,.08)",
-            position: "relative"
+            position: "relative",
           }}
         >
           {/* subtle animated shimmer on stats bar */}
@@ -556,9 +573,12 @@ export default function ProductShowcase() {
             <div
               key={s.l}
               style={{
-                flex: 1, padding: "20px 24px", textAlign: "center",
-                borderRight: i < STATS.length - 1 ? "1px solid #f1f5f9" : "none",
+                padding: "clamp(0.85rem, 3vw, 1.25rem) clamp(0.75rem, 2.5vw, 1.5rem)",
+                textAlign: "center",
+                borderRight: i % 2 === 0 && i < STATS.length - 1 ? "1px solid #f1f5f9" : "none",
+                borderBottom: i < STATS.length - 2 ? "1px solid #f1f5f9" : "none",
                 position: "relative",
+                minWidth: 0,
               }}
             >
               <div
@@ -567,10 +587,10 @@ export default function ProductShowcase() {
                   background: s.color,
                 }}
               />
-              <div style={{ fontSize: "2rem", fontWeight: 900, letterSpacing: "-.04em", lineHeight: 1, color: s.color }}>
+              <div style={{ fontSize: "clamp(1.35rem, 5vw, 2rem)", fontWeight: 900, letterSpacing: "-.04em", lineHeight: 1, color: s.color }}>
                 {s.v}
               </div>
-              <div style={{ fontSize: 11, fontWeight: 600, color: "#94a3b8", letterSpacing: ".06em", textTransform: "uppercase", marginTop: 4 }}>
+              <div style={{ fontSize: "clamp(9px, 2.4vw, 11px)", fontWeight: 600, color: "#94a3b8", letterSpacing: ".06em", textTransform: "uppercase", marginTop: 4 }}>
                 {s.l}
               </div>
             </div>
@@ -581,7 +601,7 @@ export default function ProductShowcase() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
             gap: 24,
             marginBottom: 32,
           }}
@@ -593,16 +613,21 @@ export default function ProductShowcase() {
 
         {/* ── BOTTOM BANNER ── */}
         <motion.div
+          className="product-cta-banner"
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 1.1 }}
           style={{
             borderRadius: 24,
             background: "linear-gradient(135deg,#0f172a 0%,#1e293b 100%)",
-            padding: "40px 48px",
-            display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24,
-            flexWrap: "wrap",
-            position: "relative", overflow: "hidden",
+            padding: "clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 4vw, 3rem)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: 20,
+            position: "relative",
+            overflow: "hidden",
             border: "1px solid rgba(255,255,255,.06)",
           }}
         >
@@ -624,7 +649,7 @@ export default function ProductShowcase() {
           />
 
           <div style={{ position: "relative", zIndex: 2 }}>
-            <h3 style={{ fontSize: "1.4rem", fontWeight: 800, color: "#fff", letterSpacing: "-.03em", marginBottom: 6 }}>
+            <h3 style={{ fontSize: "clamp(1.1rem, 3.5vw, 1.4rem)", fontWeight: 800, color: "#fff", letterSpacing: "-.03em", marginBottom: 6 }}>
               Need a custom power electronics product?
             </h3>
             <p style={{ fontSize: 13.5, color: "rgba(255,255,255,.45)" }}>
@@ -637,9 +662,17 @@ export default function ProductShowcase() {
             whileHover={{ scale: 1.06, boxShadow: "0 0 48px rgba(22,163,74,.5)" }}
             style={{
               position: "relative", zIndex: 2,
-              flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 10,
-              padding: "15px 28px", borderRadius: 100,
-              fontSize: 14, fontWeight: 700, color: "#fff",
+              width: "100%",
+              flexShrink: 0,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              padding: "14px 24px",
+              borderRadius: 100,
+              fontSize: "clamp(12px, 3vw, 14px)",
+              fontWeight: 700,
+              color: "#fff",
               textDecoration: "none",
               background: "linear-gradient(135deg,#16a34a,#2563eb)",
               boxShadow: "0 0 32px rgba(22,163,74,.35)",

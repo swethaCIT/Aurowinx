@@ -6,7 +6,7 @@ const slides = [
     video: "/videos/hero-2.mp4",
     title: "Redefining The Future Of Intelligent Engineering",
     headingClass:
-      "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
+      "text-[clamp(1.5rem,5.5vw,3.2rem)] max-w-[min(900px,100%)]",
     description:
       "Advanced semiconductor engineering powering next-generation innovation, performance, and scalability.",
   },
@@ -14,7 +14,7 @@ const slides = [
     video: "/videos/hero-2.mp4",
     title: "Engineering Intelligence Beyond Hardware Systems",
     headingClass:
-      "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
+      "text-[clamp(1.5rem,5.5vw,3.2rem)] max-w-[min(900px,100%)]",
     description:
       "Precision-driven embedded systems designed for connected, high-performance technologies.",
   },
@@ -22,7 +22,7 @@ const slides = [
     video: "/videos/hero-2.mp4",
     title: "Transforming Industries Through Connected Intelligence",
     headingClass:
-      "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
+      "text-[clamp(1.5rem,5.5vw,3.2rem)] max-w-[min(900px,100%)]",
     description:
       "Building intelligent automation ecosystems that accelerate the future of smart industries.",
   },
@@ -30,7 +30,7 @@ const slides = [
     video: "/videos/hero-2.mp4",
     title: "Powering The Next Generation Of Smart Mobility",
     headingClass:
-      "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
+      "text-[clamp(1.5rem,5.5vw,3.2rem)] max-w-[min(900px,100%)]",
     description:
       "Advanced engineering solutions driving intelligent electronics and future-ready energy systems.",
   },
@@ -47,7 +47,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative h-screen overflow-hidden bg-[#080f1e]">
+    <section className="relative min-h-[100dvh] h-[100svh] overflow-hidden bg-[#080f1e]">
 
       {/* VIDEO BACKGROUND - Rendered once for better performance */}
       <video
@@ -66,27 +66,17 @@ export default function HeroSection() {
 
       {/* BLUE CORNER GLOW - top left */}
       <div
-        className="absolute pointer-events-none z-[1]"
+        className="absolute pointer-events-none z-[1] -top-32 -left-32 h-[min(700px,120vw)] w-[min(700px,120vw)] rounded-full sm:-top-48 sm:-left-48"
         style={{
-          top: -200,
-          left: -200,
-          width: 700,
-          height: 700,
           background: "radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 60%)",
-          borderRadius: "50%",
         }}
       />
 
       {/* CYAN CORNER GLOW - bottom right */}
       <div
-        className="absolute pointer-events-none z-[1]"
+        className="absolute pointer-events-none z-[1] -bottom-16 -right-16 h-[min(500px,90vw)] w-[min(500px,90vw)] rounded-full sm:-bottom-24 sm:-right-24"
         style={{
-          bottom: -100,
-          right: -100,
-          width: 500,
-          height: 500,
           background: "radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 60%)",
-          borderRadius: "50%",
         }}
       />
 
@@ -111,8 +101,8 @@ export default function HeroSection() {
       />
 
       {/* CONTENT */}
-      <div className="relative z-20 flex h-full items-center justify-center text-center">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center px-6">
+      <div className="relative z-20 flex h-full items-center justify-center px-4 py-24 text-center sm:px-6">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center">
           <AnimatePresence mode="wait">
             <motion.div
               key={current}
@@ -123,7 +113,7 @@ export default function HeroSection() {
                 duration: 1.2,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="flex max-w-7xl flex-col items-center"
+              className="flex w-full max-w-7xl flex-col items-center"
             >
 
               {/* BADGE with pulsing border glow */}
@@ -136,11 +126,11 @@ export default function HeroSection() {
                   ],
                 }}
                 transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                className="mb-7 mt-4"
+                className="mb-5 mt-2 sm:mb-7 sm:mt-4"
                 style={{ borderRadius: 9999, display: "inline-block" }}
               >
                 <span
-                  className="inline-block whitespace-nowrap rounded-full border border-white/30 bg-white/10 px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.32em] text-white shadow-sm backdrop-blur-md"
+                  className="inline-block max-w-full rounded-full border border-white/30 bg-white/10 px-3 py-2 text-[9px] font-medium uppercase tracking-[0.18em] text-white shadow-sm backdrop-blur-md sm:px-5 sm:py-2.5 sm:text-[11px] sm:tracking-[0.32em]"
                 >
                   Future-Ready Engineering Solutions
                 </span>
@@ -148,7 +138,7 @@ export default function HeroSection() {
 
               {/* HEADING - first word gradient colored */}
               <h1
-                className={`${slides[current].headingClass} mb-6 font-semibold leading-[1.03] tracking-[-0.045em] text-white`}
+                className={`${slides[current].headingClass} mb-4 px-1 font-semibold leading-[1.08] tracking-[-0.045em] text-balance text-white sm:mb-6 sm:leading-[1.03]`}
               >
                 {(() => {
                   const words = slides[current].title.split(" ");
@@ -171,28 +161,21 @@ export default function HeroSection() {
               </h1>
 
               {/* DESCRIPTION */}
-              <p className="mb-10 max-w-3xl text-[15px] font-light leading-relaxed text-white/80 md:text-[17px]">
+              <p className="mb-8 max-w-3xl px-1 text-sm font-light leading-relaxed text-white/80 sm:mb-10 sm:text-[15px] md:text-[17px]">
                 {slides[current].description}
               </p>
 
               {/* BUTTONS */}
-              <div className="flex flex-wrap justify-center gap-4">
+              <div className="flex w-full max-w-md flex-col justify-center gap-3 px-1 sm:max-w-none sm:flex-row sm:flex-wrap sm:gap-4">
 
                 {/* PRIMARY */}
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
+                  className="w-full min-w-0 rounded-full border-none px-6 py-3.5 text-[10px] font-bold uppercase tracking-[0.16em] text-white sm:w-auto sm:px-8 sm:py-3.5 sm:text-[11px] sm:tracking-[0.2em]"
                   style={{
-                    borderRadius: 9999,
                     background: "linear-gradient(135deg, #2563eb, #0891b2)",
-                    padding: "14px 32px",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    letterSpacing: "0.2em",
-                    textTransform: "uppercase",
-                    color: "white",
                     boxShadow: "0 0 32px rgba(37,99,235,0.45)",
-                    border: "none",
                     cursor: "pointer",
                   }}
                 >
@@ -203,16 +186,10 @@ export default function HeroSection() {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  className="w-full min-w-0 rounded-full px-6 py-3.5 text-[10px] font-bold uppercase tracking-[0.16em] text-white sm:w-auto sm:px-8 sm:py-3.5 sm:text-[11px] sm:tracking-[0.2em]"
                   style={{
-                    borderRadius: 9999,
                     border: "1px solid rgba(255,255,255,0.5)",
                     background: "rgba(255,255,255,0.08)",
-                    padding: "14px 32px",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    letterSpacing: "0.2em",
-                    textTransform: "uppercase",
-                    color: "white",
                     backdropFilter: "blur(12px)",
                     cursor: "pointer",
                   }}
@@ -229,7 +206,7 @@ export default function HeroSection() {
 
       {/* SCROLL INDICATOR */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5"
+        className="absolute bottom-6 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-1.5 sm:bottom-8 sm:flex"
         animate={{ y: [0, 6, 0] }}
         transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
       >

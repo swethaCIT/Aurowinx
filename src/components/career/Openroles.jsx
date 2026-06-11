@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Clock, Briefcase, SlidersHorizontal, X, ArrowRight } from "lucide-react";
-//import { supabase } from "../../lib/supabase";
+import { supabase } from "../../lib/supabase";
 import { C, FONT, EASE } from "././theme";
 
 /* ─── Filter config ───────────────────────────────────────────────────────── */
@@ -223,7 +223,7 @@ function JobCard({ job, index }) {
 
       {/* CTA */}
       <motion.button
-        onClick={() => navigate(`/career/${job.slug}`)}
+        onClick={() => navigate(`/careers/${job.slug}`)}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         style={{

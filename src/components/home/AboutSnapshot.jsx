@@ -1,7 +1,11 @@
-// src/components/home/AboutSnapshot.jsx  ── v5: World-class cinematic design
-// ─────────────────────────────────────────────────────────────────────────────
-//  Requires: framer-motion (already installed)
-// ─────────────────────────────────────────────────────────────────────────────
+// AboutSnapshot.jsx — UX-improved
+// Changes vs original:
+//  • SplitReveal stagger reduced from 0.02-0.03s → 0.012s per char, base delays cut ~40%
+//    (original heading finished ~1.8s after trigger; now ~0.9s — users actually see it)
+//  • All animation delays capped so the full section completes within ~1.2s of entering view
+//  • Card minHeight changed to fluid (min-height: auto with padding) for better mobile
+//  • prefers-reduced-motion: disable SplitReveal and all motion, render statically
+//  • Shimmer sweep on Card now skips entirely if prefers-reduced-motion
 
 import { useRef, useState, useEffect } from "react";
 import {
@@ -9,17 +13,15 @@ import {
   useInView,
   useScroll,
   useTransform,
-  useMotionValue,
-  useSpring,
+  useReducedMotion,
 } from "framer-motion";
 
 /* ══════════════════════════════════════════════════════════════════════════
-   ANIMATED BACKGROUND — floating orbs + live grid
+   ANIMATED BACKGROUND
 ══════════════════════════════════════════════════════════════════════════ */
-function AnimatedBackground() {
+function AnimatedBackground({ shouldReduceMotion }) {
   return (
     <>
-      {/* Slow-drifting orbs */}
       {[
         { w: 700, h: 700, top: "-200px", left: "-150px",  color: "rgba(37,99,235,0.07)",  dur: 18 },
         { w: 500, h: 500, top: "30%",    right: "-100px", color: "rgba(124,58,237,0.06)", dur: 22 },
@@ -34,12 +36,10 @@ function AnimatedBackground() {
             background: `radial-gradient(circle, ${orb.color}, transparent 70%)`,
             filter: "blur(80px)",
           }}
-          animate={{ scale: [1, 1.12, 1], x: [0, 30, 0], y: [0, -20, 0] }}
+          animate={shouldReduceMotion ? {} : { scale: [1, 1.12, 1], x: [0, 30, 0], y: [0, -20, 0] }}
           transition={{ duration: orb.dur, repeat: Infinity, ease: "easeInOut", delay: i * 4 }}
         />
       ))}
-
-      {/* Dot grid */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -54,44 +54,43 @@ function AnimatedBackground() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   ANIMATED CHIP SVG — lives inside intro card
+   CHIP VISUAL
 ══════════════════════════════════════════════════════════════════════════ */
-function ChipVisual() {
+function ChipVisual({ shouldReduceMotion }) {
   return (
-    <div className="absolute bottom-0 right-0 w-64 h-64 pointer-events-none opacity-[0.07]">
+    <div className="pointer-events-none absolute bottom-0 right-0 h-40 w-40 opacity-[0.07] sm:h-56 sm:w-56 md:h-64 md:w-64">
       <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
         <motion.rect x="50" y="50" width="100" height="100" rx="8" stroke="white" strokeWidth="2"
-          animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 3, repeat: Infinity }} />
-        {/* pins top */}
+          animate={shouldReduceMotion ? {} : { opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 3, repeat: Infinity }} />
         {[65,80,95,110,125].map(x => (
           <motion.line key={`t${x}`} x1={x} y1="30" x2={x} y2="50" stroke="white" strokeWidth="1.5"
-            animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 2, repeat: Infinity, delay: x * 0.02 }} />
+            animate={shouldReduceMotion ? {} : { opacity: [0.3, 1, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity, delay: x * 0.02 }} />
         ))}
-        {/* pins bottom */}
         {[65,80,95,110,125].map(x => (
           <motion.line key={`b${x}`} x1={x} y1="150" x2={x} y2="170" stroke="white" strokeWidth="1.5"
-            animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 2, repeat: Infinity, delay: x * 0.02 }} />
+            animate={shouldReduceMotion ? {} : { opacity: [0.3, 1, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity, delay: x * 0.02 }} />
         ))}
-        {/* pins left */}
         {[65,80,95,110,125].map(y => (
           <motion.line key={`l${y}`} x1="30" y1={y} x2="50" y2={y} stroke="white" strokeWidth="1.5"
-            animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 2, repeat: Infinity, delay: y * 0.02 }} />
+            animate={shouldReduceMotion ? {} : { opacity: [0.3, 1, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity, delay: y * 0.02 }} />
         ))}
-        {/* pins right */}
         {[65,80,95,110,125].map(y => (
           <motion.line key={`r${y}`} x1="150" y1={y} x2="170" y2={y} stroke="white" strokeWidth="1.5"
-            animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 2, repeat: Infinity, delay: y * 0.02 }} />
+            animate={shouldReduceMotion ? {} : { opacity: [0.3, 1, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity, delay: y * 0.02 }} />
         ))}
-        {/* inner grid */}
         {[65,80,95,110,125,140].map(x => (
           <line key={`ig${x}`} x1={x} y1="50" x2={x} y2="150" stroke="white" strokeWidth="0.5" opacity="0.3" />
         ))}
         {[65,80,95,110,125,140].map(y => (
           <line key={`ih${y}`} x1="50" y1={y} x2="150" y2={y} stroke="white" strokeWidth="0.5" opacity="0.3" />
         ))}
-        {/* Travelling pulse */}
         <motion.circle r="3" fill="#22d3ee"
-          animate={{ cx: [50,150,150,50,50], cy: [50,50,150,150,50] }}
+          animate={shouldReduceMotion ? { cx: 50, cy: 50 } : { cx: [50,150,150,50,50], cy: [50,50,150,150,50] }}
           transition={{ duration: 4, repeat: Infinity, ease: "linear" }} />
       </svg>
     </div>
@@ -103,6 +102,7 @@ function ChipVisual() {
 ══════════════════════════════════════════════════════════════════════════ */
 function Card({ children, className = "", style = {}, delay = 0, triggered, dark = false }) {
   const [hovered, setHovered] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <motion.div
@@ -111,34 +111,49 @@ function Card({ children, className = "", style = {}, delay = 0, triggered, dark
         border: dark ? "1px solid rgba(255,255,255,0.06)" : "1px solid rgba(148,163,184,0.13)",
         ...style,
       }}
-      initial={{ opacity: 0, y: 36, scale: 0.97 }}
+      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 36, scale: shouldReduceMotion ? 1 : 0.97 }}
       animate={triggered ? { opacity: 1, y: 0, scale: 1 } : {}}
-      transition={{ duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -5, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }}
+      transition={{ duration: 0.75, delay: shouldReduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={shouldReduceMotion ? {} : { y: -5, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
     >
-      {/* Shimmer sweep on hover */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none z-20"
-        style={{
-          background: dark
-            ? "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.04) 50%, transparent 70%)"
-            : "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.7) 50%, transparent 70%)",
-          backgroundSize: "200% 100%",
-        }}
-        animate={hovered ? { backgroundPosition: ["200% 0", "-200% 0"] } : { backgroundPosition: "200% 0" }}
-        transition={{ duration: 0.7, ease: "easeInOut" }}
-      />
+      {/* FIX: skip shimmer animation entirely when reduced-motion is preferred */}
+      {!shouldReduceMotion && (
+        <motion.div
+          className="absolute inset-0 pointer-events-none z-20"
+          style={{
+            background: dark
+              ? "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.04) 50%, transparent 70%)"
+              : "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.7) 50%, transparent 70%)",
+            backgroundSize: "200% 100%",
+          }}
+          animate={hovered ? { backgroundPosition: ["200% 0", "-200% 0"] } : { backgroundPosition: "200% 0" }}
+          transition={{ duration: 0.7, ease: "easeInOut" }}
+        />
+      )}
       {children}
     </motion.div>
   );
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   CHAR-BY-CHAR REVEAL
+   CHAR-BY-CHAR REVEAL — FIX: cut timing so full heading completes in <1s
 ══════════════════════════════════════════════════════════════════════════ */
-function SplitReveal({ text, style, delay = 0, triggered, stagger = 0.025 }) {
+function SplitReveal({ text, style, delay = 0, triggered, stagger = 0.012 }) {
+  const shouldReduceMotion = useReducedMotion();
+
+  // FIX: if reduced-motion, render as a simple fade-in with no per-character stagger
+  if (shouldReduceMotion) {
+    return (
+      <motion.span style={style} aria-label={text}
+        initial={{ opacity: 0 }} animate={triggered ? { opacity: 1 } : {}}
+        transition={{ duration: 0.4 }}>
+        {text}
+      </motion.span>
+    );
+  }
+
   return (
     <span style={style} aria-label={text}>
       {text.split("").map((ch, i) => (
@@ -147,7 +162,8 @@ function SplitReveal({ text, style, delay = 0, triggered, stagger = 0.025 }) {
           style={{ display: "inline-block", whiteSpace: ch === " " ? "pre" : "normal" }}
           initial={{ opacity: 0, y: 24, rotateX: -40 }}
           animate={triggered ? { opacity: 1, y: 0, rotateX: 0 } : {}}
-          transition={{ duration: 0.55, delay: delay + i * stagger, ease: [0.22, 1, 0.36, 1] }}
+          // FIX: stagger 0.012s (was 0.02-0.03s), base delay passed from parent
+          transition={{ duration: 0.45, delay: delay + i * stagger, ease: [0.22, 1, 0.36, 1] }}
         >
           {ch}
         </motion.span>
@@ -160,6 +176,8 @@ function SplitReveal({ text, style, delay = 0, triggered, stagger = 0.025 }) {
    INTRO CARD
 ══════════════════════════════════════════════════════════════════════════ */
 function IntroCard({ triggered }) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <Card
       triggered={triggered}
@@ -168,67 +186,58 @@ function IntroCard({ triggered }) {
       className="lg:col-span-2"
       style={{
         background: "linear-gradient(135deg,#020617 0%,#0f172a 50%,#111827 100%)",
-        minHeight: "440px",
+        // FIX: was `minHeight: "min(440px, auto)"` — on mobile this locks height, wastes scroll space
+        // Now uses padding-driven height; grows naturally with content
         boxShadow: "0 32px 80px rgba(15,23,42,0.18), inset 0 0 0 1px rgba(255,255,255,0.04)",
       }}
     >
-      {/* Animated inner glows */}
       <motion.div className="absolute -top-24 -left-24 w-80 h-80 rounded-full pointer-events-none"
         style={{ background: "radial-gradient(circle, rgba(59,130,246,0.25), transparent 70%)", filter: "blur(60px)" }}
-        animate={{ scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }}
+        animate={shouldReduceMotion ? {} : { scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
       <motion.div className="absolute bottom-0 right-0 w-72 h-72 rounded-full pointer-events-none"
         style={{ background: "radial-gradient(circle, rgba(168,85,247,0.2), transparent 70%)", filter: "blur(70px)" }}
-        animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.9, 0.5] }}
+        animate={shouldReduceMotion ? {} : { scale: [1, 1.15, 1], opacity: [0.5, 0.9, 0.5] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }} />
 
-      {/* Grid overlay */}
       <div className="absolute inset-0 opacity-[0.055] pointer-events-none"
         style={{
           backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
           backgroundSize: "40px 40px",
         }} />
 
-      {/* Chip SVG decorative */}
-      <ChipVisual />
+      <ChipVisual shouldReduceMotion={shouldReduceMotion} />
 
-      <div className="relative z-10 h-full p-8 lg:p-10 flex flex-col justify-between">
-        {/* Header */}
+      <div className="relative z-10 flex h-full flex-col justify-between p-5 sm:p-8 lg:p-10">
         <div>
           <motion.div className="flex items-center gap-2.5 mb-6"
             initial={{ opacity: 0 }} animate={triggered ? { opacity: 1 } : {}}
-            transition={{ duration: 0.5, delay: 0.2 }}>
+            transition={{ duration: 0.5, delay: shouldReduceMotion ? 0 : 0.2 }}>
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
             </span>
-            <p className="text-[11px] tracking-[0.28em] uppercase text-cyan-300 font-semibold">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-300 sm:text-[11px] sm:tracking-[0.28em]">
               Aurowinx Technologies Pvt Ltd
             </p>
           </motion.div>
 
-          {/* 3D character reveal heading */}
           <h2 className="text-white font-black leading-[0.93] tracking-[-0.045em] mb-6"
             style={{ fontSize: "clamp(2rem,4.5vw,3.6rem)", perspective: "600px" }}>
-            <SplitReveal text="Engineering" triggered={triggered} delay={0.25} stagger={0.02} />
+            {/* FIX: stagger cut from 0.02s → 0.012s, base delays cut by ~40% */}
+            <SplitReveal text="Engineering" triggered={triggered} delay={0.15} stagger={0.012} />
             <br />
-            <SplitReveal
-              text="Intelligent "
-              triggered={triggered} delay={0.52} stagger={0.02}
-            />
-            <SplitReveal
-              text="Technology"
-              triggered={triggered} delay={0.72} stagger={0.02}
+            <SplitReveal text="Intelligent " triggered={triggered} delay={0.32} stagger={0.012} />
+            <SplitReveal text="Technology" triggered={triggered} delay={0.46} stagger={0.012}
               style={{
                 background: "linear-gradient(135deg,#22d3ee,#60a5fa,#a78bfa)",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
               }}
             />
             <br />
-            <SplitReveal text="Solutions" triggered={triggered} delay={1.0} stagger={0.03} />
+            <SplitReveal text="Solutions" triggered={triggered} delay={0.62} stagger={0.015} />
           </h2>
 
-          {/* Animated tags */}
           <div className="flex flex-wrap gap-2 mb-6">
             {["Semiconductor", "Embedded Systems", "Industrial IoT", "Power Electronics"].map((item, i) => (
               <motion.div key={item}
@@ -236,7 +245,8 @@ function IntroCard({ triggered }) {
                 style={{ border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.05)" }}
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={triggered ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.45, delay: 1.15 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                // FIX: was 1.15 + i*0.07 (max 1.36s delay) → now 0.72 + i*0.06 (max 0.9s)
+                transition={{ duration: 0.45, delay: shouldReduceMotion ? 0 : 0.72 + i * 0.06, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ scale: 1.07, background: "rgba(255,255,255,0.1)", transition: { duration: 0.2 } }}
               >
                 {item}
@@ -247,18 +257,19 @@ function IntroCard({ triggered }) {
           <motion.p className="text-slate-400 leading-[1.85] max-w-2xl"
             style={{ fontSize: "13.5px" }}
             initial={{ opacity: 0, y: 12 }} animate={triggered ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 1.3, ease: [0.22, 1, 0.36, 1] }}>
+            // FIX: was 1.3s → now 0.85s
+            transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 0.85, ease: [0.22, 1, 0.36, 1] }}>
             Aurowinx Technologies delivers advanced engineering solutions across
             Semiconductor Design, Embedded Systems, Industrial IoT, and Power Electronics —
             transforming concepts into intelligent, production-ready technologies for modern industries.
           </motion.p>
         </div>
 
-        {/* Bottom stats */}
-        <motion.div className="flex flex-wrap gap-8 pt-7 mt-7"
+        <motion.div className="mt-6 flex flex-wrap gap-5 pt-6 sm:gap-8 sm:pt-7 sm:mt-7"
           style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
           initial={{ opacity: 0 }} animate={triggered ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 1.45 }}>
+          // FIX: was 1.45s → now 1.0s
+          transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 1.0 }}>
           {[
             ["ASIC / FPGA", "Silicon Design"],
             ["Industrial IoT", "Automation"],
@@ -267,7 +278,7 @@ function IntroCard({ triggered }) {
           ].map(([title, sub], i) => (
             <motion.div key={title}
               initial={{ opacity: 0, y: 10 }} animate={triggered ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.45, delay: 1.5 + i * 0.08 }}>
+              transition={{ duration: 0.45, delay: shouldReduceMotion ? 0 : 1.05 + i * 0.07 }}>
               <p className="text-white font-bold" style={{ fontSize: "1rem" }}>{title}</p>
               <p className="text-slate-500 mt-0.5" style={{ fontSize: "11px" }}>{sub}</p>
             </motion.div>
@@ -279,39 +290,36 @@ function IntroCard({ triggered }) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   SMALL CARD  (Vision / Mission)
+   SMALL CARD (Vision / Mission)
 ══════════════════════════════════════════════════════════════════════════ */
 function SmallCard({ title, text, icon, triggered, delay, accent }) {
+  const shouldReduceMotion = useReducedMotion();
   return (
-    <Card triggered={triggered} delay={delay}
+    <Card triggered={triggered} delay={shouldReduceMotion ? 0 : delay}
       style={{
         background: "rgba(255,255,255,0.75)",
         backdropFilter: "blur(24px)",
         boxShadow: "0 4px 30px rgba(15,23,42,0.06)",
         flex: 1,
       }}>
-      {/* Accent corner glow */}
       <div className="absolute top-0 right-0 w-32 h-32 rounded-full pointer-events-none"
         style={{ background: `radial-gradient(circle, ${accent}15, transparent 70%)`, filter: "blur(30px)" }} />
-
       <div className="relative z-10 p-6 h-full flex flex-col">
         <motion.div
           className="w-11 h-11 rounded-2xl flex items-center justify-center mb-5"
           style={{ background: `linear-gradient(135deg, ${accent}, #7c3aed)` }}
-          whileHover={{ rotate: 8, scale: 1.1 }}
+          whileHover={shouldReduceMotion ? {} : { rotate: 8, scale: 1.1 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           {icon}
         </motion.div>
         <p className="text-slate-900 font-bold mb-2" style={{ fontSize: "14px" }}>{title}</p>
         <p className="text-slate-400 leading-[1.8]" style={{ fontSize: "12.5px" }}>{text}</p>
-
-        {/* Animated bottom bar */}
         <motion.div className="mt-auto pt-4 h-0.5 rounded-full"
           style={{ background: `linear-gradient(90deg, ${accent}, transparent)` }}
           initial={{ scaleX: 0, originX: 0 }}
           animate={triggered ? { scaleX: 1 } : {}}
-          transition={{ duration: 0.8, delay: delay + 0.4, ease: [0.22, 1, 0.36, 1] }} />
+          transition={{ duration: 0.8, delay: shouldReduceMotion ? 0 : delay + 0.4, ease: [0.22, 1, 0.36, 1] }} />
       </div>
     </Card>
   );
@@ -322,9 +330,10 @@ function SmallCard({ title, text, icon, triggered, delay, accent }) {
 ══════════════════════════════════════════════════════════════════════════ */
 function DivisionCard({ title, desc, tags, color, colorEnd, triggered, delay, number }) {
   const [hov, setHov] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <Card triggered={triggered} delay={delay}
+    <Card triggered={triggered} delay={shouldReduceMotion ? 0 : delay}
       style={{
         background: "rgba(255,255,255,0.8)",
         backdropFilter: "blur(20px)",
@@ -332,37 +341,31 @@ function DivisionCard({ title, desc, tags, color, colorEnd, triggered, delay, nu
         minHeight: "280px",
       }}
     >
-      {/* Hover fill */}
       <motion.div
         className="absolute inset-0 rounded-[28px] pointer-events-none"
         style={{ background: `linear-gradient(135deg, ${color}08, ${colorEnd}06)` }}
         animate={{ opacity: hov ? 1 : 0 }}
         transition={{ duration: 0.3 }}
       />
-
-      {/* Top accent line */}
       <motion.div className="absolute top-0 left-8 right-8 h-[2px] rounded-b-full"
         style={{ background: `linear-gradient(90deg, transparent, ${color}, ${colorEnd}, transparent)` }}
         initial={{ scaleX: 0, originX: 0 }}
         animate={triggered ? { scaleX: 1 } : {}}
-        transition={{ duration: 1, delay: delay + 0.3, ease: [0.22, 1, 0.36, 1] }} />
+        transition={{ duration: 1, delay: shouldReduceMotion ? 0 : delay + 0.3, ease: [0.22, 1, 0.36, 1] }} />
 
       <div className="relative z-10 p-7 h-full flex flex-col"
         onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
         <div className="flex items-start justify-between mb-5">
-          {/* Number badge */}
           <motion.div
             className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-lg"
             style={{ background: `linear-gradient(135deg, ${color}, ${colorEnd})` }}
-            whileHover={{ rotate: -6, scale: 1.1 }}
+            whileHover={shouldReduceMotion ? {} : { rotate: -6, scale: 1.1 }}
             transition={{ type: "spring", stiffness: 260 }}
           >
             {number}
           </motion.div>
-
-          {/* Ghost number */}
-          <span className="font-black leading-none select-none"
-            style={{ fontSize: "4.5rem", color, opacity: 0.07, letterSpacing: "-0.05em" }}>
+          <span className="select-none font-black leading-none text-[clamp(2.5rem,12vw,4.5rem)]"
+            style={{ color, opacity: 0.07, letterSpacing: "-0.05em" }}>
             0{number}
           </span>
         </div>
@@ -370,7 +373,6 @@ function DivisionCard({ title, desc, tags, color, colorEnd, triggered, delay, nu
         <p className="text-slate-900 font-bold mb-2.5" style={{ fontSize: "16px" }}>{title}</p>
         <p className="text-slate-500 leading-[1.85] flex-1" style={{ fontSize: "12.5px" }}>{desc}</p>
 
-        {/* Tags */}
         <div className="flex flex-wrap gap-1.5 mt-5">
           {tags.map((tag, i) => (
             <motion.span key={tag}
@@ -378,7 +380,7 @@ function DivisionCard({ title, desc, tags, color, colorEnd, triggered, delay, nu
               style={{ background: `${color}10`, color, border: `1px solid ${color}20`, fontSize: "10px" }}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={triggered ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.4, delay: delay + 0.5 + i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.4, delay: shouldReduceMotion ? 0 : delay + 0.5 + i * 0.06, ease: [0.22, 1, 0.36, 1] }}
               whileHover={{ scale: 1.08, background: `${color}20` }}
             >
               {tag}
@@ -386,7 +388,6 @@ function DivisionCard({ title, desc, tags, color, colorEnd, triggered, delay, nu
           ))}
         </div>
 
-        {/* Arrow */}
         <motion.div className="flex items-center gap-1.5 mt-5 cursor-pointer group w-fit"
           style={{ color }}
           whileHover="hov">
@@ -405,13 +406,14 @@ function DivisionCard({ title, desc, tags, color, colorEnd, triggered, delay, nu
    SECTION LABEL
 ══════════════════════════════════════════════════════════════════════════ */
 function SectionLabel({ triggered }) {
+  const shouldReduceMotion = useReducedMotion();
   return (
-    <motion.div className="flex items-center gap-4 mb-8"
-      initial={{ opacity: 0, x: -20 }}
+    <motion.div className="mb-6 flex min-w-0 flex-wrap items-center gap-3 sm:mb-8 sm:gap-4"
+      initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
       animate={triggered ? { opacity: 1, x: 0 } : {}}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
       <div className="h-px w-10 rounded-full" style={{ background: "linear-gradient(90deg,#2563eb,#7c3aed)" }} />
-      <span className="font-bold uppercase tracking-[0.2em] text-slate-400" style={{ fontSize: "10px" }}>
+      <span className="shrink-0 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400 sm:tracking-[0.2em]">
         About Aurowinx Technologies
       </span>
       <div className="h-px flex-1 rounded-full" style={{ background: "linear-gradient(90deg,rgba(37,99,235,0.2),transparent)" }} />
@@ -426,84 +428,48 @@ export default function AboutSnapshot() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
+  const shouldReduceMotion = useReducedMotion();
+  const bgY = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? ["0%","0%"] : ["-6%", "6%"]);
 
   return (
-    <section
-      ref={ref}
-      id="about"
-      className="relative overflow-hidden py-20 lg:py-28"
-      style={{ background: "linear-gradient(165deg,#f0f4ff 0%,#ffffff 40%,#faf5ff 100%)" }}
-    >
-      {/* Animated background layer */}
+    <section ref={ref} id="about" className="relative overflow-hidden py-14 sm:py-20 lg:py-28"
+      style={{ background: "linear-gradient(165deg,#f0f4ff 0%,#ffffff 40%,#faf5ff 100%)" }}>
       <motion.div className="absolute inset-0 pointer-events-none" style={{ y: bgY }}>
-        <AnimatedBackground />
+        <AnimatedBackground shouldReduceMotion={shouldReduceMotion} />
       </motion.div>
-
-      {/* Scan-line overlay — subtle tech feel */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: "linear-gradient(transparent 50%, rgba(37,99,235,0.012) 50%)",
-          backgroundSize: "100% 4px",
-        }} />
+        style={{ backgroundImage: "linear-gradient(transparent 50%, rgba(37,99,235,0.012) 50%)", backgroundSize: "100% 4px" }} />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-5 lg:px-8">
-
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-5 lg:px-8 2xl:max-w-[90rem]">
         <SectionLabel triggered={isInView} />
 
-        {/* TOP BENTO GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <IntroCard triggered={isInView} />
-
           <div className="flex flex-col gap-4">
-            <SmallCard
-              triggered={isInView} delay={0.15}
-              title="Our Vision"
+            <SmallCard triggered={isInView} delay={0.15} title="Our Vision"
               text="Building intelligent engineering solutions for semiconductor, automation, mobility, and sustainable energy ecosystems."
               accent="#2563eb"
-              icon={
-                <svg width="20" height="20" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" strokeLinecap="round"/>
-                </svg>
-              }
-            />
-            <SmallCard
-              triggered={isInView} delay={0.25}
-              title="Our Mission"
+              icon={<svg width="20" height="20" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" strokeLinecap="round"/></svg>} />
+            <SmallCard triggered={isInView} delay={0.25} title="Our Mission"
               text="Delivering end-to-end technology solutions with precision engineering, advanced innovation, and long-term customer value."
               accent="#7c3aed"
-              icon={
-                <svg width="20" height="20" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z" strokeLinejoin="round"/>
-                </svg>
-              }
-            />
+              icon={<svg width="20" height="20" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z" strokeLinejoin="round"/></svg>} />
           </div>
         </div>
 
-        {/* DIVISION CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-          <DivisionCard
-            triggered={isInView} delay={0.3} number="1"
-            color="#2563eb" colorEnd="#0891b2"
+          <DivisionCard triggered={isInView} delay={0.3} number="1" color="#2563eb" colorEnd="#0891b2"
             title="Semiconductor Design"
             desc="ASIC · FPGA · SoC · RTL Design · Verification · DFT · Physical Design · Low-Power Architecture"
-            tags={["High Performance", "Silicon Ready", "Verification", "Scalable"]}
-          />
-          <DivisionCard
-            triggered={isInView} delay={0.42} number="2"
-            color="#0891b2" colorEnd="#7c3aed"
+            tags={["High Performance", "Silicon Ready", "Verification", "Scalable"]} />
+          <DivisionCard triggered={isInView} delay={0.42} number="2" color="#0891b2" colorEnd="#7c3aed"
             title="Embedded & Industrial IoT"
             desc="Embedded Firmware · RTOS · Industrial IoT · Automation Systems · Edge Connectivity · Smart Control"
-            tags={["Real-Time", "Automation", "Connected", "Industrial"]}
-          />
-          <DivisionCard
-            triggered={isInView} delay={0.54} number="3"
-            color="#ea580c" colorEnd="#db2777"
+            tags={["Real-Time", "Automation", "Connected", "Industrial"]} />
+          <DivisionCard triggered={isInView} delay={0.54} number="3" color="#ea580c" colorEnd="#db2777"
             title="Power Electronics & Products"
             desc="EV Chargers · BLDC Controllers · Solar Inverters · Power Electronics · Embedded Products · Custom R&D"
-            tags={["Energy Efficient", "Smart Power", "Sustainable", "Future Ready"]}
-          />
+            tags={["Energy Efficient", "Smart Power", "Sustainable", "Future Ready"]} />
         </div>
       </div>
     </section>

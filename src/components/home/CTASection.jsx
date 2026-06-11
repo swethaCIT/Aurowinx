@@ -511,63 +511,62 @@ const SOCIALS = [
 ════════════════════════════════════════════════════════ */
 const CSS = `
   .cta-wrap * { box-sizing: border-box; }
+  .cta-wrap { overflow-x: clip; width: 100%; }
+
+  .cta-inner { max-width: 1280px; margin: 0 auto; width: 100%; }
 
   .hero-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 56px; align-items: center; min-height: 520px;
+    display: grid; grid-template-columns: 1fr;
+    gap: clamp(1.75rem, 4vw, 3.5rem); align-items: center; min-height: unset;
   }
-  .canvas-wrap  { position: relative; height: 480px; }
-  .stats-row    { display: flex; gap: 28px; flex-wrap: wrap; }
-  .contact-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
-  .img-grid     { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 10px; height: 256px; }
-  .btn-row      { display: flex; gap: 14px; flex-wrap: wrap; }
+  .canvas-wrap  { position: relative; height: clamp(220px, 45vw, 480px); min-height: 220px; }
+  .stats-row    { display: flex; gap: clamp(0.875rem, 3vw, 1.75rem); flex-wrap: wrap; }
+  .contact-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .img-grid     { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; height: auto; }
+  .img-grid > * { min-height: 100px; height: clamp(100px, 22vw, 150px); }
+  .btn-row      { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-row a { max-width: 100%; }
 
-  .footer-top    { display: grid; grid-template-columns: 1.8fr 1fr 1fr 1.3fr; gap: 48px; padding: 64px 48px 48px; }
-  .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 20px 48px 28px; }
-  .footer-socials { display: flex; gap: 10px; }
+  .footer-top    { display: grid; grid-template-columns: 1fr; gap: 24px; padding: 40px 20px 32px; }
+  .footer-bottom { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; flex-wrap: wrap; padding: 16px 20px 22px; }
+  .footer-socials { display: flex; gap: 10px; flex-wrap: wrap; }
+  .newsletter-row { display: flex; flex-direction: column; gap: 0; }
 
-  .sec-pad { padding: 88px 48px 72px; }
-  .sec-pad-compact { padding: 48px 48px 40px; }
-  .img-pad { padding: 0 48px 72px; }
-  .con-pad { padding: 0 48px 72px; }
-  .con-pad-compact { padding: 0 48px 48px; }
+  .sec-pad { padding: clamp(3rem, 8vw, 5.5rem) clamp(1rem, 4vw, 3rem) clamp(2.75rem, 6vw, 4.5rem); }
+  .sec-pad-compact { padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 4vw, 3rem) clamp(1.75rem, 4vw, 2.5rem); }
+  .img-pad { padding: 0 clamp(1rem, 4vw, 3rem) clamp(2.75rem, 6vw, 4.5rem); }
+  .con-pad { padding: 0 clamp(1rem, 4vw, 3rem) clamp(2.75rem, 6vw, 4.5rem); }
+  .con-pad-compact { padding: 0 clamp(1rem, 4vw, 3rem) clamp(2rem, 4vw, 3rem); }
 
-  @media (max-width: 1100px) {
-    .hero-grid    { grid-template-columns: 1fr; gap: 36px; min-height: unset; }
-    .canvas-wrap  { height: 380px; }
-    .img-grid     { grid-template-columns: 1fr 1fr; height: auto; }
-    .img-grid > * { height: 150px; }
+  @media (min-width: 480px) {
+    .btn-row { gap: 14px; }
+    .img-grid > * { min-height: 120px; }
+  }
+
+  @media (min-width: 640px) {
     .contact-grid { grid-template-columns: 1fr 1fr; }
-    .footer-top   { grid-template-columns: 1fr 1fr; gap: 36px; padding: 48px 36px 36px; }
-    .footer-bottom { padding: 18px 36px 24px; }
-    .sec-pad { padding: 64px 36px 56px; }
-    .img-pad { padding: 0 36px 56px; }
-    .con-pad { padding: 0 36px 56px; }
+    .newsletter-row { flex-direction: row; }
+    .newsletter-row button { width: auto; }
   }
 
-  @media (max-width: 768px) {
-    .hero-grid    { gap: 28px; }
-    .canvas-wrap  { height: 300px; }
-    .img-grid     { grid-template-columns: 1fr 1fr; }
-    .img-grid > * { height: 120px; }
-    .contact-grid { grid-template-columns: 1fr; }
-    .stats-row    { gap: 18px; }
+  @media (min-width: 768px) {
     .footer-top   { grid-template-columns: 1fr 1fr; gap: 28px; padding: 40px 20px 32px; }
-    .footer-bottom { flex-direction: column; align-items: flex-start; padding: 16px 20px 22px; }
-    .sec-pad { padding: 52px 20px 44px; }
-    .sec-pad-compact { padding: 36px 20px 28px; }
-    .img-pad { padding: 0 20px 44px; }
-    .con-pad { padding: 0 20px 44px; }
-    .con-pad-compact { padding: 0 20px 32px; }
+    .footer-bottom { flex-direction: row; align-items: center; justify-content: space-between; }
+    .btn-row      { flex-direction: row; }
   }
 
-  @media (max-width: 480px) {
-    .canvas-wrap  { height: 240px; }
-    .img-grid > * { height: 100px; }
-    .btn-row      { flex-direction: column; gap: 10px; }
-    .footer-top   { grid-template-columns: 1fr; gap: 24px; }
-    .footer-bottom { gap: 12px; }
-    .stats-row    { gap: 14px; }
+  @media (min-width: 1100px) {
+    .hero-grid    { grid-template-columns: 1fr 1fr; min-height: 520px; }
+    .canvas-wrap  { height: 480px; }
+    .img-grid     { grid-template-columns: 1.5fr 1fr 1fr 1fr; height: 256px; }
+    .img-grid > * { height: 100%; min-height: unset; }
+    .contact-grid { grid-template-columns: repeat(3, 1fr); }
+    .footer-top   { grid-template-columns: 1.8fr 1fr 1fr 1.3fr; gap: 48px; padding: 64px 48px 48px; }
+    .footer-bottom { padding: 20px 48px 28px; }
+  }
+
+  @media (min-width: 1536px) {
+    .cta-inner { max-width: 90rem; }
   }
 `;
 
@@ -607,7 +606,7 @@ export default function CTASection({ compact = false }) {
           filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
 
         {/* ════ HERO ════ */}
-        <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 2 }} className={compact ? "sec-pad-compact" : "sec-pad"}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 2 }} className={`cta-inner ${compact ? "sec-pad-compact" : "sec-pad"}`}>
           <div className="hero-grid">
 
             {/* LEFT */}
@@ -739,7 +738,7 @@ export default function CTASection({ compact = false }) {
         {/* ════ IMAGE MOSAIC ════ */}
         {!compact && (
         <motion.div style={{ y: parallaxY }}>
-          <div style={{ maxWidth: 1280, margin: "0 auto" }} className="img-pad">
+          <div style={{ maxWidth: 1280, margin: "0 auto" }} className="cta-inner img-pad">
             <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.28 }}
               style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
               <div style={{ flex: 1, height: "0.5px", background: "#e2e8f0" }} />
@@ -755,7 +754,7 @@ export default function CTASection({ compact = false }) {
         )}
 
         {/* ════ CONTACT STRIP ════ */}
-        <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 2 }} className={compact ? "con-pad-compact" : "con-pad"}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 2 }} className={`cta-inner ${compact ? "con-pad-compact" : "con-pad"}`}>
           <div className="contact-grid">
             {[
               { icon: "⚡", label: "Start a Project", sub: "Tell us what you're building", href: "/contact",                accent: "#3b82f6" },
@@ -784,7 +783,7 @@ export default function CTASection({ compact = false }) {
 
           <div style={{ height: 2, background: "linear-gradient(90deg,transparent,#3b82f6 25%,#06b6d4 50%,#8b5cf6 75%,transparent)" }} />
 
-          <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 2 }} className="footer-top">
+          <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 2 }} className="cta-inner footer-top">
 
             {/* Brand */}
             <div>
@@ -878,10 +877,10 @@ export default function CTASection({ compact = false }) {
               <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, lineHeight: 1.65, margin: "0 0 18px" }}>
                 Get the latest on semiconductor breakthroughs, embedded innovations &amp; AurowinX product launches.
               </p>
-              <div style={{ display: "flex", gap: 0, borderRadius: 10, overflow: "hidden",
+              <div className="newsletter-row" style={{ display: "flex", gap: 0, borderRadius: 10, overflow: "hidden",
                 border: "1.5px solid rgba(59,130,246,0.25)", background: "rgba(255,255,255,0.04)" }}>
                 <input placeholder="you@company.com" style={{
-                  flex: 1, background: "transparent", border: "none", outline: "none",
+                  flex: 1, minWidth: 0, width: "100%", background: "transparent", border: "none", outline: "none",
                   color: "#fff", fontSize: 13, padding: "11px 14px",
                   fontFamily: "'Sora',sans-serif",
                 }} />
@@ -890,6 +889,7 @@ export default function CTASection({ compact = false }) {
                   border: "none", color: "#fff", fontWeight: 700, fontSize: 12,
                   padding: "11px 16px", cursor: "pointer", whiteSpace: "nowrap",
                   fontFamily: "'Sora',sans-serif", letterSpacing: "0.05em",
+                  width: "100%",
                 }}>Subscribe →</button>
               </div>
               <div style={{ marginTop: 24, display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -908,11 +908,11 @@ export default function CTASection({ compact = false }) {
             </div>
           </div>
 
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 48px" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)" }} className="cta-inner">
             <div style={{ height: "1px", background: "rgba(255,255,255,0.07)" }} />
           </div>
 
-          <div style={{ maxWidth: 1280, margin: "0 auto" }} className="footer-bottom">
+          <div style={{ maxWidth: 1280, margin: "0 auto" }} className="cta-inner footer-bottom">
             <p style={{ color: "rgba(255,255,255,0.2)", fontSize: 12, margin: 0 }}>
               © {new Date().getFullYear()} AurowinX Technologies Pvt. Ltd. · Chennai, Tamil Nadu, India · All rights reserved.
             </p>

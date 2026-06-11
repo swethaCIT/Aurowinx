@@ -187,7 +187,7 @@ function IndustryPill({ item, index, triggered }) {
   const [hov, setHov] = useState(false);
   return (
     <motion.div
-      className="flex items-center gap-3 px-5 py-3.5 rounded-2xl cursor-default transition-all duration-300"
+      className="flex min-w-0 items-center gap-3 rounded-2xl px-4 py-3 transition-all duration-300 sm:gap-3 sm:px-5 sm:py-3.5"
       style={{
         background: hov ? `linear-gradient(135deg, ${item.color}25, ${item.color}10)` : "rgba(30,41,59,0.65)",
         border: `1px solid ${hov ? item.color + "50" : "rgba(255,255,255,0.08)"}`,
@@ -338,7 +338,7 @@ export default function WhyAurowinx() {
   const blobY = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
 
   return (
-    <section ref={ref} id="why" className="relative overflow-hidden py-20 lg:py-28"
+    <section ref={ref} id="why" className="relative overflow-hidden py-14 sm:py-20 lg:py-28"
       style={{ background: "linear-gradient(165deg,#f8fafc 0%,#ffffff 50%,#f0f4ff 100%)" }}>
 
       {/* Animated blobs & Background chips */}
@@ -365,10 +365,10 @@ export default function WhyAurowinx() {
       {/* Floating Right Side Chips */}
       <FloatingChipsRight />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-5 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-5 lg:px-8 2xl:max-w-[90rem]">
 
         {/* ── Section label ── */}
-        <motion.div className="flex items-center gap-4 mb-6"
+        <motion.div className="mb-6 flex min-w-0 flex-wrap items-center gap-3 sm:gap-4"
           initial={{ opacity:0, x:-20 }} animate={isInView?{opacity:1,x:0}:{}}
           transition={{ duration:0.6, ease:[0.22,1,0.36,1] }}>
           <div className="h-px w-10 rounded-full" style={{ background:"linear-gradient(90deg,#2563eb,#7c3aed)" }} />
@@ -379,9 +379,9 @@ export default function WhyAurowinx() {
         </motion.div>
 
         {/* ── Heading ── */}
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-14">
-          <motion.h2 className="text-slate-900 font-black"
-            style={{ fontSize:"clamp(2.2rem,4.5vw,3.4rem)", letterSpacing:"-0.04em", lineHeight:1.02, maxWidth:"560px" }}
+        <div className="mb-14 flex flex-col gap-6 lg:mb-14 lg:flex-row lg:items-end lg:justify-between">
+          <motion.h2 className="max-w-[min(560px,100%)] font-black text-slate-900"
+            style={{ fontSize:"clamp(1.75rem, 5vw, 3.4rem)", letterSpacing:"-0.04em", lineHeight:1.05 }}
             initial={{ opacity:0, y:22 }} animate={isInView?{opacity:1,y:0}:{}}
             transition={{ duration:0.7, delay:0.1, ease:[0.22,1,0.36,1] }}>
             Built Different.{" "}
@@ -390,8 +390,8 @@ export default function WhyAurowinx() {
               Engineered Better.
             </span>
           </motion.h2>
-          <motion.p className="text-slate-400 max-w-sm lg:text-right"
-            style={{ fontSize:"14px", lineHeight:1.8 }}
+          <motion.p className="max-w-sm text-slate-400 lg:text-right"
+            style={{ fontSize:"clamp(13px, 2.8vw, 14px)", lineHeight:1.8 }}
             initial={{ opacity:0, y:14 }} animate={isInView?{opacity:1,y:0}:{}}
             transition={{ duration:0.6, delay:0.2, ease:[0.22,1,0.36,1] }}>
             Six core reasons why industry leaders trust Aurowinx
@@ -400,7 +400,7 @@ export default function WhyAurowinx() {
         </div>
 
         {/* ── 6 strength cards ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
+        <div className="mb-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {STRENGTHS.map((s,i) => (
             <StrengthCard key={s.num} s={s} index={i} triggered={isInView} />
           ))}
@@ -417,7 +417,7 @@ export default function WhyAurowinx() {
             <div className="h-px flex-1" style={{ background:"linear-gradient(90deg,rgba(37,99,235,0.15),transparent)" }} />
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
             {INDUSTRIES.map((item,i) => (
               <IndustryPill key={item.label} item={item} index={i} triggered={isInView} />
             ))}

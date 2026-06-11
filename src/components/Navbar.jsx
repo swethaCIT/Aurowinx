@@ -91,7 +91,7 @@ const products = [
   {
     icon: Wrench,
     name: 'Product Engineering',
-    path: '/products/product-engineering',
+    path: '/products#product-engineering',
     description: 'End-to-end hardware product lifecycle management from concept to production.',
     color: 'text-sky-400',
     bg: 'bg-sky-500/10',
@@ -106,7 +106,7 @@ const products = [
   {
     icon: Zap,
     name: 'Embedded Systems',
-    path: '/products/embedded-systems',
+    path: '/products#embedded-systems',
     description: 'Firmware, RTOS, and micro-architecture solutions for resource-constrained targets.',
     color: 'text-yellow-400',
     bg: 'bg-yellow-500/10',
@@ -121,7 +121,7 @@ const products = [
   {
     icon: Fingerprint,
     name: 'IoT & Automation',
-    path: '/products/iot-automation',
+    path: '/products#iot-automation',
     description: 'Intelligent edge computing and smart grid architectures at industrial scale.',
     color: 'text-cyan-400',
     bg: 'bg-cyan-500/10',
@@ -133,25 +133,26 @@ const products = [
     sub: 'Autonomous.',
     body: 'Edge AI inference pipelines, sensor fusion, OTA update infrastructure and zero-trust device security at scale.',
   },
-  {
-    icon: Lightbulb,
-    name: 'Electronics Development',
-    path: '/products/electronics-development',
-    description: 'High-speed PCB design, signal integrity analysis, and system integration.',
-    color: 'text-orange-400',
-    bg: 'bg-orange-500/10',
-    accent: '#fb923c',
-    glowA: 'rgba(251,146,60,0.45)',
-    glowB: 'rgba(249,115,22,0.25)',
-    tag: 'PCB / SI',
-    headline: 'Signal Pure.',
-    sub: 'Power Clean.',
-    body: 'Multi-layer PCB design with impedance-controlled stackups, EMI compliance, and thermal management for high-power systems.',
-  },
+  // AFTER
+{
+  icon: Lightbulb,
+  name: 'Electronics Development',
+  path: '/products#electronics-development',
+  description: 'EV charging, BLDC motor control, and solar inverter solutions for sustainable power.',
+  color: 'text-orange-400',
+  bg: 'bg-orange-500/10',
+  accent: '#fb923c',
+  glowA: 'rgba(251,146,60,0.45)',
+  glowB: 'rgba(249,115,22,0.25)',
+  tag: 'EV · BLDC · Solar',
+  headline: 'Intelligent Power.',
+  sub: 'Sustainable World.',
+  body: 'EV charging infrastructure, BLDC motor drives, and solar inverters — end-to-end power electronics for sustainable mobility and renewable ecosystems.',
+},
   {
     icon: Network,
     name: 'Custom R&D Solutions',
-    path: '/products/custom-rd',
+    path: '/products#custom-rd',
     description: 'Research-driven innovation, technology scouting, and rapid prototyping lab.',
     color: 'text-violet-400',
     bg: 'bg-violet-500/10',
@@ -255,7 +256,7 @@ const RightPanel = ({ item, type }) => {
   const Visual = type === 'solutions' ? ChipVisual : NodeVisual;
 
   return (
-    <div className="w-72 shrink-0 bg-[#f0f8ff]/80 border-l border-blue-900/10 relative overflow-hidden flex flex-col p-7">
+    <div className="relative flex w-56 shrink-0 flex-col overflow-hidden border-l border-blue-900/10 bg-[#f0f8ff]/80 p-5 lg:w-72 lg:p-7">
       {/* Grid bg */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -337,9 +338,9 @@ const MegaMenu = ({ isOpen, items, type, onMouseEnter, onMouseLeave, onItemClick
             }}
           />
 
-          <div className="max-w-6xl mx-auto flex">
+          <div className="max-w-6xl mx-auto flex overflow-hidden">
             {/* LEFT */}
-            <div className="flex-1 py-7 px-8">
+            <div className="min-w-0 flex-1 py-7 px-4 sm:px-8">
               <p
                 className="text-[10px] font-bold tracking-[0.2em] uppercase mb-5 flex items-center gap-2"
                 style={{ color: 'rgba(96,165,250,0.6)' }}
@@ -466,6 +467,11 @@ const DesktopNavLink = ({
 
   const handleClick = () => {
     if (hasDropdown) {
+      if (title === 'Products') {
+        navigate('/products#product-hero');
+        return;
+      }
+
       // Toggle the dropdown; navigation happens via items inside the mega menu
       if (onClick) onClick();
     } else if (path) {
@@ -644,7 +650,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
             exit={{ x: '100%' }}
             transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="absolute right-0 top-0 bottom-0 w-80 max-w-full bg-white shadow-2xl flex flex-col"
+            className="absolute bottom-0 right-0 top-0 flex w-[min(320px,85vw)] max-w-full flex-col bg-white shadow-2xl sm:w-80"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
@@ -782,12 +788,12 @@ export default function Navbar() {
           />
         )}
 
-        <div className="h-full max-w-6xl mx-auto px-6 flex items-center justify-between">
+        <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 sm:px-6">
 
           {/* Logo — use Link for SPA navigation */}
           <Link to="/" className="shrink-0 group" style={{ textDecoration: 'none' }}>
             <span
-              className="text-[19px] font-black tracking-[0.12em] transition-colors duration-200"
+              className="text-[15px] font-black tracking-[0.1em] transition-colors duration-200 sm:text-[19px] sm:tracking-[0.12em]"
               style={{ color: scrolled ? '#0f172a' : 'rgba(255,255,255,0.95)' }}
             >
               AUROWINX

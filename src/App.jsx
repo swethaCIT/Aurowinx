@@ -1,5 +1,3 @@
-// src/App.jsx
-
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -9,14 +7,15 @@ import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import CompanyPage from "./pages/CompanyPage";
 import CareerPage from "./pages/CareerPage";
-
-// Feature Routes
+import ProductPage from "./pages/ProductPage";
+const JobDetailPage = lazy(() => import("./pages/JobDetailPage"));
 const SolutionsRoutes = lazy(() => import("./routes/SolutionsRoutes"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
 
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen overflow-x-clip bg-white">
         <Navbar />
 
         <Suspense
@@ -28,9 +27,12 @@ export default function App() {
         >
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/products" element={<ProductPage />} />
             <Route path="/solutions/*" element={<SolutionsRoutes />} />
             <Route path="/company" element={<CompanyPage />} />
             <Route path="/careers" element={<CareerPage />} />
+            <Route path="/careers/:slug" element={<JobDetailPage />} />
+            <Route path="/contact" element={<ContactPage />} /> 
           </Routes>
         </Suspense>
       </div>

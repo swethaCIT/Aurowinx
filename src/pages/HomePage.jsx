@@ -11,7 +11,7 @@ const CTASection = lazy(() => import("../components/home/CTASection"));
 
 export default function HomePage() {
   return (
-    <main>
+    <main className="w-full max-w-[100vw] overflow-x-clip">
       <HeroSection />
       <Suspense fallback={<div style={{ minHeight: 180 }} />}><StatsBar /></Suspense>
       <Suspense fallback={<div style={{ minHeight: 220 }} />}><AboutSnapshot /></Suspense>
