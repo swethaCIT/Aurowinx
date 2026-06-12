@@ -1,10 +1,13 @@
 // PhysicalFlow.jsx — Physical Design Flow
-// Horizontal timeline: Synthesis → PNR → Sign-Off
+// Responsive: Mobile/Tablet carousel + accordion, Desktop/TV grid layout
 // Unique design: floating phase cards, animated connectors, image panels
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { Layers, Cpu, Zap, CheckCircle2, ArrowRight, ChevronRight } from "lucide-react";
+import {
+  Layers, Cpu, Zap, CheckCircle2, ArrowRight, ChevronRight,
+  ChevronDown, ChevronLeft,
+} from "lucide-react";
 import { C, FONT, EASE } from "./theme";
 
 const PHASES = [
@@ -69,6 +72,32 @@ const PHASES = [
   },
 ];
 
+/* ── Responsive breakpoint hook ── */
+function useViewport() {
+  const [width, setWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1280
+  );
+  useEffect(() => {
+    let raf;
+    const onResize = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => setWidth(window.innerWidth));
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+  return {
+    width,
+    isMobile: width < 640,
+    isTablet: width >= 640 && width < 1024,
+    isCompact: width < 1024,
+    isTV: width >= 1600,
+  };
+}
+
 /* ── Floating background particles ── */
 function Particles() {
   const pts = Array.from({ length: 20 }, (_, i) => ({
@@ -94,7 +123,7 @@ function Particles() {
   );
 }
 
-/* ── Phase tab button ── */
+/* ── Phase tab button (desktop/TV row) ── */
 function PhaseTab({ phase, active, onClick, i, inView }) {
   return (
     <motion.button
@@ -121,7 +150,6 @@ function PhaseTab({ phase, active, onClick, i, inView }) {
           position: "relative", overflow: "hidden",
         }}
       >
-        {/* Glow behind icon when active */}
         {active && (
           <motion.div
             initial={{ scale: 0 }} animate={{ scale: 2.5 }}
@@ -157,7 +185,7 @@ function PhaseTab({ phase, active, onClick, i, inView }) {
   );
 }
 
-/* ── Connector arrow ── */
+/* ── Connector arrow (desktop/TV row) ── */
 function Connector({ color, inView, delay }) {
   return (
     <motion.div
@@ -175,8 +203,196 @@ function Connector({ color, inView, delay }) {
   );
 }
 
-/* ── Detail panel ── */
-function DetailPanel({ phase, inView }) {
+/* ── Mobile / Tablet phase carousel card ── */
+function PhaseCard({ phase, active, onClick, i, isMobile }) {
+  return (
+    <motion.button
+      onClick={onClick}
+      whileTap={{ scale: 0.97 }}
+      style={{
+        scrollSnapAlign: "center",
+        flex: isMobile ? "0 0 78%" : "0 0 46%",
+        minWidth: isMobile ? "78%" : "46%",
+        border: "none", cursor: "pointer", background: "transparent",
+        fontFamily: FONT, padding: 0,
+      }}
+    >
+      <motion.div
+        animate={{
+          background: active ? phase.color : "#fff",
+          boxShadow: active ? `0 16px 40px ${phase.color}35` : C.shadowSm,
+          scale: active ? 1 : 0.96,
+        }}
+        transition={{ duration: 0.35, ease: EASE }}
+        style={{
+          borderRadius: 18, padding: "16px 16px",
+          border: `1.5px solid ${active ? phase.color : C.borderLight}`,
+          display: "flex", alignItems: "center", gap: 12,
+          position: "relative", overflow: "hidden",
+        }}
+      >
+        <div style={{
+          width: 46, height: 46, borderRadius: 12, flexShrink: 0,
+          background: active ? "rgba(255,255,255,0.18)" : phase.bg,
+          color: active ? "#fff" : phase.color,
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          {phase.icon}
+        </div>
+        <div style={{ textAlign: "left" }}>
+          <p style={{ margin: 0, fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: active ? "rgba(255,255,255,0.7)" : C.textMuted }}>
+            {phase.tag}
+          </p>
+          <p style={{ margin: "3px 0 0", fontSize: 16, fontWeight: 900, color: active ? "#fff" : C.textPrimary, letterSpacing: "-0.03em", fontFamily: FONT }}>
+            {phase.title}
+          </p>
+          <p style={{ margin: "2px 0 0", fontSize: 11.5, color: active ? "rgba(255,255,255,0.65)" : C.textMuted, fontWeight: 500 }}>
+            {phase.subtitle}
+          </p>
+        </div>
+      </motion.div>
+    </motion.button>
+  );
+}
+
+/* ── Animated pagination dots ── */
+function Dots({ count, active, onSelect, color }) {
+  return (
+    <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 16 }}>
+      {Array.from({ length: count }).map((_, i) => (
+        <motion.button
+          key={i}
+          onClick={() => onSelect(i)}
+          aria-label={`Go to phase ${i + 1}`}
+          style={{ border: "none", cursor: "pointer", padding: 0, background: "transparent" }}
+        >
+          <motion.div
+            animate={{
+              width: active === i ? 28 : 8,
+              background: active === i ? color : C.borderLight,
+            }}
+            transition={{ duration: 0.3, ease: EASE }}
+            style={{ height: 8, borderRadius: 4 }}
+          />
+        </motion.button>
+      ))}
+    </div>
+  );
+}
+
+/* ── Collapsible / dropdown section ── */
+function CollapsibleSection({ title, color, bg, open, onToggle, children, count }) {
+  return (
+    <div style={{
+      borderRadius: 14, overflow: "hidden",
+      border: `1px solid ${color}25`, background: "#fff",
+    }}>
+      <motion.button
+        onClick={onToggle}
+        whileTap={{ scale: 0.98 }}
+        style={{
+          width: "100%", border: "none", cursor: "pointer",
+          background: open ? bg : "#fff",
+          padding: "14px 16px",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          fontFamily: FONT, transition: "background 0.25s ease",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            width: 24, height: 24, borderRadius: 8,
+            background: color, color: "#fff", fontSize: 11, fontWeight: 800,
+          }}>
+            {count}
+          </span>
+          <span style={{ fontSize: 13.5, fontWeight: 800, color: C.textPrimary, letterSpacing: "-0.01em" }}>
+            {title}
+          </span>
+        </div>
+        <motion.div
+          animate={{ rotate: open ? 180 : 0 }}
+          transition={{ duration: 0.35, ease: EASE }}
+          style={{ color, display: "flex" }}
+        >
+          <ChevronDown style={{ width: 18, height: 18 }} />
+        </motion.div>
+      </motion.button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: EASE }}
+            style={{ overflow: "hidden" }}
+          >
+            <div style={{ padding: "4px 12px 12px" }}>
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ── Points list (shared) ── */
+function PointsList({ points, color, bg }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+      {points.map((pt, j) => (
+        <motion.div
+          key={pt.label}
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.04 * j, ease: EASE }}
+          style={{
+            display: "flex", alignItems: "flex-start", gap: 10,
+            padding: "9px 12px", borderRadius: 10,
+            background: j % 2 === 0 ? bg : "#fff",
+            border: `1px solid ${color}15`,
+          }}
+        >
+          <CheckCircle2 style={{ width: 14, height: 14, color, flexShrink: 0, marginTop: 1 }} />
+          <div>
+            <p style={{ margin: 0, fontSize: 12.5, fontWeight: 700, color: C.textPrimary }}>{pt.label}</p>
+            <p style={{ margin: "1px 0 0", fontSize: 11, color: C.textMuted }}>{pt.sub}</p>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+/* ── Output chips (shared) ── */
+function OutputChips({ outputs, color, bg }) {
+  return (
+    <div style={{ display: "flex", gap: 10 }}>
+      {outputs.map((out, i) => (
+        <motion.div
+          key={out}
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1 + i * 0.08 }}
+          style={{
+            flex: 1, padding: "12px 14px", borderRadius: 12,
+            background: bg, border: `1.5px solid ${color}30`,
+            textAlign: "center",
+          }}
+        >
+          <ArrowRight style={{ width: 14, height: 14, color, marginBottom: 4 }} />
+          <p style={{ margin: 0, fontSize: 12, fontWeight: 800, color, letterSpacing: "-0.01em" }}>{out}</p>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+/* ── Desktop / TV detail panel (side-by-side) ── */
+function DetailPanel({ phase }) {
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -187,20 +403,13 @@ function DetailPanel({ phase, inView }) {
         transition={{ duration: 0.45, ease: EASE }}
         style={{
           display: "grid", gridTemplateColumns: "1fr 1.1fr",
-          gap: 24,
-          /* KEY: stretch both columns to the same height */
-          alignItems: "stretch",
+          gap: 24, alignItems: "stretch",
         }}
       >
-        {/* LEFT — Image + output chips, full-height flex column */}
         <div style={{ display: "flex", flexDirection: "column" }}>
-
-          {/* Image — grows to fill whatever height the right card needs */}
           <div style={{
-            borderRadius: 20, overflow: "hidden",
-            position: "relative",
-            flex: 1,                        /* ← fills remaining height */
-            minHeight: 300,                 /* ← never collapses too small */
+            borderRadius: 20, overflow: "hidden", position: "relative",
+            flex: 1, minHeight: 300,
             boxShadow: `0 16px 48px ${phase.color}20`,
           }}>
             <img src={phase.img} alt={phase.title}
@@ -209,7 +418,6 @@ function DetailPanel({ phase, inView }) {
               position: "absolute", inset: 0,
               background: `linear-gradient(135deg, ${phase.color}40 0%, rgba(0,0,0,0.45) 100%)`,
             }} />
-            {/* Phase label overlay */}
             <div style={{ position: "absolute", top: 16, left: 16 }}>
               <span style={{
                 padding: "5px 14px", borderRadius: 50,
@@ -219,7 +427,6 @@ function DetailPanel({ phase, inView }) {
                 {phase.tag}
               </span>
             </div>
-            {/* Title overlay */}
             <div style={{ position: "absolute", bottom: 16, left: 16, right: 16 }}>
               <p style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#fff", letterSpacing: "-0.04em", fontFamily: FONT }}>
                 {phase.title}
@@ -230,63 +437,101 @@ function DetailPanel({ phase, inView }) {
             </div>
           </div>
 
-          {/* Output chips — pinned to bottom, never stretches */}
-          <div style={{ marginTop: 14, display: "flex", gap: 10, flexShrink: 0 }}>
-            {phase.outputs.map((out, i) => (
-              <motion.div
-                key={out}
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 + i * 0.1 }}
-                style={{
-                  flex: 1, padding: "12px 14px", borderRadius: 12,
-                  background: phase.bg, border: `1.5px solid ${phase.color}30`,
-                  textAlign: "center",
-                }}
-              >
-                <ArrowRight style={{ width: 14, height: 14, color: phase.color, marginBottom: 4 }} />
-                <p style={{ margin: 0, fontSize: 12, fontWeight: 800, color: phase.color, letterSpacing: "-0.01em" }}>{out}</p>
-              </motion.div>
-            ))}
+          <div style={{ marginTop: 14, flexShrink: 0 }}>
+            <OutputChips outputs={phase.outputs} color={phase.color} bg={phase.bg} />
           </div>
         </div>
 
-        {/* RIGHT — Description + points */}
         <div style={{
           background: "#fff", borderRadius: 20, padding: "24px 22px",
           border: `1px solid ${C.borderLight}`, boxShadow: C.shadowMd,
         }}>
-          {/* Accent bar */}
           <div style={{ height: 3, background: `linear-gradient(90deg, ${phase.color}, ${phase.color}40)`, borderRadius: 2, marginBottom: 18 }} />
-
           <p style={{ fontSize: 13.5, color: C.textSecondary, lineHeight: 1.85, margin: "0 0 20px" }}>
             {phase.desc}
           </p>
+          <PointsList points={phase.points} color={phase.color} bg={phase.bg} />
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
 
-          {/* Points */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-            {phase.points.map((pt, j) => (
-              <motion.div
-                key={pt.label}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 + j * 0.07, ease: EASE }}
-                style={{
-                  display: "flex", alignItems: "flex-start", gap: 10,
-                  padding: "9px 12px", borderRadius: 10,
-                  background: j % 2 === 0 ? phase.bg : "#fff",
-                  border: `1px solid ${phase.color}15`,
-                }}
-              >
-                <CheckCircle2 style={{ width: 14, height: 14, color: phase.color, flexShrink: 0, marginTop: 1 }} />
-                <div>
-                  <p style={{ margin: 0, fontSize: 12.5, fontWeight: 700, color: C.textPrimary }}>{pt.label}</p>
-                  <p style={{ margin: "1px 0 0", fontSize: 11, color: C.textMuted }}>{pt.sub}</p>
-                </div>
-              </motion.div>
-            ))}
+/* ── Mobile / Tablet detail panel (stacked + accordion) ── */
+function CompactDetailPanel({ phase, isTablet }) {
+  const [open, setOpen] = useState(isTablet); // open by default on tablet, closed on mobile
+
+  // Re-evaluate default open state per phase + breakpoint
+  useEffect(() => {
+    setOpen(isTablet);
+  }, [phase.id, isTablet]);
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={phase.id}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -12 }}
+        transition={{ duration: 0.4, ease: EASE }}
+        style={{ display: "flex", flexDirection: "column", gap: 16 }}
+      >
+        {/* Image */}
+        <div style={{
+          borderRadius: 18, overflow: "hidden", position: "relative",
+          height: isTablet ? 220 : 180,
+          boxShadow: `0 12px 36px ${phase.color}20`,
+        }}>
+          <img src={phase.img} alt={phase.title}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          <div style={{
+            position: "absolute", inset: 0,
+            background: `linear-gradient(135deg, ${phase.color}40 0%, rgba(0,0,0,0.45) 100%)`,
+          }} />
+          <div style={{ position: "absolute", top: 14, left: 14 }}>
+            <span style={{
+              padding: "5px 12px", borderRadius: 50,
+              background: phase.color, color: "#fff",
+              fontSize: 9.5, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
+            }}>
+              {phase.tag}
+            </span>
+          </div>
+          <div style={{ position: "absolute", bottom: 14, left: 14, right: 14 }}>
+            <p style={{ margin: 0, fontSize: 19, fontWeight: 900, color: "#fff", letterSpacing: "-0.04em", fontFamily: FONT }}>
+              {phase.title}
+            </p>
+            <p style={{ margin: "3px 0 0", fontSize: 11.5, color: "rgba(255,255,255,0.7)" }}>
+              {phase.subtitle}
+            </p>
           </div>
         </div>
+
+        {/* Output chips */}
+        <OutputChips outputs={phase.outputs} color={phase.color} bg={phase.bg} />
+
+        {/* Description card */}
+        <div style={{
+          background: "#fff", borderRadius: 16, padding: "16px 16px",
+          border: `1px solid ${C.borderLight}`, boxShadow: C.shadowSm,
+        }}>
+          <div style={{ height: 3, width: 36, background: phase.color, borderRadius: 2, marginBottom: 10 }} />
+          <p style={{ fontSize: 13, color: C.textSecondary, lineHeight: 1.75, margin: 0 }}>
+            {phase.desc}
+          </p>
+        </div>
+
+        {/* Dropdown / accordion for implementation points */}
+        <CollapsibleSection
+          title="Implementation Details"
+          color={phase.color}
+          bg={phase.bg}
+          open={open}
+          onToggle={() => setOpen((o) => !o)}
+          count={phase.points.length}
+        >
+          <PointsList points={phase.points} color={phase.color} bg={phase.bg} />
+        </CollapsibleSection>
       </motion.div>
     </AnimatePresence>
   );
@@ -296,13 +541,56 @@ export default function PhysicalFlow() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [active, setActive] = useState(0);
+  const { isMobile, isTablet, isCompact, isTV } = useViewport();
+
+  const carouselRef = useRef(null);
+  const scrollTimeout = useRef(null);
+
+  // Scroll carousel to the active card (snap-center)
+  const scrollToIndex = (index) => {
+    const container = carouselRef.current;
+    if (!container) return;
+    const card = container.children[index];
+    if (!card) return;
+    const target = card.offsetLeft - (container.offsetWidth - card.offsetWidth) / 2;
+    container.scrollTo({ left: target, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    if (isCompact) scrollToIndex(active);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, isCompact]);
+
+  // Detect active card from manual scroll/swipe
+  const handleScroll = () => {
+    clearTimeout(scrollTimeout.current);
+    scrollTimeout.current = setTimeout(() => {
+      const container = carouselRef.current;
+      if (!container) return;
+      let closest = 0, minDist = Infinity;
+      Array.from(container.children).forEach((child, i) => {
+        const childCenter = child.offsetLeft + child.offsetWidth / 2;
+        const containerCenter = container.scrollLeft + container.offsetWidth / 2;
+        const dist = Math.abs(childCenter - containerCenter);
+        if (dist < minDist) { minDist = dist; closest = i; }
+      });
+      setActive((prev) => (prev === closest ? prev : closest));
+    }, 80);
+  };
+
+  const goPrev = () => setActive((a) => Math.max(0, a - 1));
+  const goNext = () => setActive((a) => Math.min(PHASES.length - 1, a + 1));
 
   return (
     <section
       ref={ref}
       style={{
         background: "linear-gradient(160deg, #f8fafc 0%, #f1f5f9 100%)",
-        padding: "64px 48px 56px",
+        padding: isMobile
+          ? "40px 16px 40px"
+          : isTablet
+          ? "52px 28px 48px"
+          : "clamp(56px, 6vw, 88px) clamp(32px, 5vw, 80px) clamp(48px, 5vw, 72px)",
         position: "relative", overflow: "hidden", fontFamily: FONT,
       }}
     >
@@ -316,42 +604,124 @@ export default function PhysicalFlow() {
         backgroundSize: "48px 48px",
       }} />
 
-      <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 1 }}>
+      <div style={{
+        maxWidth: isTV ? 1760 : 1280,
+        margin: "0 auto", position: "relative", zIndex: 1,
+      }}>
 
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, ease: EASE }}
-          style={{ textAlign: "center", marginBottom: 40 }}
+          style={{ textAlign: "center", marginBottom: isMobile ? 28 : 40 }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 12 }}>
             <div style={{ height: 1, width: 32, background: `linear-gradient(90deg, transparent, ${C.primary})` }} />
             <span style={{ color: C.primary, fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>Our Flow</span>
             <div style={{ height: 1, width: 32, background: `linear-gradient(90deg, ${C.primary}, transparent)` }} />
           </div>
-          <h2 style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 900, color: C.textPrimary, margin: "0 0 10px", letterSpacing: "-0.04em", fontFamily: FONT }}>
+          <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 3rem)", fontWeight: 900, color: C.textPrimary, margin: "0 0 10px", letterSpacing: "-0.04em", fontFamily: FONT }}>
             Physical Design Expertise
           </h2>
-          <p style={{ color: C.textSecondary, fontSize: 14, maxWidth: 460, margin: "0 auto", lineHeight: 1.7 }}>
-            Three-phase flow from RTL to GDSII — click each phase to explore what we deliver.
+          <p style={{ color: C.textSecondary, fontSize: "clamp(13px, 1.4vw, 16px)", maxWidth: 460, margin: "0 auto", lineHeight: 1.7 }}>
+            Three-phase flow from RTL to GDSII — {isCompact ? "swipe to explore each phase." : "click each phase to explore what we deliver."}
           </p>
         </motion.div>
 
-        {/* Phase tabs with connectors */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 28 }}>
-          {PHASES.map((phase, i) => (
-            <div key={phase.id} style={{ display: "flex", alignItems: "center", flex: i < 2 ? "1 1 0" : "1 1 0", gap: 8 }}>
-              <PhaseTab phase={phase} active={active === i} onClick={() => setActive(i)} i={i} inView={inView} />
-              {i < PHASES.length - 1 && (
-                <Connector color={phase.color} inView={inView} delay={0.4 + i * 0.15} />
+        {isCompact ? (
+          <>
+            {/* Mobile / Tablet carousel */}
+            <div style={{ position: "relative", marginBottom: 6 }}>
+              {isTablet && (
+                <>
+                  <button
+                    onClick={goPrev}
+                    disabled={active === 0}
+                    aria-label="Previous phase"
+                    style={{
+                      position: "absolute", left: -6, top: "50%", transform: "translateY(-50%)",
+                      zIndex: 2, width: 36, height: 36, borderRadius: "50%",
+                      border: `1px solid ${C.borderLight}`, background: "#fff",
+                      boxShadow: C.shadowSm, display: "flex", alignItems: "center", justifyContent: "center",
+                      cursor: active === 0 ? "default" : "pointer",
+                      opacity: active === 0 ? 0.4 : 1,
+                    }}
+                  >
+                    <ChevronLeft style={{ width: 18, height: 18, color: C.textPrimary }} />
+                  </button>
+                  <button
+                    onClick={goNext}
+                    disabled={active === PHASES.length - 1}
+                    aria-label="Next phase"
+                    style={{
+                      position: "absolute", right: -6, top: "50%", transform: "translateY(-50%)",
+                      zIndex: 2, width: 36, height: 36, borderRadius: "50%",
+                      border: `1px solid ${C.borderLight}`, background: "#fff",
+                      boxShadow: C.shadowSm, display: "flex", alignItems: "center", justifyContent: "center",
+                      cursor: active === PHASES.length - 1 ? "default" : "pointer",
+                      opacity: active === PHASES.length - 1 ? 0.4 : 1,
+                    }}
+                  >
+                    <ChevronRight style={{ width: 18, height: 18, color: C.textPrimary }} />
+                  </button>
+                </>
               )}
+
+              <div
+                ref={carouselRef}
+                onScroll={handleScroll}
+                style={{
+                  display: "flex", gap: 12,
+                  overflowX: "auto",
+                  scrollSnapType: "x mandatory",
+                  WebkitOverflowScrolling: "touch",
+                  scrollbarWidth: "none",
+                  paddingBottom: 4,
+                  paddingLeft: isMobile ? "11%" : 0,
+                  paddingRight: isMobile ? "11%" : 0,
+                }}
+              >
+                <style>{`
+                  div::-webkit-scrollbar { display: none; }
+                `}</style>
+                {PHASES.map((phase, i) => (
+                  <PhaseCard
+                    key={phase.id}
+                    phase={phase}
+                    active={active === i}
+                    onClick={() => setActive(i)}
+                    i={i}
+                    isMobile={isMobile}
+                  />
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
 
-        {/* Detail panel */}
-        <DetailPanel phase={PHASES[active]} inView={inView} />
+            <Dots count={PHASES.length} active={active} onSelect={setActive} color={PHASES[active].color} />
 
+            {/* Detail content */}
+            <div style={{ marginTop: 22 }}>
+              <CompactDetailPanel phase={PHASES[active]} isTablet={isTablet} />
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Desktop / TV phase tabs with connectors */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 28 }}>
+              {PHASES.map((phase, i) => (
+                <div key={phase.id} style={{ display: "flex", alignItems: "center", flex: "1 1 0", gap: 8 }}>
+                  <PhaseTab phase={phase} active={active === i} onClick={() => setActive(i)} i={i} inView={inView} />
+                  {i < PHASES.length - 1 && (
+                    <Connector color={phase.color} inView={inView} delay={0.4 + i * 0.15} />
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Detail panel */}
+            <DetailPanel phase={PHASES[active]} />
+          </>
+        )}
       </div>
     </section>
   );

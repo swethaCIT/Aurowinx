@@ -1,14 +1,32 @@
 // LevelOfVerif.jsx
 // AurowinX — Level of Verification + We Can Achieve + We Are Capable To
-// Three glow-color cards: purple / teal / coral
+// Responsive: stacked on mobile | 2-col on tablet | 3-col on laptop | 3-col wider on TV
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import {
   CheckCircle2, Zap, Target, BarChart3,
   TrendingUp, Cpu, Shield, Layers, Code2,
 } from "lucide-react";
 import { C, FONT, EASE } from "./theme";
+
+/* ─── useBreakpoint ─────────────────────────── */
+function useBreakpoint() {
+  const [bp, setBp] = useState("laptop");
+  useEffect(() => {
+    function update() {
+      const w = window.innerWidth;
+      if (w <= 640)       setBp("mobile");
+      else if (w <= 1024) setBp("tablet");
+      else if (w >= 1600) setBp("tv");
+      else                setBp("laptop");
+    }
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return bp;
+}
 
 /* ─── GLOW TOKENS ───────────────────────────── */
 const GLOW = {
@@ -30,9 +48,9 @@ const LEVEL_ITEMS = [
 ];
 
 const ACHIEVE_ITEMS = [
-  { icon: <Zap size={16} />,      title: "Faster Debugging",             desc: "Automated triage and waveform analysis cuts debug cycles by 60%." },
-  { icon: <Target size={16} />,   title: "All Possible Scenarios",       desc: "Constrained random + directed tests cover every corner case." },
-  { icon: <BarChart3 size={16} />,title: "100% Code & Functional Coverage", desc: "Disciplined closure across code, toggle, FSM and functional metrics." },
+  { icon: <Zap size={16} />,       title: "Faster Debugging",                desc: "Automated triage and waveform analysis cuts debug cycles by 60%." },
+  { icon: <Target size={16} />,    title: "All Possible Scenarios",          desc: "Constrained random + directed tests cover every corner case." },
+  { icon: <BarChart3 size={16} />, title: "100% Code & Functional Coverage", desc: "Disciplined closure across code, toggle, FSM and functional metrics." },
 ];
 
 const CAPABLE_ITEMS = [
@@ -44,7 +62,7 @@ const CAPABLE_ITEMS = [
 
 /* ─── GLOW CARD WRAPPER ─────────────────────── */
 function GlowCard({ glow, delay = 0, children, style = {} }) {
-  const { base, border } = GLOW[glow];
+  const { base } = GLOW[glow];
   return (
     <motion.div
       initial={{ opacity: 0, y: 22 }}
@@ -70,7 +88,6 @@ function GlowCard({ glow, delay = 0, children, style = {} }) {
         },
       }}
     >
-      {/* subtle tinted inner glow corner */}
       <div style={{
         position: "absolute", top: -40, right: -40,
         width: 120, height: 120, borderRadius: "50%",
@@ -156,13 +173,44 @@ function FeatureCard({ item, i, inView, glow }) {
 export default function LevelOfVerif() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
+  const bp = useBreakpoint();
+
+  const isMobile  = bp === "mobile";
+  const isTablet  = bp === "tablet";
+  const isTV      = bp === "tv";
+
+  /* grid layout per breakpoint */
+  const gridCols = isMobile
+    ? "1fr"
+    : isTablet
+    ? "1fr 1fr"
+    : "1fr 1fr 1fr";
+
+  const sectionPad = isMobile
+    ? "64px 20px 52px"
+    : isTablet
+    ? "72px 32px 60px"
+    : isTV
+    ? "100px 80px 80px"
+    : "64px 48px 56px";
+
+  /* On tablet: purple card spans full width (2 cols),
+     teal + coral sit side by side below              */
+  const purpleStyle = isTablet
+    ? { gridColumn: "1 / -1" }
+    : {};
+
+  /* On tablet: level items show in 2 columns to use the extra width */
+  const levelGridStyle = isTablet
+    ? { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7 }
+    : { display: "flex", flexDirection: "column", gap: 7 };
 
   return (
     <section
       ref={ref}
       style={{
         background: "linear-gradient(160deg, #f8fafc 0%, #f1f5f9 100%)",
-        padding: "64px 48px 56px",
+        padding: sectionPad,
         position: "relative", overflow: "hidden", fontFamily: FONT,
       }}
     >
@@ -174,43 +222,47 @@ export default function LevelOfVerif() {
         backgroundSize: "48px 48px",
       }} />
 
-      <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 1 }}>
+      <div style={{ maxWidth: isTV ? 1600 : 1280, margin: "0 auto", position: "relative", zIndex: 1 }}>
 
         {/* ── Section Header ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, ease: EASE }}
-          style={{ textAlign: "center", marginBottom: 44 }}
+          style={{ textAlign: "center", marginBottom: isMobile ? 32 : 44 }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 12 }}>
             <div style={{ height: 1, width: 28, background: `linear-gradient(90deg, transparent, ${GLOW.purple.base})` }} />
             <span style={{ color: GLOW.purple.base, fontSize: 10, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>Capabilities</span>
             <div style={{ height: 1, width: 28, background: `linear-gradient(90deg, ${GLOW.purple.base}, transparent)` }} />
           </div>
-          <h2 style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 900, color: C.textPrimary, margin: "0 0 10px", letterSpacing: "-0.04em", fontFamily: FONT }}>
+          <h2 style={{
+            fontSize: isMobile ? "clamp(1.6rem, 7vw, 2rem)" : "clamp(1.8rem, 3.5vw, 2.6rem)",
+            fontWeight: 900, color: C.textPrimary,
+            margin: "0 0 10px", letterSpacing: "-0.04em", fontFamily: FONT,
+          }}>
             What We Offer & Deliver
           </h2>
-          <p style={{ color: C.textSecondary, fontSize: 14, maxWidth: 460, margin: "0 auto", lineHeight: 1.7 }}>
+          <p style={{ color: C.textSecondary, fontSize: isMobile ? 13 : 14, maxWidth: 460, margin: "0 auto", lineHeight: 1.7 }}>
             Full-spectrum verification from testbench to sign-off — with measurable outcomes at every stage.
           </p>
         </motion.div>
 
-        {/* ── 3-Column Grid ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20 }}>
+        {/* ── Cards Grid ── */}
+        <div style={{ display: "grid", gridTemplateColumns: gridCols, gap: 20 }}>
 
-          {/* ── COL 1 — Level of Verification (purple) ── */}
-          <GlowCard glow="purple" delay={0.05}>
+          {/* COL 1 — Level of Verification (purple) */}
+          <GlowCard glow="purple" delay={0.05} style={purpleStyle}>
             <SectionLabel text="Level of Verification" color={GLOW.purple.base} />
             <CardTitle>Services We Provide</CardTitle>
-            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+            <div style={levelGridStyle}>
               {LEVEL_ITEMS.map((text, i) => (
                 <LevelItem key={text} text={text} i={i} inView={inView} />
               ))}
             </div>
           </GlowCard>
 
-          {/* ── COL 2 — We Can Achieve (teal) ── */}
+          {/* COL 2 — We Can Achieve (teal) */}
           <GlowCard glow="teal" delay={0.15}>
             <SectionLabel text="We Can Achieve" color={GLOW.teal.base} />
             <CardTitle>Project Outcomes</CardTitle>
@@ -245,7 +297,7 @@ export default function LevelOfVerif() {
             </motion.div>
           </GlowCard>
 
-          {/* ── COL 3 — We Are Capable To (coral) ── */}
+          {/* COL 3 — We Are Capable To (coral) */}
           <GlowCard glow="coral" delay={0.25}>
             <SectionLabel text="We Are Capable To" color={GLOW.coral.base} />
             <CardTitle>Why Teams Choose Us</CardTitle>

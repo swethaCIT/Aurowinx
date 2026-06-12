@@ -392,6 +392,55 @@ function ProductCard({ p, index, inView }) {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   MOBILE PRODUCT CAROUSEL
+══════════════════════════════════════════════════════════════ */
+function MobileProductCarousel({ inView }) {
+  const [index, setIndex] = useState(0);
+  const total = PRODUCTS.length;
+
+  return (
+    <div style={{ marginBottom: 32 }}>
+      {/* Drag track */}
+      <div style={{ overflow: "hidden", touchAction: "pan-y" }}>
+        <motion.div
+          drag="x"
+          dragConstraints={{ left: -(total - 1) * 100 + "%", right: "0%" }}
+          style={{ display: "flex", width: `${total * 100}%`, cursor: "grab" }}
+          animate={{ x: `-${index * (100 / total)}%` }}
+          transition={{ type: "spring", stiffness: 300, damping: 35 }}
+          onDragEnd={(_, info) => {
+            if (info.offset.x < -50 && index < total - 1) setIndex(index + 1);
+            else if (info.offset.x > 50 && index > 0) setIndex(index - 1);
+          }}
+        >
+          {PRODUCTS.map((p, i) => (
+            <div key={p.id} style={{ width: `${100 / total}%`, flexShrink: 0, padding: "0 6px" }}>
+              <ProductCard p={p} index={i} inView={inView} />
+            </div>
+          ))}
+        </motion.div>
+      </div>
+
+      {/* Dot indicators */}
+      <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 18 }}>
+        {PRODUCTS.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setIndex(i)}
+            aria-label={`Go to product ${i + 1}`}
+            style={{
+              width: i === index ? 22 : 7, height: 7, borderRadius: 100, border: "none",
+              background: i === index ? "#0f172a" : "#e2e8f0", cursor: "pointer",
+              transition: "width 0.3s ease, background 0.3s ease", padding: 0,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
    MAIN EXPORT
 ══════════════════════════════════════════════════════════════ */
 export default function ProductShowcase() {
@@ -597,11 +646,18 @@ export default function ProductShowcase() {
           ))}
         </motion.div>
 
-        {/* ── PRODUCT CARDS ── */}
+        {/* ── PRODUCT CARDS: mobile/tablet carousel, desktop grid ── */}
+
+        {/* Mobile / tablet */}
+        <div className="block lg:hidden">
+          <MobileProductCarousel inView={inView} />
+        </div>
+
+        {/* Desktop grid */}
         <div
+          className="hidden lg:grid"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
+            gridTemplateColumns: "repeat(3, 1fr)",
             gap: 24,
             marginBottom: 32,
           }}

@@ -432,7 +432,7 @@ export default function AboutSnapshot() {
   const bgY = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? ["0%","0%"] : ["-6%", "6%"]);
 
   return (
-    <section ref={ref} id="about" className="relative overflow-hidden py-14 sm:py-20 lg:py-28"
+    <section ref={ref} id="about" className="relative overflow-hidden py-12 sm:py-16 lg:py-28"
       style={{ background: "linear-gradient(165deg,#f0f4ff 0%,#ffffff 40%,#faf5ff 100%)" }}>
       <motion.div className="absolute inset-0 pointer-events-none" style={{ y: bgY }}>
         <AnimatedBackground shouldReduceMotion={shouldReduceMotion} />
@@ -443,7 +443,13 @@ export default function AboutSnapshot() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-5 lg:px-8 2xl:max-w-[90rem]">
         <SectionLabel triggered={isInView} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Mobile / tablet: IntroCard only (full width) */}
+        <div className="block lg:hidden">
+          <IntroCard triggered={isInView} />
+        </div>
+
+        {/* Desktop: 3-col grid with IntroCard + small cards */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-4">
           <IntroCard triggered={isInView} />
           <div className="flex flex-col gap-4">
             <SmallCard triggered={isInView} delay={0.15} title="Our Vision"
@@ -457,7 +463,8 @@ export default function AboutSnapshot() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+        {/* Desktop only: Division cards */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-4 mt-4">
           <DivisionCard triggered={isInView} delay={0.3} number="1" color="#2563eb" colorEnd="#0891b2"
             title="Semiconductor Design"
             desc="ASIC · FPGA · SoC · RTL Design · Verification · DFT · Physical Design · Low-Power Architecture"

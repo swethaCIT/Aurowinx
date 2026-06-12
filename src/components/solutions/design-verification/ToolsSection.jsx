@@ -1,12 +1,31 @@
 // ToolsSection.jsx
 // AurowinX — Tools & Capabilities
-// Premium staggered spring animation on both columns
+// Responsive: mobile carousel | tablet carousel+caps | laptop/TV side-by-side
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import { CheckCircle2 } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react";
 import { C, FONT, EASE } from "./theme";
 
+/* ─── useBreakpoint ─────────────────────────── */
+function useBreakpoint() {
+  const [bp, setBp] = useState("laptop");
+  useEffect(() => {
+    function update() {
+      const w = window.innerWidth;
+      if (w <= 640)       setBp("mobile");
+      else if (w <= 1024) setBp("tablet");
+      else if (w >= 1600) setBp("tv");
+      else                setBp("laptop");
+    }
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return bp;
+}
+
+/* ─── data ──────────────────────────────────── */
 const TOOL_CATEGORIES = [
   {
     label: "Simulators",
@@ -59,10 +78,9 @@ const CAPABILITIES = [
   "Co-Verification (HW/SW)",
 ];
 
-/* ─── Spring config — feels snappy but not janky ── */
 const SPRING = { type: "spring", stiffness: 260, damping: 22 };
 
-/* ─── TOOL CHIP ──────────────────────────────── */
+/* ─── ToolChip ───────────────────────────────── */
 function ToolChip({ tool, i, inView, color, bg }) {
   return (
     <motion.span
@@ -88,19 +106,18 @@ function ToolChip({ tool, i, inView, color, bg }) {
   );
 }
 
-/* ─── CATEGORY CARD ──────────────────────────── */
-function CategoryCard({ cat, ci, inView }) {
+/* ─── CategoryCard ───────────────────────────── */
+function CategoryCard({ cat, ci, inView, compact = false }) {
   const { color, bg, glow, label, tools } = cat;
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: compact ? 0 : 28 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ ...SPRING, delay: ci * 0.08 }}
+      transition={{ ...SPRING, delay: compact ? 0 : ci * 0.08 }}
       whileHover="glowing"
-      style={{ position: "relative" }}
+      style={{ position: "relative", height: "100%" }}
     >
-      {/* Glow ring on hover */}
+      {/* Glow ring */}
       <motion.div
         variants={{ glowing: { opacity: 1 } }}
         initial={{ opacity: 0 }}
@@ -112,7 +129,6 @@ function CategoryCard({ cat, ci, inView }) {
           zIndex: 0,
         }}
       />
-
       {/* Ambient blob */}
       <div style={{
         position: "absolute", top: -30, right: -30,
@@ -120,14 +136,14 @@ function CategoryCard({ cat, ci, inView }) {
         background: `${color}12`, filter: "blur(22px)",
         pointerEvents: "none", zIndex: 0,
       }} />
-
-      {/* Card */}
       <motion.div
         variants={{ glowing: { y: -4, transition: { ...SPRING } } }}
         style={{
-          background: "#fff", borderRadius: 14, padding: "16px 18px",
+          background: "#fff", borderRadius: 14,
+          padding: compact ? "18px 16px" : "16px 18px",
           border: `1px solid ${C.borderLight}`, boxShadow: C.shadowSm,
           position: "relative", zIndex: 1, overflow: "hidden",
+          height: "100%", boxSizing: "border-box",
         }}
       >
         {/* Accent bar */}
@@ -142,7 +158,6 @@ function CategoryCard({ cat, ci, inView }) {
             transformOrigin: "top",
           }}
         />
-
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
           <motion.div
@@ -153,11 +168,10 @@ function CategoryCard({ cat, ci, inView }) {
             {label}
           </span>
         </div>
-
         {/* Chips */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
           {tools.map((tool, ti) => (
-            <ToolChip key={tool} tool={tool} i={ci * 6 + ti} inView={inView} color={color} bg={bg} />
+            <ToolChip key={tool} tool={tool} i={compact ? ti : ci * 6 + ti} inView={inView} color={color} bg={bg} />
           ))}
         </div>
       </motion.div>
@@ -165,7 +179,7 @@ function CategoryCard({ cat, ci, inView }) {
   );
 }
 
-/* ─── CAPABILITY ROW ─────────────────────────── */
+/* ─── CapabilityRow ──────────────────────────── */
 function CapabilityRow({ cap, i, inView }) {
   return (
     <motion.div
@@ -193,115 +207,281 @@ function CapabilityRow({ cap, i, inView }) {
   );
 }
 
+/* ─── CapabilitiesPanel ──────────────────────── */
+function CapabilitiesPanel({ inView }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 28 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ ...SPRING, delay: 0.05 }}
+      style={{
+        background: "#fff", borderRadius: 20, padding: "24px 20px",
+        border: `1px solid ${C.borderLight}`, boxShadow: C.shadowMd,
+        display: "flex", flexDirection: "column",
+      }}
+    >
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+          <div style={{ width: 20, height: 2, background: C.primary, borderRadius: 1 }} />
+          <span style={{ fontSize: 10, fontWeight: 700, color: C.primary, letterSpacing: "0.16em", textTransform: "uppercase" }}>What We Do</span>
+        </div>
+        <h3 style={{ fontSize: 17, fontWeight: 900, color: C.textPrimary, margin: 0, letterSpacing: "-0.03em", fontFamily: FONT }}>
+          Verification Capabilities
+        </h3>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1, gap: 0 }}>
+        {CAPABILITIES.map((cap, i) => (
+          <CapabilityRow key={cap} cap={cap} i={i} inView={inView} />
+        ))}
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ ...SPRING, delay: 0.1 + CAPABILITIES.length * 0.07 }}
+        style={{ display: "flex", gap: 8, marginTop: 14 }}
+      >
+        {["16+ Tools", "10+ Capabilities"].map((label) => (
+          <span key={label} style={{
+            flex: 1, textAlign: "center",
+            padding: "8px 0", borderRadius: 10,
+            background: C.gradPrimary,
+            fontSize: 12, fontWeight: 700, color: "#fff",
+            letterSpacing: "0.02em",
+          }}>{label}</span>
+        ))}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* ─── ToolsCarousel ──────────────────────────── */
+const SLIDE_VARIANTS = {
+  enter: (dir) => ({ opacity: 0, x: dir > 0 ? 64 : -64, scale: 0.97 }),
+  center: { opacity: 1, x: 0, scale: 1 },
+  exit:  (dir) => ({ opacity: 0, x: dir > 0 ? -64 : 64, scale: 0.97 }),
+};
+
+function ToolsCarousel({ inView }) {
+  const [[page, dir], setPage] = useState([0, 0]);
+  const total = TOOL_CATEGORIES.length;
+  const touchStart = useRef(null);
+
+  const paginate = (newDir) => setPage(([p]) => [(p + newDir + total) % total, newDir]);
+
+  const onTouchStart = (e) => { touchStart.current = e.touches[0].clientX; };
+  const onTouchEnd   = (e) => {
+    if (touchStart.current === null) return;
+    const delta = touchStart.current - e.changedTouches[0].clientX;
+    if (Math.abs(delta) > 40) paginate(delta > 0 ? 1 : -1);
+    touchStart.current = null;
+  };
+
+  const cat = TOOL_CATEGORIES[page];
+
+  return (
+    <div>
+      {/* Slide window */}
+      <div
+        style={{ position: "relative", overflow: "hidden", minHeight: 180, touchAction: "pan-y" }}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        <AnimatePresence initial={false} custom={dir} mode="wait">
+          <motion.div
+            key={page}
+            custom={dir}
+            variants={SLIDE_VARIANTS}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.36, ease: [0.32, 0.72, 0, 1] }}
+            style={{ width: "100%" }}
+          >
+            <CategoryCard cat={cat} ci={page} inView={inView} compact />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Nav */}
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "center",
+        gap: 14, marginTop: 18,
+      }}>
+        {/* Prev */}
+        <motion.button
+          onClick={() => paginate(-1)}
+          whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}
+          style={{
+            width: 36, height: 36, borderRadius: "50%",
+            border: `1.5px solid ${C.borderLight}`,
+            background: "#fff", color: C.textPrimary,
+            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: C.shadowSm,
+          }}
+        >
+          <ChevronLeft style={{ width: 15, height: 15 }} />
+        </motion.button>
+
+        {/* Pill dots */}
+        <div style={{ display: "flex", gap: 7, alignItems: "center" }}>
+          {TOOL_CATEGORIES.map((c, i) => (
+            <motion.button
+              key={i}
+              onClick={() => setPage([i, i > page ? 1 : -1])}
+              animate={{
+                width: i === page ? 20 : 7,
+                background: i === page ? c.color : "#cbd5e1",
+              }}
+              transition={{ duration: 0.28, ease: EASE }}
+              style={{
+                height: 7, borderRadius: 50,
+                border: "none", cursor: "pointer", padding: 0,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Next */}
+        <motion.button
+          onClick={() => paginate(1)}
+          whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}
+          style={{
+            width: 36, height: 36, borderRadius: "50%",
+            border: `1.5px solid ${C.borderLight}`,
+            background: "#fff", color: C.textPrimary,
+            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: C.shadowSm,
+          }}
+        >
+          <ChevronRight style={{ width: 15, height: 15 }} />
+        </motion.button>
+      </div>
+
+      {/* Counter + label */}
+      <p style={{
+        textAlign: "center", marginTop: 8,
+        fontSize: 11, color: C.textMuted, fontWeight: 600,
+        letterSpacing: "0.1em", textTransform: "uppercase",
+      }}>
+        {page + 1} / {total} — {cat.label}
+      </p>
+    </div>
+  );
+}
+
 /* ─── MAIN ───────────────────────────────────── */
 export default function ToolsSection() {
-  const ref = useRef(null);
+  const ref    = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
+  const bp     = useBreakpoint();
+
+  const isMobile = bp === "mobile";
+  const isTablet = bp === "tablet";
+  const isTV     = bp === "tv";
+  const isSmall  = isMobile || isTablet;
+
+  const sectionPad = isMobile
+    ? "64px 20px 52px"
+    : isTablet
+    ? "72px 32px 60px"
+    : isTV
+    ? "100px 80px 80px"
+    : "64px 48px 56px";
 
   return (
     <section
       ref={ref}
       style={{
         background: "#fff",
-        padding: "64px 48px 56px",
+        padding: sectionPad,
         position: "relative",
         overflow: "hidden",
         fontFamily: FONT,
       }}
     >
-      {/* Dot grid */}
+      {/* Dot grid bg */}
       <div style={{
         position: "absolute", inset: 0, pointerEvents: "none",
         backgroundImage: "radial-gradient(circle, rgba(79,70,229,0.05) 1px, transparent 1px)",
         backgroundSize: "28px 28px",
       }} />
 
-      <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 1 }}>
+      <div style={{ maxWidth: isTV ? 1600 : 1280, margin: "0 auto", position: "relative", zIndex: 1 }}>
 
-        {/* Header */}
+        {/* ── Section Header ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ ...SPRING, delay: 0 }}
-          style={{ textAlign: "center", marginBottom: 44 }}
+          style={{ textAlign: "center", marginBottom: isMobile ? 28 : 44 }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 12 }}>
             <div style={{ height: 1, width: 32, background: `linear-gradient(90deg, transparent, ${C.primary})` }} />
             <span style={{ color: C.primary, fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>Tool Ecosystem</span>
             <div style={{ height: 1, width: 32, background: `linear-gradient(90deg, ${C.primary}, transparent)` }} />
           </div>
-          <h2 style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 900, color: C.textPrimary, margin: "0 0 10px", letterSpacing: "-0.04em", fontFamily: FONT }}>
+          <h2 style={{
+            fontSize: isMobile ? "clamp(1.6rem, 7vw, 2rem)" : "clamp(1.8rem, 3.5vw, 2.6rem)",
+            fontWeight: 900, color: C.textPrimary,
+            margin: "0 0 10px", letterSpacing: "-0.04em", fontFamily: FONT,
+          }}>
             Tools & Capabilities
           </h2>
-          <p style={{ color: C.textSecondary, fontSize: 14, maxWidth: 440, margin: "0 auto", lineHeight: 1.7 }}>
+          <p style={{ color: C.textSecondary, fontSize: isMobile ? 13 : 14, maxWidth: 440, margin: "0 auto", lineHeight: 1.7 }}>
             Industry-standard EDA tools combined with deep methodology expertise across every verification domain.
           </p>
         </motion.div>
 
-        {/* 2-col grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 24, alignItems: "stretch" }}>
-
-          {/* LEFT — fills full grid row height, cards pushed to top */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 14, alignSelf: "stretch" }}>
-            {TOOL_CATEGORIES.map((cat, ci) => (
-              <CategoryCard key={cat.label} cat={cat} ci={ci} inView={inView} />
-            ))}
+        {/* ══════════════════════════════════════
+            MOBILE — carousel + capabilities below
+        ══════════════════════════════════════ */}
+        {isMobile && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            <ToolsCarousel inView={inView} />
+            <CapabilitiesPanel inView={inView} />
           </div>
+        )}
 
-          {/* RIGHT */}
-          <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ ...SPRING, delay: 0.05 }}
-            style={{
-              background: "#fff", borderRadius: 20, padding: "24px 20px",
-              border: `1px solid ${C.borderLight}`, boxShadow: C.shadowMd,
-              display: "flex", flexDirection: "column",
-              alignSelf: "stretch",
-            }}
-          >
-            {/* Header */}
-            <div style={{ marginBottom: 20 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                <div style={{ width: 20, height: 2, background: C.primary, borderRadius: 1 }} />
-                <span style={{ fontSize: 10, fontWeight: 700, color: C.primary, letterSpacing: "0.16em", textTransform: "uppercase" }}>What We Do</span>
-              </div>
-              <h3 style={{ fontSize: 17, fontWeight: 900, color: C.textPrimary, margin: 0, letterSpacing: "-0.03em", fontFamily: FONT }}>
-                Verification Capabilities
-              </h3>
+        {/* ══════════════════════════════════════
+            TABLET — carousel left, capabilities right
+        ══════════════════════════════════════ */}
+        {isTablet && (
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 20,
+            alignItems: "start",
+          }}>
+            <div>
+              <ToolsCarousel inView={inView} />
             </div>
+            <CapabilitiesPanel inView={inView} />
+          </div>
+        )}
 
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1 }}>
-              {CAPABILITIES.map((cap, i) => (
-                <CapabilityRow key={cap} cap={cap} i={i} inView={inView} />
+        {/* ══════════════════════════════════════
+            LAPTOP / TV — original side-by-side grid
+        ══════════════════════════════════════ */}
+        {!isSmall && (
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isTV ? "1.5fr 1fr" : "1.4fr 1fr",
+            gap: 24,
+            alignItems: "stretch",
+          }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {TOOL_CATEGORIES.map((cat, ci) => (
+                <CategoryCard key={cat.label} cat={cat} ci={ci} inView={inView} />
               ))}
             </div>
+            <div style={{ alignSelf: "stretch", display: "flex", flexDirection: "column" }}>
+              <CapabilitiesPanel inView={inView} />
+            </div>
+          </div>
+        )}
 
-            {/* Stat pills — bottom */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ ...SPRING, delay: 0.1 + CAPABILITIES.length * 0.07 }}
-              style={{ display: "flex", gap: 8, marginTop: 14 }}
-            >
-              <span style={{
-                flex: 1, textAlign: "center",
-                padding: "8px 0", borderRadius: 10,
-                background: C.gradPrimary,
-                fontSize: 12, fontWeight: 700, color: "#fff",
-                letterSpacing: "0.02em",
-              }}>16+ Tools</span>
-              <span style={{
-                flex: 1, textAlign: "center",
-                padding: "8px 0", borderRadius: 10,
-                background: C.gradPrimary,
-                fontSize: 12, fontWeight: 700, color: "#fff",
-                letterSpacing: "0.02em",
-              }}>10+ Capabilities</span>
-            </motion.div>
-          </motion.div>
-
-        </div>
       </div>
     </section>
   );

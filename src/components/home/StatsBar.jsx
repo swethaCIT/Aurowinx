@@ -194,15 +194,18 @@ export default function StatsBar() {
         style={{ background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(59,130,246,0.04), transparent 70%)" }}
       />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pb-10 pt-12 sm:px-6 sm:pt-14 lg:px-12 2xl:max-w-[90rem]">
-        <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 sm:gap-y-12 lg:grid-cols-5 lg:gap-x-6 lg:gap-y-0">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pb-8 pt-10 sm:px-6 sm:pb-10 sm:pt-12 lg:px-12 lg:pb-10 lg:pt-14 2xl:max-w-[90rem]">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-5 lg:gap-x-6 lg:gap-y-0">
           {STATS.map((stat, i) => (
             <StatItem key={stat.label} stat={stat} index={i} triggered={isInView} />
           ))}
         </div>
       </div>
 
-      <CapabilityMarquee />
+      {/* Marquee: desktop only */}
+      <div className="hidden lg:block">
+        <CapabilityMarquee />
+      </div>
 
       <div
         className="absolute bottom-0 left-0 right-0 h-px"

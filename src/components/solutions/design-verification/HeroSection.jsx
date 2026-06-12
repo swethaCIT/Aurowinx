@@ -1,6 +1,6 @@
 // HeroSection.jsx — Video Background Hero
 // AurowinX Design Verification
-// Centered heading + subheading over video bg
+// Responsive: matches SDHero pattern exactly
 
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
@@ -57,6 +57,13 @@ const pills = [
   "Coverage Closure",
 ];
 
+const STATS = [
+  { value: "99%+", label: "Functional Coverage" },
+  { value: "UVM",  label: "Industry Methodology" },
+  { value: "12+",  label: "Years Expertise" },
+  { value: "180+", label: "Projects Delivered" },
+];
+
 export default function HeroSection() {
   return (
     <section
@@ -70,23 +77,17 @@ export default function HeroSection() {
         alignItems: "center",
         justifyContent: "center",
         fontFamily: FONT,
-        paddingBottom: 110, /* space for stat strip at bottom */
+        paddingBottom: 110,
       }}
     >
 
       {/* ── VIDEO BACKGROUND — z-index 0 ── */}
       <video
-        autoPlay
-        loop
-        muted
-        playsInline
+        autoPlay loop muted playsInline
         style={{
-          position: "absolute",
-          top: 0, left: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          zIndex: 0,
+          position: "absolute", top: 0, left: 0,
+          width: "100%", height: "100%",
+          objectFit: "cover", zIndex: 0,
         }}
       >
         <source src="/videos/hero-3.mp4" type="video/mp4" />
@@ -94,16 +95,14 @@ export default function HeroSection() {
 
       {/* ── DARK OVERLAY — z-index 1 ── */}
       <div style={{
-        position: "absolute",
-        top: 0, left: 0, right: 0, bottom: 0,
+        position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
         zIndex: 1,
         background: "linear-gradient(160deg, rgba(8,4,24,0.78) 0%, rgba(12,8,36,0.72) 50%, rgba(4,8,24,0.80) 100%)",
       }} />
 
       {/* ── DOT GRID — z-index 2 ── */}
       <div style={{
-        position: "absolute",
-        top: 0, left: 0, right: 0, bottom: 0,
+        position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
         zIndex: 2, pointerEvents: "none",
         backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px)",
         backgroundSize: "28px 28px",
@@ -111,15 +110,11 @@ export default function HeroSection() {
 
       {/* ── MAIN CONTENT — z-index 3 ── */}
       <div style={{
-        position: "relative",
-        zIndex: 3,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
+        position: "relative", zIndex: 3,
+        display: "flex", flexDirection: "column",
+        alignItems: "center", textAlign: "center",
         padding: "80px 24px 0",
-        maxWidth: 860,
-        width: "100%",
+        maxWidth: 860, width: "100%",
       }}>
 
         {/* Breadcrumb */}
@@ -167,12 +162,9 @@ export default function HeroSection() {
           transition={{ duration: 0.85, delay: 0.15, ease: EASE }}
           style={{
             fontSize: "clamp(3rem, 7vw, 5.6rem)",
-            fontWeight: 900,
-            lineHeight: 0.95,
+            fontWeight: 900, lineHeight: 0.95,
             letterSpacing: "-0.05em",
-            margin: "0 0 24px",
-            fontFamily: FONT,
-            color: "#fff",
+            margin: "0 0 24px", fontFamily: FONT, color: "#fff",
           }}
         >
           Zero Escape.
@@ -194,8 +186,7 @@ export default function HeroSection() {
           style={{
             color: "rgba(203,213,225,0.80)",
             fontSize: "clamp(1rem, 1.8vw, 1.1rem)",
-            lineHeight: 1.85,
-            maxWidth: 620,
+            lineHeight: 1.85, maxWidth: 620,
             margin: "0 0 36px",
           }}
         >
@@ -208,11 +199,13 @@ export default function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.38 }}
+          className="sol-hero-pills"
           style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginBottom: 40 }}
         >
           {pills.map((p, i) => (
             <motion.span
               key={p}
+              data-pill-index={i}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.42 + i * 0.07, ease: EASE }}
@@ -246,7 +239,7 @@ export default function HeroSection() {
           </MagButton>
         </motion.div>
 
-        {/* Trust line */}
+        {/* Trust line — short on mobile, full on desktop */}
         <motion.p
           initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ delay: 0.65 }}
@@ -254,21 +247,22 @@ export default function HeroSection() {
             color: "rgba(148,163,184,0.50)",
             fontSize: 12, margin: 0,
             display: "flex", alignItems: "center", gap: 6,
-            justifyContent: "center",
+            justifyContent: "center", flexWrap: "wrap", textAlign: "center",
           }}
         >
           <Activity style={{ width: 13, height: 13, color: "#4ade80" }} />
-          Trusted by Qualcomm · TI · ISRO · MediaTek · NXP · Marvell
+          <span className="sol-hero-trust-line">Trusted by Tier-1 silicon teams worldwide</span>
+          <span className="sol-hero-trust-full">Trusted by Qualcomm · TI · ISRO · MediaTek · NXP · Marvell</span>
         </motion.p>
       </div>
 
-      {/* ── SCROLL INDICATOR — z-index 3, above stat strip ── */}
+      {/* ── SCROLL INDICATOR ── */}
       <motion.div
+        className="sol-hero-scroll-cue"
         animate={{ y: [0, 8, 0] }}
         transition={{ duration: 2.2, repeat: Infinity }}
         style={{
-          position: "relative",
-          zIndex: 3,
+          position: "relative", zIndex: 3,
           marginTop: 36,
           display: "flex", flexDirection: "column",
           alignItems: "center", gap: 6,
@@ -278,11 +272,11 @@ export default function HeroSection() {
         <div style={{ width: 1, height: 32, background: "linear-gradient(180deg, rgba(99,102,241,0.5), transparent)" }} />
       </motion.div>
 
-      {/* ── BOTTOM STAT STRIP — z-index 3, pinned to bottom ── */}
+      {/* ── BOTTOM STAT STRIP (desktop grid) — pinned to bottom ── */}
       <motion.div
         initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.7 }}
-        className="sol-hero-stats"
+        className="sol-hero-stats sol-hero-stats-grid"
         style={{
           position: "absolute",
           bottom: 0, left: 0, right: 0,
@@ -294,20 +288,14 @@ export default function HeroSection() {
           borderTop: "1px solid rgba(255,255,255,0.08)",
         }}
       >
-        {[
-          { value: "99%+", label: "Functional Coverage" },
-          { value: "UVM",  label: "Industry Methodology" },
-          { value: "12+",  label: "Years Expertise" },
-          { value: "180+", label: "Projects Delivered" },
-        ].map((s, i) => (
+        {STATS.map((s, i) => (
           <motion.div
             key={s.label}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             transition={{ delay: 0.75 + i * 0.08 }}
             className="sol-hero-stat-item"
             style={{
-              padding: "22px 16px",
-              textAlign: "center",
+              padding: "22px 16px", textAlign: "center",
               borderRight: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none",
             }}
           >
@@ -326,42 +314,89 @@ export default function HeroSection() {
         ))}
       </motion.div>
 
+      {/* ── RESPONSIVE STYLES ── */}
       <style>{`
-        @media (max-width: 768px) {
+        .sol-hero-trust-line { display: none; }
+        .sol-hero-trust-full { display: inline; }
+
+        @media (max-width: 960px) {
           .sol-hero-section {
             padding-bottom: 0px !important;
             min-height: auto !important;
             padding-top: 80px !important;
           }
-          .sol-hero-stats {
-            grid-template-columns: repeat(2, 1fr) !important;
-            position: relative !important;
-            margin-top: 40px;
+          .sol-hero-scroll-cue {
+            display: none !important;
           }
-          .sol-hero-stat-item {
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            padding: 16px 12px !important;
+          .sol-hero-trust-line { display: inline; }
+          .sol-hero-trust-full { display: none; }
+          .sol-hero-pills [data-pill-index="3"],
+          .sol-hero-pills [data-pill-index="4"] {
+            display: none;
           }
-          .sol-hero-stat-item:nth-child(even) {
-            border-right: none !important;
+          .sol-hero-stats-grid {
+            display: none !important;
           }
-          .sol-hero-stat-item:nth-child(3), .sol-hero-stat-item:nth-child(4) {
-            border-bottom: none !important;
+          .sol-hero-stats-scroll {
+            display: flex !important;
           }
         }
         @media (max-width: 480px) {
-          .sol-hero-stats {
-            grid-template-columns: 1fr !important;
-          }
-          .sol-hero-stat-item {
-            border-right: none !important;
-            border-bottom: 1px solid rgba(255,255,255,0.06) !important;
-          }
-          .sol-hero-stat-item:last-child {
-            border-bottom: none !important;
+          .sol-hero-pills [data-pill-index="2"] {
+            display: none;
           }
         }
       `}</style>
+
+      {/* ── MOBILE: horizontal swipe stat strip ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.7 }}
+        className="sol-hero-stats sol-hero-stats-scroll"
+        style={{
+          display: "none",
+          position: "relative",
+          zIndex: 3,
+          marginTop: 32,
+          width: "100%",
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none",
+          gap: 10,
+          padding: "0 16px 4px",
+        }}
+      >
+        {STATS.map((s) => (
+          <div
+            key={s.label}
+            className="sol-hero-stat-item"
+            style={{
+              flex: "0 0 72%",
+              scrollSnapAlign: "start",
+              padding: "18px 16px",
+              textAlign: "center",
+              background: "rgba(0,0,0,0.48)",
+              backdropFilter: "blur(20px)",
+              borderRadius: 14,
+              border: "1px solid rgba(255,255,255,0.07)",
+            }}
+          >
+            <p style={{
+              margin: 0,
+              fontSize: "clamp(1.4rem, 2.5vw, 1.9rem)",
+              fontWeight: 900, color: "#fff",
+              letterSpacing: "-0.04em", fontFamily: FONT,
+            }}>{s.value}</p>
+            <p style={{
+              margin: "4px 0 0", fontSize: 11,
+              color: "rgba(148,163,184,0.55)",
+              fontWeight: 600, letterSpacing: "0.07em", textTransform: "uppercase",
+            }}>{s.label}</p>
+          </div>
+        ))}
+      </motion.div>
+
     </section>
   );
 }

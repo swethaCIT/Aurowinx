@@ -6,7 +6,7 @@ const slides = [
     video: "/videos/hero-2.mp4",
     title: "Redefining The Future Of Intelligent Engineering",
     headingClass:
-      "text-[clamp(1.5rem,5.5vw,3.2rem)] max-w-[min(900px,100%)]",
+      "text-[clamp(1.5rem,5.5vw,3.2rem)] md:text-[3rem] lg:text-[3.2rem] 2xl:text-[4rem] max-w-[min(900px,100%)]",
     description:
       "Advanced semiconductor engineering powering next-generation innovation, performance, and scalability.",
   },
@@ -14,7 +14,7 @@ const slides = [
     video: "/videos/hero-2.mp4",
     title: "Engineering Intelligence Beyond Hardware Systems",
     headingClass:
-      "text-[clamp(1.5rem,5.5vw,3.2rem)] max-w-[min(900px,100%)]",
+      "text-[clamp(1.5rem,5.5vw,3.2rem)] md:text-[3rem] lg:text-[3.2rem] 2xl:text-[4rem] max-w-[min(900px,100%)]",
     description:
       "Precision-driven embedded systems designed for connected, high-performance technologies.",
   },
@@ -22,7 +22,7 @@ const slides = [
     video: "/videos/hero-2.mp4",
     title: "Transforming Industries Through Connected Intelligence",
     headingClass:
-      "text-[clamp(1.5rem,5.5vw,3.2rem)] max-w-[min(900px,100%)]",
+      "text-[clamp(1.5rem,5.5vw,3.2rem)] md:text-[3rem] lg:text-[3.2rem] 2xl:text-[4rem] max-w-[min(900px,100%)]",
     description:
       "Building intelligent automation ecosystems that accelerate the future of smart industries.",
   },
@@ -30,7 +30,7 @@ const slides = [
     video: "/videos/hero-2.mp4",
     title: "Powering The Next Generation Of Smart Mobility",
     headingClass:
-      "text-[clamp(1.5rem,5.5vw,3.2rem)] max-w-[min(900px,100%)]",
+      "text-[clamp(1.5rem,5.5vw,3.2rem)] md:text-[3rem] lg:text-[3.2rem] 2xl:text-[4rem] max-w-[min(900px,100%)]",
     description:
       "Advanced engineering solutions driving intelligent electronics and future-ready energy systems.",
   },
@@ -101,7 +101,7 @@ export default function HeroSection() {
       />
 
       {/* CONTENT */}
-      <div className="relative z-20 flex h-full items-center justify-center px-4 py-24 text-center sm:px-6">
+      <div className="relative z-20 flex h-full items-center justify-center px-4 py-20 text-center sm:px-6 sm:py-24 2xl:px-12 2xl:py-32">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center">
           <AnimatePresence mode="wait">
             <motion.div
@@ -206,7 +206,7 @@ export default function HeroSection() {
 
       {/* SCROLL INDICATOR */}
       <motion.div
-        className="absolute bottom-6 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-1.5 sm:bottom-8 sm:flex"
+        className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-1.5 sm:bottom-8"
         animate={{ y: [0, 6, 0] }}
         transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
       >

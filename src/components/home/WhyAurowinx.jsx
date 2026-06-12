@@ -128,7 +128,7 @@ function StrengthCard({ s, index, triggered }) {
   const [hov, setHov] = useState(false);
   return (
     <motion.div
-      className="relative overflow-hidden rounded-[24px] flex flex-col p-6 cursor-default"
+      className="relative overflow-hidden rounded-[20px] flex flex-col p-4 sm:p-5 lg:rounded-[24px] lg:p-6 cursor-default"
       style={{
         background: hov ? s.bg : "rgba(255,255,255,0.82)",
         border: `1px solid ${hov ? s.border : "rgba(148,163,184,0.13)"}`,
@@ -338,7 +338,7 @@ export default function WhyAurowinx() {
   const blobY = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
 
   return (
-    <section ref={ref} id="why" className="relative overflow-hidden py-14 sm:py-20 lg:py-28"
+    <section ref={ref} id="why" className="relative overflow-hidden py-12 sm:py-16 lg:py-28"
       style={{ background: "linear-gradient(165deg,#f8fafc 0%,#ffffff 50%,#f0f4ff 100%)" }}>
 
       {/* Animated blobs & Background chips */}
@@ -379,7 +379,7 @@ export default function WhyAurowinx() {
         </motion.div>
 
         {/* ── Heading ── */}
-        <div className="mb-14 flex flex-col gap-6 lg:mb-14 lg:flex-row lg:items-end lg:justify-between">
+        <div className="mb-8 flex flex-col gap-4 sm:mb-10 lg:mb-14 lg:flex-row lg:items-end lg:justify-between">
           <motion.h2 className="max-w-[min(560px,100%)] font-black text-slate-900"
             style={{ fontSize:"clamp(1.75rem, 5vw, 3.4rem)", letterSpacing:"-0.04em", lineHeight:1.05 }}
             initial={{ opacity:0, y:22 }} animate={isInView?{opacity:1,y:0}:{}}
@@ -400,14 +400,14 @@ export default function WhyAurowinx() {
         </div>
 
         {/* ── 6 strength cards ── */}
-        <div className="mb-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mb-10 grid grid-cols-2 gap-3 sm:gap-4 lg:mb-16 lg:grid-cols-3">
           {STRENGTHS.map((s,i) => (
             <StrengthCard key={s.num} s={s} index={i} triggered={isInView} />
           ))}
         </div>
 
         {/* ── Industry domains ── */}
-        <div className="mb-16">
+        <div className="mb-10 sm:mb-12 lg:mb-16">
           <motion.div className="flex items-center gap-4 mb-7"
             initial={{ opacity:0 }} animate={isInView?{opacity:1}:{}}
             transition={{ duration:0.6, delay:0.45 }}>
@@ -417,15 +417,16 @@ export default function WhyAurowinx() {
             <div className="h-px flex-1" style={{ background:"linear-gradient(90deg,rgba(37,99,235,0.15),transparent)" }} />
           </motion.div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
             {INDUSTRIES.map((item,i) => (
               <IndustryPill key={item.label} item={item} index={i} triggered={isInView} />
             ))}
           </div>
         </div>
 
-        {/* ── Tools & Technologies ── */}
+        {/* ── Tools & Technologies: desktop only ── */}
         <motion.div
+          className="hidden lg:block"
           initial={{ opacity:0, y:20 }} animate={isInView?{opacity:1,y:0}:{}}
           transition={{ duration:0.65, delay:0.7, ease:[0.22,1,0.36,1] }}>
 

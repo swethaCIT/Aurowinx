@@ -9,6 +9,7 @@
 //  • Keyboard: Enter/Space already handled natively by <button>; no changes needed
 
 import { useState, useRef, useEffect } from "react";
+import { motion, useMotionValue, animate } from "framer-motion";
 
 const SOLUTIONS = [
   {
@@ -330,6 +331,112 @@ function AccItem({ sol, isOpen, onToggle }) {
   );
 }
 
+/* ── Mobile/Tablet Drag Carousel ── */
+function MobileCarousel() {
+  const [index, setIndex] = useState(0);
+  const x = useMotionValue(0);
+  const total = SOLUTIONS.length;
+
+  const goTo = (i) => {
+    setIndex(i);
+    animate(x, 0, { duration: 0 });
+  };
+
+  return (
+    <div style={{ background: C.sand, overflow: "hidden" }}>
+      {/* Header */}
+      <div style={{ padding: "clamp(1.5rem,5vw,2.5rem) clamp(1rem,4vw,2rem) 1.25rem", borderBottom: `1.5px solid ${C.sandBorder}` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+          <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.terra, flexShrink: 0 }} />
+          <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.16em", color: C.muted, textTransform: "uppercase" }}>
+            Capabilities — what we do
+          </span>
+        </div>
+        <h2 style={{ fontSize: "clamp(1.7rem, 7vw, 2.5rem)", fontWeight: 900, lineHeight: 1.05, color: C.ink, letterSpacing: "-0.04em", margin: 0 }}>
+          Engineering at every{" "}
+          <em style={{ fontStyle: "italic", fontWeight: 300, color: C.terra }}>layer.</em>
+        </h2>
+      </div>
+
+      {/* Drag track */}
+      <div style={{ overflow: "hidden", touchAction: "pan-y" }}>
+        <motion.div
+          drag="x"
+          dragConstraints={{ left: -(total - 1) * 100 + "%", right: "0%" }}
+          style={{ display: "flex", width: `${total * 100}%`, cursor: "grab" }}
+          animate={{ x: `-${index * (100 / total)}%` }}
+          transition={{ type: "spring", stiffness: 300, damping: 35 }}
+          onDragEnd={(_, info) => {
+            if (info.offset.x < -50 && index < total - 1) setIndex(index + 1);
+            else if (info.offset.x > 50 && index > 0) setIndex(index - 1);
+          }}
+        >
+          {SOLUTIONS.map((sol, i) => (
+            <div key={sol.id} style={{ width: `${100 / total}%`, flexShrink: 0 }}>
+              {/* Image */}
+              <div style={{ height: "clamp(180px, 45vw, 240px)", overflow: "hidden" }}>
+                <img
+                  src={sol.imageUrl}
+                  alt={sol.imageAlt}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
+                  draggable={false}
+                  loading="lazy"
+                />
+              </div>
+              {/* Content */}
+              <div style={{ padding: "1.25rem clamp(1rem,4vw,1.75rem) 1.5rem", background: C.sandLight }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                  <span style={{ fontSize: "clamp(1rem, 5vw, 1.35rem)", fontWeight: 900, color: C.ink }}>{sol.label}</span>
+                  <span style={{ fontSize: "8.5px", fontWeight: 600, letterSpacing: "0.1em", color: C.muted, textTransform: "uppercase", marginLeft: 4 }}>{sol.tagline}</span>
+                </div>
+                <p style={{ fontSize: "clamp(12px,3.5vw,13px)", color: C.inkSoft, lineHeight: 1.8, marginBottom: 14 }}>{sol.desc}</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                  {sol.capabilities.slice(0, 4).map((cap, ci) => (
+                    <div key={cap.title} style={{ display: "flex", alignItems: "baseline", gap: 8, padding: "6px 0",
+                      borderBottom: ci < 3 ? `1px solid ${C.sandMid}` : "none" }}>
+                      <span style={{ fontSize: "12px", fontWeight: 600, color: C.ink, flexShrink: 0 }}>{cap.title}</span>
+                      <span style={{ fontSize: "9.5px", color: C.muted }}>{cap.sub}</span>
+                    </div>
+                  ))}
+                </div>
+                <a href={sol.href}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "11.5px", fontWeight: 600,
+                    color: C.terra, textDecoration: "none", marginTop: 14, letterSpacing: "0.02em" }}>
+                  Explore {sol.label} <ArrowRight />
+                </a>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+      </div>
+
+      {/* Dot indicators */}
+      <div style={{ display: "flex", justifyContent: "center", gap: 8, padding: "14px 0", background: C.sandLight, borderTop: `1px solid ${C.sandBorder}` }}>
+        {SOLUTIONS.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            aria-label={`Go to ${SOLUTIONS[i].label}`}
+            style={{ width: i === index ? 22 : 7, height: 7, borderRadius: 100, border: "none",
+              background: i === index ? C.terra : C.sandBorder, cursor: "pointer",
+              transition: "width 0.3s ease, background 0.3s ease", padding: 0 }}
+          />
+        ))}
+      </div>
+
+      {/* Footer */}
+      <div style={{ background: C.ink, padding: "0.9rem clamp(1rem,4vw,2rem)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+        <span style={{ fontSize: "clamp(0.85rem,3.5vw,1rem)", fontWeight: 700, color: C.sand, fontStyle: "italic" }}>
+          Three divisions. One engineering standard.
+        </span>
+        <span style={{ fontSize: "9px", color: C.inkSoft, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+          Est. Silicon to System
+        </span>
+      </div>
+    </div>
+  );
+}
+
 /* ── Main export ── */
 export default function SolutionsSection() {
   const [open, setOpen] = useState("asic");
@@ -339,45 +446,51 @@ export default function SolutionsSection() {
     <section id="solutions" className="solutions-wrap" style={{ background: C.sand }}>
       <style>{CSS}</style>
 
-      <div className="solutions-inner">
-        <div className="solutions-header" style={{ background: C.sand }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
-              <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.terra, flexShrink: 0 }} />
-              <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.16em", color: C.muted, textTransform: "uppercase" }}>
-                Capabilities — what we do
-              </span>
+      {/* Mobile / tablet: drag carousel */}
+      <div className="block lg:hidden">
+        <MobileCarousel />
+      </div>
+
+      {/* Desktop: accordion */}
+      <div className="hidden lg:block">
+        <div className="solutions-inner">
+          <div className="solutions-header" style={{ background: C.sand }}>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.terra, flexShrink: 0 }} />
+                <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.16em", color: C.muted, textTransform: "uppercase" }}>
+                  Capabilities — what we do
+                </span>
+              </div>
+              <h2 style={{ fontSize: "clamp(1.85rem, 5vw, 3.4rem)", fontWeight: 900, lineHeight: 1.05, color: C.ink, letterSpacing: "-0.04em", margin: 0, maxWidth: "560px" }}>
+                Engineering<br />at every<br />
+                <em style={{ fontStyle: "italic", fontWeight: 300, color: C.terra }}>layer.</em>
+              </h2>
             </div>
-            <h2 style={{ fontSize: "clamp(1.85rem, 5vw, 3.4rem)", fontWeight: 900, lineHeight: 1.05, color: C.ink, letterSpacing: "-0.04em", margin: 0, maxWidth: "560px" }}>
-              Engineering<br />at every<br />
-              <em style={{ fontStyle: "italic", fontWeight: 300, color: C.terra }}>layer.</em>
-            </h2>
+
+            <div className="solutions-header-meta">
+              <div style={{ fontSize: "clamp(2.5rem, 8vw, 3.5rem)", fontWeight: 900, color: C.terra, lineHeight: 1 }}>3</div>
+              <div style={{ fontSize: "9px", color: C.inkSoft, letterSpacing: "0.15em", textTransform: "uppercase", marginTop: 4 }}>Divisions</div>
+              <p style={{ fontSize: "12px", color: C.muted, lineHeight: 1.75, maxWidth: 220, marginTop: 14, marginBottom: 0 }}>
+                From silicon design to certified finished products — one engineering standard across all disciplines.
+              </p>
+            </div>
           </div>
 
-          <div className="solutions-header-meta">
-            <div style={{ fontSize: "clamp(2.5rem, 8vw, 3.5rem)", fontWeight: 900, color: C.terra, lineHeight: 1 }}>3</div>
-            <div style={{ fontSize: "9px", color: C.inkSoft, letterSpacing: "0.15em", textTransform: "uppercase", marginTop: 4 }}>Divisions</div>
-            <p style={{ fontSize: "12px", color: C.muted, lineHeight: 1.75, maxWidth: 220, marginTop: 14, marginBottom: 0 }}>
-              From silicon design to certified finished products — one engineering standard across all disciplines.
-            </p>
+          <div>
+            {SOLUTIONS.map(sol => (
+              <AccItem key={sol.id} sol={sol} isOpen={open === sol.id} onToggle={() => toggle(sol.id)} />
+            ))}
           </div>
-        </div>
 
-        {/* FIX: role="list" removed since these are interactive controls, not a list.
-            The accordion pattern is self-describing via aria-expanded. */}
-        <div>
-          {SOLUTIONS.map(sol => (
-            <AccItem key={sol.id} sol={sol} isOpen={open === sol.id} onToggle={() => toggle(sol.id)} />
-          ))}
-        </div>
-
-        <div className="solutions-footer" style={{ background: C.ink }}>
-          <span style={{ fontSize: "clamp(0.9rem, 3vw, 1rem)", fontWeight: 700, color: C.sand, fontStyle: "italic", lineHeight: 1.4 }}>
-            Three divisions. One engineering standard.
-          </span>
-          <span style={{ fontSize: "9px", color: C.inkSoft, letterSpacing: "0.14em", textTransform: "uppercase", whiteSpace: "nowrap" }}>
-            Est. Silicon to System
-          </span>
+          <div className="solutions-footer" style={{ background: C.ink }}>
+            <span style={{ fontSize: "clamp(0.9rem, 3vw, 1rem)", fontWeight: 700, color: C.sand, fontStyle: "italic", lineHeight: 1.4 }}>
+              Three divisions. One engineering standard.
+            </span>
+            <span style={{ fontSize: "9px", color: C.inkSoft, letterSpacing: "0.14em", textTransform: "uppercase", whiteSpace: "nowrap" }}>
+              Est. Silicon to System
+            </span>
+          </div>
         </div>
       </div>
     </section>

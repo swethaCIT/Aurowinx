@@ -1,12 +1,12 @@
 // UseCasesSection.jsx — Analog IP
-// Design: Full-bleed bento-style asymmetric grid — no gaps, no gutters.
-// 6 use cases in a tight mosaic. Hover reveals IP tags + detail.
-// Zero images. Pure typography + color blocks + animated overlays.
+// Desktop/TV: full-bleed bento-style asymmetric grid, hover reveals detail.
+// Mobile/Tablet: swipeable carousel — tap to expand detail (accordion-style),
+// smooth drag transitions, animated dot pagination. No long-scroll stacking.
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { C, FONT, EASE, fadeUp } from "../../company/theme";
-import { Wifi, Car, Radio, Heart, Factory, Cpu, ArrowUpRight } from "lucide-react";
+import { Wifi, Car, Radio, Heart, Factory, Cpu, ArrowUpRight, ChevronDown } from "lucide-react";
 
 const CASES = [
   {
@@ -18,7 +18,7 @@ const CASES = [
     ips: ["Sub-GHz Transceiver IP", "A/D Converter IP"],
     color: C.primary,
     bg: C.accentSoft,
-    size: "large", // spans 2 cols
+    size: "large",
   },
   {
     id: "auto",
@@ -40,7 +40,7 @@ const CASES = [
     ips: ["SERDES IP", "Clock & Power IP"],
     color: C.secondary,
     bg: "#f5f3ff",
-    size: "tall", // spans 2 rows
+    size: "tall",
   },
   {
     id: "wearable",
@@ -77,18 +77,48 @@ const CASES = [
   },
 ];
 
-// Bento grid layout map — 12-col grid, 2-row segments
-// Each entry: [colStart, colEnd, rowStart, rowEnd]
+// Bento grid layout map — 12-col grid, 2-row segments (desktop/TV)
 const LAYOUT = {
-  iot:        { col: "1 / 5",  row: "1 / 2" },  // wide top-left
-  auto:       { col: "5 / 9",  row: "1 / 2" },  // wide top-right
-  telecom:    { col: "9 / 13", row: "1 / 3" },  // tall right
-  wearable:   { col: "1 / 4",  row: "2 / 3" },  // normal bottom-left
-  industrial: { col: "4 / 7",  row: "2 / 3" },  // normal bottom-mid
-  medical:    { col: "7 / 9",  row: "2 / 3" },  // normal bottom
+  iot:        { col: "1 / 5",  row: "1 / 2" },
+  auto:       { col: "5 / 9",  row: "1 / 2" },
+  telecom:    { col: "9 / 13", row: "1 / 3" },
+  wearable:   { col: "1 / 4",  row: "2 / 3" },
+  industrial: { col: "4 / 7",  row: "2 / 3" },
+  medical:    { col: "7 / 9",  row: "2 / 3" },
 };
 
-function BentoCell({ c, index }) {
+/* ─────────────────────────────────────────────
+   RESPONSIVE HOOK
+───────────────────────────────────────────── */
+function useViewport() {
+  const [width, setWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1280
+  );
+  useEffect(() => {
+    let raf;
+    const onResize = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => setWidth(window.innerWidth));
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+  return {
+    width,
+    isMobile: width < 640,
+    isTablet: width >= 640 && width < 1024,
+    isCompact: width < 1024,
+    isTV: width >= 1600,
+  };
+}
+
+/* ─────────────────────────────────────────────
+   DESKTOP/TV — BENTO CELL (hover reveal)
+───────────────────────────────────────────── */
+function BentoCell({ c, index, isTV }) {
   const [hovered, setHovered] = useState(false);
   const Icon = c.icon;
   const layout = LAYOUT[c.id];
@@ -114,11 +144,14 @@ function BentoCell({ c, index }) {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        padding: isLarge ? "36px 36px 32px" : isTall ? "36px 28px 32px" : "28px 24px 24px",
-        minHeight: isLarge ? 220 : isTall ? 460 : 210,
+        padding: isLarge
+          ? (isTV ? "44px 44px 38px" : "36px 36px 32px")
+          : isTall
+          ? (isTV ? "44px 34px 38px" : "36px 28px 32px")
+          : (isTV ? "34px 30px 28px" : "28px 24px 24px"),
+        minHeight: isLarge ? (isTV ? 260 : 220) : isTall ? (isTV ? 540 : 460) : (isTV ? 250 : 210),
       }}
     >
-      {/* Top row: icon + industry label */}
       <div style={{
         display: "flex",
         alignItems: "flex-start",
@@ -126,8 +159,8 @@ function BentoCell({ c, index }) {
         marginBottom: 20,
       }}>
         <div style={{
-          width: isLarge ? 44 : 38,
-          height: isLarge ? 44 : 38,
+          width: isLarge ? (isTV ? 50 : 44) : (isTV ? 44 : 38),
+          height: isLarge ? (isTV ? 50 : 44) : (isTV ? 44 : 38),
           borderRadius: 12,
           background: hovered ? "rgba(255,255,255,0.18)" : "#fff",
           display: "flex", alignItems: "center", justifyContent: "center",
@@ -136,8 +169,8 @@ function BentoCell({ c, index }) {
           border: `1px solid ${hovered ? "rgba(255,255,255,0.2)" : c.color + "20"}`,
         }}>
           <Icon style={{
-            width: isLarge ? 20 : 17,
-            height: isLarge ? 20 : 17,
+            width: isLarge ? (isTV ? 23 : 20) : (isTV ? 19 : 17),
+            height: isLarge ? (isTV ? 23 : 20) : (isTV ? 19 : 17),
             color: hovered ? "#fff" : c.color,
             transition: "color 0.3s",
           }} />
@@ -154,7 +187,6 @@ function BentoCell({ c, index }) {
         </motion.div>
       </div>
 
-      {/* Middle: headline + body */}
       <div style={{ flex: 1 }}>
         <p style={{
           margin: "0 0 6px",
@@ -169,7 +201,9 @@ function BentoCell({ c, index }) {
 
         <h3 style={{
           margin: "0 0 12px",
-          fontSize: isLarge ? "clamp(1.1rem, 2vw, 1.4rem)" : "clamp(1rem, 1.6vw, 1.15rem)",
+          fontSize: isLarge
+            ? (isTV ? "clamp(1.3rem, 2vw, 1.7rem)" : "clamp(1.1rem, 2vw, 1.4rem)")
+            : (isTV ? "clamp(1.1rem, 1.6vw, 1.35rem)" : "clamp(1rem, 1.6vw, 1.15rem)"),
           fontWeight: 900,
           color: hovered ? "#fff" : C.textPrimary,
           letterSpacing: "-0.03em",
@@ -187,7 +221,7 @@ function BentoCell({ c, index }) {
               transition={{ duration: 0.3 }}
               style={{
                 margin: 0,
-                fontSize: 13,
+                fontSize: isTV ? 14.5 : 13,
                 lineHeight: 1.75,
                 color: hovered ? "rgba(255,255,255,0.82)" : C.textSecondary,
                 fontFamily: FONT,
@@ -199,7 +233,6 @@ function BentoCell({ c, index }) {
         </AnimatePresence>
       </div>
 
-      {/* Bottom: IP tags as plain text */}
       <div style={{
         display: "flex",
         flexWrap: "wrap",
@@ -222,7 +255,6 @@ function BentoCell({ c, index }) {
         ))}
       </div>
 
-      {/* Hover glow blob */}
       <div style={{
         position: "absolute",
         bottom: -40, right: -40,
@@ -237,7 +269,205 @@ function BentoCell({ c, index }) {
   );
 }
 
+/* ─────────────────────────────────────────────
+   MOBILE / TABLET — SWIPEABLE CAROUSEL
+───────────────────────────────────────────── */
+const slideVariants = {
+  enter:  (dir) => ({ opacity: 0, x: dir > 0 ? 36 : -36 }),
+  center: { opacity: 1, x: 0 },
+  exit:   (dir) => ({ opacity: 0, x: dir > 0 ? -36 : 36 }),
+};
+
+function UseCaseCarousel({ isMobile }) {
+  const [active, setActive] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const [expanded, setExpanded] = useState(true);
+
+  const c = CASES[active];
+  const Icon = c.icon;
+
+  const go = (i) => {
+    if (i < 0 || i >= CASES.length) return;
+    setDirection(i > active ? 1 : -1);
+    setActive(i);
+  };
+
+  return (
+    <div>
+      <div style={{ position: "relative", overflow: "hidden" }}>
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={c.id}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.34, ease: EASE }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.18}
+            onDragEnd={(e, info) => {
+              const threshold = 60;
+              if (info.offset.x < -threshold) go(active + 1);
+              else if (info.offset.x > threshold) go(active - 1);
+            }}
+            style={{
+              touchAction: "pan-y",
+              borderRadius: 18,
+              overflow: "hidden",
+              background: c.bg,
+              border: `1px solid ${c.color}22`,
+              position: "relative",
+            }}
+          >
+            <div style={{
+              position: "absolute",
+              top: -50, right: -50,
+              width: 160, height: 160,
+              borderRadius: "50%",
+              background: `${c.color}14`,
+              pointerEvents: "none",
+            }} />
+
+            <div style={{ padding: isMobile ? "24px 20px" : "28px 26px", position: "relative", zIndex: 1 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                <div style={{
+                  width: 42, height: 42, borderRadius: 12,
+                  background: "#fff",
+                  border: `1px solid ${c.color}25`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  flexShrink: 0,
+                }}>
+                  <Icon style={{ width: 18, height: 18, color: c.color }} />
+                </div>
+                <p style={{
+                  margin: 0,
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: c.color,
+                  fontFamily: FONT,
+                }}>{c.industry}</p>
+              </div>
+
+              <h3 style={{
+                margin: "0 0 10px",
+                fontSize: "clamp(1.15rem, 5vw, 1.4rem)",
+                fontWeight: 900,
+                color: C.textPrimary,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.15,
+                fontFamily: FONT,
+              }}>{c.headline}</h3>
+
+              <button
+                onClick={() => setExpanded((e) => !e)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  background: "none", border: "none", cursor: "pointer",
+                  padding: 0, marginBottom: expanded ? 8 : 0,
+                  fontFamily: FONT,
+                }}
+              >
+                <span style={{
+                  fontSize: 11, fontWeight: 700,
+                  letterSpacing: "0.08em", textTransform: "uppercase",
+                  color: c.color,
+                }}>
+                  {expanded ? "Hide details" : "Show details"}
+                </span>
+                <motion.div
+                  animate={{ rotate: expanded ? 180 : 0 }}
+                  transition={{ duration: 0.3, ease: EASE }}
+                  style={{ color: c.color, display: "flex" }}
+                >
+                  <ChevronDown style={{ width: 14, height: 14 }} />
+                </motion.div>
+              </button>
+
+              <AnimatePresence initial={false}>
+                {expanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.35, ease: EASE }}
+                    style={{ overflow: "hidden" }}
+                  >
+                    <p style={{
+                      margin: "0 0 16px",
+                      fontSize: 13,
+                      lineHeight: 1.8,
+                      color: C.textSecondary,
+                      fontFamily: FONT,
+                    }}>{c.body}</p>
+
+                    <div style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "4px 12px",
+                      paddingTop: 14,
+                      borderTop: `1px solid ${c.color}20`,
+                    }}>
+                      {c.ips.map(ip => (
+                        <span key={ip} style={{
+                          fontSize: 9.5,
+                          fontWeight: 700,
+                          letterSpacing: "0.10em",
+                          textTransform: "uppercase",
+                          color: c.color,
+                          fontFamily: FONT,
+                        }}>{ip}</span>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Dots */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        marginTop: 18,
+      }}>
+        {CASES.map((cc, i) => (
+          <button
+            key={cc.id}
+            onClick={() => go(i)}
+            aria-label={`Go to ${cc.industry}`}
+            style={{ border: "none", background: "transparent", padding: 4, cursor: "pointer" }}
+          >
+            <motion.span
+              animate={{
+                width: i === active ? (isMobile ? 20 : 24) : 6,
+                background: i === active ? c.color : C.border,
+              }}
+              transition={{ duration: 0.3, ease: EASE }}
+              style={{ display: "block", height: 6, borderRadius: 3 }}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   ROOT COMPONENT
+───────────────────────────────────────────── */
 export default function UseCasesSection() {
+  const { isMobile, isTablet, isCompact, isTV } = useViewport();
+  const horizPad = isMobile ? "20px" : isTablet ? "28px" : "clamp(24px, 5vw, 60px)";
+  const maxW = isTV ? 1600 : 1320;
+
   return (
     <section style={{
       position: "relative",
@@ -246,15 +476,16 @@ export default function UseCasesSection() {
       overflow: "hidden",
     }}>
 
-      {/* ── Section header — tight, flush ── */}
+      {/* ── Section header ── */}
       <div style={{
-        padding: "100px clamp(24px, 5vw, 60px) 56px",
-        maxWidth: 1320,
+        padding: isMobile ? "56px 20px 36px" : `${isTV ? 120 : 100}px ${horizPad} 56px`,
+        maxWidth: maxW,
         margin: "0 auto",
       }}>
         <div style={{
           display: "flex",
-          alignItems: "flex-end",
+          alignItems: isCompact ? "flex-start" : "flex-end",
+          flexDirection: isCompact ? "column" : "row",
           justifyContent: "space-between",
           flexWrap: "wrap",
           gap: 24,
@@ -277,7 +508,7 @@ export default function UseCasesSection() {
               transition={{ delay: 0.1, duration: 0.65, ease: EASE }}
               style={{
                 margin: 0,
-                fontSize: "clamp(2rem, 4vw, 3.2rem)",
+                fontSize: isTV ? "clamp(2.6rem, 4vw, 4rem)" : "clamp(2rem, 4vw, 3.2rem)",
                 fontWeight: 900,
                 color: C.textPrimary,
                 letterSpacing: "-0.05em",
@@ -301,9 +532,9 @@ export default function UseCasesSection() {
             {...fadeUp}
             transition={{ delay: 0.2, duration: 0.55 }}
             style={{
-              maxWidth: 360,
+              maxWidth: isCompact ? "100%" : 360,
               margin: 0,
-              fontSize: 14,
+              fontSize: isTV ? 15 : 14,
               lineHeight: 1.8,
               color: C.textSecondary,
             }}
@@ -314,25 +545,36 @@ export default function UseCasesSection() {
         </div>
       </div>
 
-      {/* ── Bento grid — zero gap, edge to edge ── */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(12, 1fr)",
-        gridTemplateRows: "auto auto",
-        gap: 2,
-        background: C.border,
-        borderTop: `2px solid ${C.border}`,
-        borderBottom: `2px solid ${C.border}`,
-      }}>
-        {CASES.map((c, i) => (
-          <BentoCell key={c.id} c={c} index={i} />
-        ))}
-      </div>
+      {/* ── DESKTOP / TV: bento grid, edge to edge ── */}
+      {!isCompact && (
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(12, 1fr)",
+          gridTemplateRows: "auto auto",
+          gap: 2,
+          background: C.border,
+          borderTop: `2px solid ${C.border}`,
+          borderBottom: `2px solid ${C.border}`,
+        }}>
+          {CASES.map((c, i) => (
+            <BentoCell key={c.id} c={c} index={i} isTV={isTV} />
+          ))}
+        </div>
+      )}
+
+      {/* ── MOBILE / TABLET: carousel ── */}
+      {isCompact && (
+        <div style={{ padding: `0 ${horizPad} 8px`, maxWidth: maxW, margin: "0 auto" }}>
+          <UseCaseCarousel isMobile={isMobile} />
+        </div>
+      )}
 
       {/* ── Footer note ── */}
       <div style={{
-        padding: "40px clamp(24px, 5vw, 60px) 100px",
-        maxWidth: 1320,
+        padding: isMobile
+          ? "32px 20px 64px"
+          : `40px ${horizPad} ${isTV ? 120 : 100}px`,
+        maxWidth: maxW,
         margin: "0 auto",
         display: "flex",
         alignItems: "center",
@@ -346,7 +588,7 @@ export default function UseCasesSection() {
           color: C.textMuted,
           fontFamily: FONT,
         }}>
-          Hover any tile to explore the use case in detail.
+          {isCompact ? "Swipe to explore each use case." : "Hover any tile to explore the use case in detail."}
         </p>
         <motion.a
           href="/contact"
@@ -362,6 +604,8 @@ export default function UseCasesSection() {
             fontFamily: FONT,
             boxShadow: C.shadowMd,
             letterSpacing: "-0.01em",
+            justifyContent: "center",
+            alignSelf: isMobile ? "stretch" : "auto",
           }}
         >
           Discuss Your Application
@@ -369,16 +613,11 @@ export default function UseCasesSection() {
         </motion.a>
       </div>
 
-      {/* Mobile: stack to single column */}
       <style>{`
-        @media (max-width: 860px) {
-          .uc-bento {
-            grid-template-columns: 1fr 1fr !important;
-          }
-        }
-        @media (max-width: 560px) {
-          .uc-bento {
-            grid-template-columns: 1fr !important;
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
           }
         }
       `}</style>

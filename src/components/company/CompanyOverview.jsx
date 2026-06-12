@@ -1,5 +1,7 @@
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { C, FONT, fadeUp, EASE } from "././theme";
+import { ChevronDown } from "lucide-react";
 
 const stats = [
   { value: "2020", label: "Established" },
@@ -23,6 +25,7 @@ const cards = [
     iconBg: "linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)",
     iconGlow: "rgba(79,70,229,0.15)",
     accentLine: "linear-gradient(90deg, #4f46e5, #6366f1)",
+    color: "#4f46e5",
   },
   {
     icon: (
@@ -39,6 +42,7 @@ const cards = [
     iconBg: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
     iconGlow: "rgba(8,145,178,0.15)",
     accentLine: "linear-gradient(90deg, #0891b2, #06b6d4)",
+    color: "#0891b2",
   },
   {
     icon: (
@@ -53,6 +57,7 @@ const cards = [
     iconBg: "linear-gradient(135deg, #2563eb 0%, #0891b2 100%)",
     iconGlow: "rgba(37,99,235,0.15)",
     accentLine: "linear-gradient(90deg, #2563eb, #0891b2)",
+    color: "#2563eb",
   },
 ];
 
@@ -62,7 +67,203 @@ const floatingChips = [
   { top: "50%", right: "1.5%", size: 30, delay: 0.8, rotate: 6 },
 ];
 
+/* ─────────────────────────────────────────────
+   RESPONSIVE HOOK
+───────────────────────────────────────────── */
+function useViewport() {
+  const [width, setWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1280
+  );
+  useEffect(() => {
+    let raf;
+    const onResize = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => setWidth(window.innerWidth));
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+  return {
+    width,
+    isMobile: width < 640,
+    isTablet: width >= 640 && width < 1024,
+    isCompact: width < 1024,
+    isTV: width >= 1600,
+  };
+}
+
+/* ─────────────────────────────────────────────
+   MOBILE/TABLET — CARD CAROUSEL with accordion desc
+───────────────────────────────────────────── */
+const slideVariants = {
+  enter:  (dir) => ({ opacity: 0, x: dir > 0 ? 36 : -36 }),
+  center: { opacity: 1, x: 0 },
+  exit:   (dir) => ({ opacity: 0, x: dir > 0 ? -36 : 36 }),
+};
+
+function CardCarousel({ isMobile }) {
+  const [active, setActive] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const [expanded, setExpanded] = useState(true);
+
+  const card = cards[active];
+
+  const go = (i) => {
+    if (i < 0 || i >= cards.length) return;
+    setDirection(i > active ? 1 : -1);
+    setActive(i);
+  };
+
+  return (
+    <div>
+      <div style={{ position: "relative", overflow: "hidden" }}>
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={active}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.34, ease: EASE }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.18}
+            onDragEnd={(e, info) => {
+              const threshold = 60;
+              if (info.offset.x < -threshold) go(active + 1);
+              else if (info.offset.x > threshold) go(active - 1);
+            }}
+            style={{
+              touchAction: "pan-y",
+              background: "white",
+              borderRadius: 20,
+              padding: isMobile ? "28px 22px" : "32px 28px",
+              border: "1px solid #f1f5f9",
+              boxShadow: "0 2px 16px rgba(15,23,42,0.06), 0 1px 4px rgba(15,23,42,0.04)",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <div style={{
+              position: "absolute", top: -50, right: -50,
+              width: 150, height: 150, borderRadius: "50%",
+              background: `radial-gradient(circle, ${card.iconGlow} 0%, transparent 70%)`,
+              pointerEvents: "none",
+            }} />
+
+            <span style={{
+              display: "inline-block", fontSize: 10, fontWeight: 700,
+              letterSpacing: "0.2em", textTransform: "uppercase",
+              color: "#4f46e5", background: "#eef2ff",
+              border: "1px solid #c7d2fe",
+              borderRadius: 9999, padding: "4px 14px", marginBottom: 20,
+            }}>
+              {card.tag}
+            </span>
+
+            <div style={{
+              width: 48, height: 48, borderRadius: 13,
+              background: card.iconBg, display: "flex",
+              alignItems: "center", justifyContent: "center",
+              marginBottom: 18, color: "white",
+              boxShadow: `0 6px 20px ${card.iconGlow}`,
+            }}>
+              {card.icon}
+            </div>
+
+            <h3 style={{
+              fontSize: 16.5, fontWeight: 700, color: "#0f172a",
+              marginBottom: 10, letterSpacing: "-0.02em", lineHeight: 1.35,
+            }}>
+              {card.title}
+            </h3>
+
+            <button
+              onClick={() => setExpanded((e) => !e)}
+              style={{
+                display: "flex", alignItems: "center", gap: 6,
+                background: "none", border: "none", cursor: "pointer",
+                padding: 0, marginBottom: expanded ? 8 : 0,
+                fontFamily: FONT,
+              }}
+            >
+              <span style={{
+                fontSize: 11, fontWeight: 700,
+                letterSpacing: "0.08em", textTransform: "uppercase",
+                color: card.color,
+              }}>
+                {expanded ? "Hide details" : "Show details"}
+              </span>
+              <motion.div
+                animate={{ rotate: expanded ? 180 : 0 }}
+                transition={{ duration: 0.3, ease: EASE }}
+                style={{ color: card.color, display: "flex" }}
+              >
+                <ChevronDown style={{ width: 14, height: 14 }} />
+              </motion.div>
+            </button>
+
+            <AnimatePresence initial={false}>
+              {expanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.35, ease: EASE }}
+                  style={{ overflow: "hidden" }}
+                >
+                  <p style={{ fontSize: 13.5, color: "#475569", lineHeight: 1.78, margin: 0 }}>
+                    {card.description}
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div style={{
+              position: "absolute", bottom: 0, left: 0, right: 0, height: 3,
+              background: card.accentLine,
+              borderRadius: "0 0 20px 20px", opacity: 0.6,
+            }} />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Dots */}
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "center",
+        gap: 8, marginTop: 18,
+      }}>
+        {cards.map((c, i) => (
+          <button
+            key={i}
+            onClick={() => go(i)}
+            aria-label={`Go to card ${i + 1}`}
+            style={{ border: "none", background: "transparent", padding: 4, cursor: "pointer" }}
+          >
+            <motion.span
+              animate={{
+                width: i === active ? (isMobile ? 20 : 24) : 6,
+                background: i === active ? card.color : "#e2e8f0",
+              }}
+              transition={{ duration: 0.3, ease: EASE }}
+              style={{ display: "block", height: 6, borderRadius: 3 }}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function CompanyOverview() {
+  const { isMobile, isTablet, isCompact, isTV } = useViewport();
+  const horizPad = isMobile ? "20px" : isTablet ? "28px" : "24px";
+  const maxW = isTV ? 1500 : 1200;
+
   return (
     <section
       style={{
@@ -70,7 +271,7 @@ export default function CompanyOverview() {
         fontFamily: FONT,
         position: "relative",
         overflow: "hidden",
-        padding: "100px 0 110px",
+        padding: isMobile ? "64px 0 72px" : isTablet ? "80px 0 88px" : isTV ? "130px 0 140px" : "100px 0 110px",
       }}
     >
       {/* ── BG BLOBS ── */}
@@ -87,8 +288,8 @@ export default function CompanyOverview() {
         pointerEvents: "none",
       }} />
 
-      {/* ── FLOATING CHIPS ── */}
-      {floatingChips.map((chip, i) => (
+      {/* ── FLOATING CHIPS — hidden on mobile to reduce clutter ── */}
+      {!isMobile && floatingChips.map((chip, i) => (
         <motion.div
           key={i}
           style={{
@@ -113,7 +314,7 @@ export default function CompanyOverview() {
         </motion.div>
       ))}
 
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative", zIndex: 1 }}>
+      <div style={{ maxWidth: maxW, margin: "0 auto", padding: `0 ${horizPad}`, position: "relative", zIndex: 1 }}>
 
         {/* ── LABEL ── */}
         <motion.div {...fadeUp} transition={{ duration: 0.7, ease: EASE }} style={{ textAlign: "center", marginBottom: 16 }}>
@@ -131,7 +332,8 @@ export default function CompanyOverview() {
         <motion.h2
           {...fadeUp} transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
           style={{
-            textAlign: "center", fontSize: "clamp(2rem, 4vw, 3rem)",
+            textAlign: "center",
+            fontSize: isTV ? "clamp(2.6rem, 4vw, 3.8rem)" : "clamp(1.8rem, 4vw, 3rem)",
             fontWeight: 700, color: C.textPrimary, letterSpacing: "-0.03em",
             lineHeight: 1.1, marginBottom: 16,
           }}
@@ -150,8 +352,9 @@ export default function CompanyOverview() {
         <motion.p
           {...fadeUp} transition={{ duration: 0.7, delay: 0.18, ease: EASE }}
           style={{
-            textAlign: "center", fontSize: 16, color: C.textSecondary,
-            maxWidth: 620, margin: "0 auto 64px", lineHeight: 1.75,
+            textAlign: "center", fontSize: isTV ? 17 : 15, color: C.textSecondary,
+            maxWidth: 620, margin: isMobile ? "0 auto 40px" : "0 auto 64px", lineHeight: 1.75,
+            padding: isMobile ? "0 4px" : 0,
           }}
         >
           A privately owned semiconductor engineering company headquartered in
@@ -162,18 +365,28 @@ export default function CompanyOverview() {
         <motion.div
           {...fadeUp} transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
           style={{
-            display: "flex", justifyContent: "center",
-            marginBottom: 72, flexWrap: "wrap",
+            display: "grid",
+            gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
+            gap: isMobile ? 0 : 0,
+            justifyContent: "center",
+            marginBottom: isMobile ? 44 : 72,
+            borderRadius: isMobile ? 16 : 0,
+            background: isMobile ? "#fff" : "transparent",
+            border: isMobile ? "1px solid #eef2ff" : "none",
+            overflow: "hidden",
           }}
         >
           {stats.map((s, i) => (
             <div key={i} style={{
-              padding: "22px 44px", textAlign: "center",
-              borderRight: i < stats.length - 1 ? "1px solid #e0e7ff" : "none",
-              minWidth: 130,
+              padding: isMobile ? "18px 12px" : "22px 44px",
+              textAlign: "center",
+              borderRight: !isMobile && i < stats.length - 1 ? "1px solid #e0e7ff" : (isMobile && i % 2 === 0 ? "1px solid #eef2ff" : "none"),
+              borderBottom: isMobile && i < 2 ? "1px solid #eef2ff" : "none",
+              minWidth: isMobile ? 0 : 130,
             }}>
               <div style={{
-                fontSize: "clamp(1.5rem, 3vw, 2.1rem)", fontWeight: 800,
+                fontSize: isTV ? "clamp(1.8rem, 3vw, 2.4rem)" : "clamp(1.3rem, 3vw, 2.1rem)",
+                fontWeight: 800,
                 background: "linear-gradient(135deg, #4f46e5 0%, #0891b2 100%)",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
                 backgroundClip: "text", letterSpacing: "-0.02em",
@@ -182,7 +395,7 @@ export default function CompanyOverview() {
                 {s.value}
               </div>
               <div style={{
-                fontSize: 11, fontWeight: 600, letterSpacing: "0.16em",
+                fontSize: isMobile ? 9.5 : 11, fontWeight: 600, letterSpacing: "0.16em",
                 textTransform: "uppercase", color: "#94a3b8",
               }}>
                 {s.label}
@@ -191,91 +404,93 @@ export default function CompanyOverview() {
           ))}
         </motion.div>
 
-        {/* ── CARDS ── */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-          gap: 24,
-        }}>
-          {cards.map((card, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 36 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.65, delay: i * 0.12, ease: EASE }}
-              whileHover={{ y: -5, transition: { duration: 0.28 } }}
-              style={{
-                background: "white", borderRadius: 20, padding: "36px 32px",
-                border: "1px solid #f1f5f9",
-                boxShadow: "0 2px 16px rgba(15,23,42,0.06), 0 1px 4px rgba(15,23,42,0.04)",
-                position: "relative", overflow: "hidden", cursor: "default",
-              }}
-            >
-              {/* subtle corner glow */}
-              <div style={{
-                position: "absolute", top: -50, right: -50,
-                width: 150, height: 150, borderRadius: "50%",
-                background: `radial-gradient(circle, ${card.iconGlow} 0%, transparent 70%)`,
-                pointerEvents: "none",
-              }} />
+        {/* ── CARDS — desktop/TV grid, mobile/tablet carousel ── */}
+        {isCompact ? (
+          <CardCarousel isMobile={isMobile} />
+        ) : (
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isTV ? "repeat(3, 1fr)" : "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: isTV ? 28 : 24,
+          }}>
+            {cards.map((card, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 36 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.65, delay: i * 0.12, ease: EASE }}
+                whileHover={{ y: -5, transition: { duration: 0.28 } }}
+                style={{
+                  background: "white", borderRadius: 20,
+                  padding: isTV ? "42px 38px" : "36px 32px",
+                  border: "1px solid #f1f5f9",
+                  boxShadow: "0 2px 16px rgba(15,23,42,0.06), 0 1px 4px rgba(15,23,42,0.04)",
+                  position: "relative", overflow: "hidden", cursor: "default",
+                }}
+              >
+                <div style={{
+                  position: "absolute", top: -50, right: -50,
+                  width: 150, height: 150, borderRadius: "50%",
+                  background: `radial-gradient(circle, ${card.iconGlow} 0%, transparent 70%)`,
+                  pointerEvents: "none",
+                }} />
 
-              {/* tag */}
-              <span style={{
-                display: "inline-block", fontSize: 10, fontWeight: 700,
-                letterSpacing: "0.2em", textTransform: "uppercase",
-                color: "#4f46e5", background: "#eef2ff",
-                border: "1px solid #c7d2fe",
-                borderRadius: 9999, padding: "4px 14px", marginBottom: 22,
-              }}>
-                {card.tag}
-              </span>
+                <span style={{
+                  display: "inline-block", fontSize: 10, fontWeight: 700,
+                  letterSpacing: "0.2em", textTransform: "uppercase",
+                  color: "#4f46e5", background: "#eef2ff",
+                  border: "1px solid #c7d2fe",
+                  borderRadius: 9999, padding: "4px 14px", marginBottom: 22,
+                }}>
+                  {card.tag}
+                </span>
 
-              {/* icon */}
-              <div style={{
-                width: 52, height: 52, borderRadius: 13,
-                background: card.iconBg, display: "flex",
-                alignItems: "center", justifyContent: "center",
-                marginBottom: 20, color: "white",
-                boxShadow: `0 6px 20px ${card.iconGlow}`,
-              }}>
-                {card.icon}
-              </div>
+                <div style={{
+                  width: isTV ? 58 : 52, height: isTV ? 58 : 52, borderRadius: 13,
+                  background: card.iconBg, display: "flex",
+                  alignItems: "center", justifyContent: "center",
+                  marginBottom: 20, color: "white",
+                  boxShadow: `0 6px 20px ${card.iconGlow}`,
+                }}>
+                  {card.icon}
+                </div>
 
-              {/* title */}
-              <h3 style={{
-                fontSize: 17, fontWeight: 700, color: "#0f172a",
-                marginBottom: 11, letterSpacing: "-0.02em", lineHeight: 1.35,
-              }}>
-                {card.title}
-              </h3>
+                <h3 style={{
+                  fontSize: isTV ? 19 : 17, fontWeight: 700, color: "#0f172a",
+                  marginBottom: 11, letterSpacing: "-0.02em", lineHeight: 1.35,
+                }}>
+                  {card.title}
+                </h3>
 
-              {/* description */}
-              <p style={{ fontSize: 14, color: "#475569", lineHeight: 1.78, margin: 0 }}>
-                {card.description}
-              </p>
+                <p style={{ fontSize: isTV ? 15 : 14, color: "#475569", lineHeight: 1.78, margin: 0 }}>
+                  {card.description}
+                </p>
 
-              {/* bottom accent */}
-              <div style={{
-                position: "absolute", bottom: 0, left: 0, right: 0, height: 3,
-                background: card.accentLine,
-                borderRadius: "0 0 20px 20px", opacity: 0.6,
-              }} />
-            </motion.div>
-          ))}
-        </div>
+                <div style={{
+                  position: "absolute", bottom: 0, left: 0, right: 0, height: 3,
+                  background: card.accentLine,
+                  borderRadius: "0 0 20px 20px", opacity: 0.6,
+                }} />
+              </motion.div>
+            ))}
+          </div>
+        )}
 
         {/* ── MISSION STRIP ── */}
         <motion.div
           {...fadeUp} transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
           style={{
-            marginTop: 60,
+            marginTop: isMobile ? 36 : 60,
             borderRadius: 20,
             background: "linear-gradient(135deg, #4f46e5 0%, #2563eb 50%, #0891b2 100%)",
-            padding: "38px 48px",
-            display: "flex", alignItems: "center",
+            padding: isMobile ? "28px 24px" : "38px 48px",
+            display: "flex",
+            flexDirection: isCompact ? "column" : "row",
+            alignItems: isCompact ? "flex-start" : "center",
             justifyContent: "space-between",
-            gap: 24, flexWrap: "wrap",
+            gap: isMobile ? 18 : 24,
+            flexWrap: "wrap",
             position: "relative", overflow: "hidden",
             boxShadow: "0 12px 40px rgba(79,70,229,0.20), 0 4px 12px rgba(0,0,0,0.06)",
           }}
@@ -294,7 +509,8 @@ export default function CompanyOverview() {
               Our Mission
             </div>
             <p style={{
-              fontSize: "clamp(0.95rem, 2vw, 1.15rem)", fontWeight: 600,
+              fontSize: isTV ? "clamp(1.05rem, 2vw, 1.3rem)" : "clamp(0.92rem, 2vw, 1.15rem)",
+              fontWeight: 600,
               color: "white", maxWidth: 660, lineHeight: 1.6,
               margin: 0, letterSpacing: "-0.01em",
             }}>

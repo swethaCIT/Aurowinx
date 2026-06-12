@@ -1,17 +1,15 @@
 // ProcessFlowSection.jsx — Analog IP
-// Redesign: Interactive stepper with split-panel layout.
-// Left: one step at a time with Framer AnimatePresence transition.
-// Right: persistent overview map with live state (pending / active / done).
-// Tab rail across top for quick navigation.
-// Footer: progress bar + persistent CTA.
-// Single blue accent. Mobile-first. Zero scroll-jank.
+// Fully responsive: mobile / tablet / laptop / TV
+// Desktop/TV: split-panel stepper (step panel + overview map)
+// Mobile/Tablet: swipeable carousel for steps + accordion overview (no long scroll)
+// Single blue accent. Zero scroll-jank. Smooth Framer Motion transitions throughout.
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FileText, PenTool, FlaskConical,
   Layers, ScanLine, ShieldCheck, PackageCheck,
-  ChevronLeft, ChevronRight, Check,
+  ChevronLeft, ChevronRight, ChevronDown, Check,
 } from "lucide-react";
 import { C, FONT, EASE } from "../../company/theme";
 
@@ -78,7 +76,7 @@ const STEPS = [
 ];
 
 /* ─────────────────────────────────────────────
-   DESIGN TOKENS  (override if your theme differs)
+   DESIGN TOKENS
 ───────────────────────────────────────────── */
 const T = {
   accent:      C.primary          ?? "#1a56db",
@@ -94,25 +92,152 @@ const T = {
   ease:        EASE               ?? [0.25, 0.1, 0.25, 1],
 };
 
+const transition = { duration: 0.32, ease: T.ease };
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE HOOK
+───────────────────────────────────────────── */
+function useViewport() {
+  const [width, setWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1280
+  );
+  useEffect(() => {
+    let raf;
+    const onResize = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => setWidth(window.innerWidth));
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+  return {
+    width,
+    isMobile: width < 640,
+    isTablet: width >= 640 && width < 1024,
+    isCompact: width < 1024,
+    isDesktop: width >= 1024 && width < 1600,
+    isTV: width >= 1600,
+  };
+}
+
 /* ─────────────────────────────────────────────
    ANIMATION VARIANTS
 ───────────────────────────────────────────── */
 const stepVariants = {
-  enter:  (dir) => ({ opacity: 0, x: dir > 0 ? 20 : -20 }),
+  enter:  (dir) => ({ opacity: 0, x: dir > 0 ? 40 : -40 }),
   center: { opacity: 1, x: 0 },
-  exit:   (dir) => ({ opacity: 0, x: dir > 0 ? -20 : 20 }),
+  exit:   (dir) => ({ opacity: 0, x: dir > 0 ? -40 : 40 }),
 };
 
-const transition = { duration: 0.28, ease: T.ease };
+/* ─────────────────────────────────────────────
+   SHARED: STEP CONTENT (used by panel + carousel slide)
+───────────────────────────────────────────── */
+function StepContent({ step, compact }) {
+  const { Icon } = step;
+  return (
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: compact ? 12 : 14,
+      padding: compact ? "24px 22px" : "28px 32px",
+      height: "100%",
+    }}>
+      {/* Top row: step label + icon */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+        <span style={{
+          fontSize: 11,
+          fontWeight: 500,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          color: T.textMuted,
+        }}>
+          Step {step.n} of 07
+        </span>
+        <div style={{
+          width: compact ? 36 : 40, height: compact ? 36 : 40,
+          background: T.accentSoft,
+          border: `0.5px solid ${T.accentBorder}`,
+          borderRadius: 10,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          flexShrink: 0,
+        }}>
+          <Icon style={{ width: compact ? 16 : 18, height: compact ? 16 : 18, color: T.accent }} />
+        </div>
+      </div>
+
+      {/* Title */}
+      <h3 style={{
+        margin: 0,
+        fontSize: compact ? "clamp(1.05rem, 5vw, 1.3rem)" : "clamp(1.15rem, 2.2vw, 1.45rem)",
+        fontWeight: 600,
+        color: T.textPrimary,
+        letterSpacing: "-0.03em",
+        lineHeight: 1.2,
+        fontFamily: T.font,
+      }}>
+        {step.title}
+      </h3>
+
+      {/* Summary */}
+      <p style={{
+        margin: 0,
+        fontSize: compact ? 12.5 : 12,
+        fontWeight: 600,
+        color: T.accent,
+        letterSpacing: "0.01em",
+        fontFamily: T.font,
+      }}>
+        {step.summary}
+      </p>
+
+      {/* Body */}
+      <p style={{
+        margin: 0,
+        fontSize: compact ? 13 : 13.5,
+        lineHeight: 1.85,
+        color: T.textSecondary,
+        fontFamily: T.font,
+        flex: 1,
+      }}>
+        {step.body}
+      </p>
+
+      {/* Tags */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+        {step.tags.map((tag) => (
+          <span
+            key={tag}
+            style={{
+              fontSize: compact ? 9.5 : 10,
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: T.accent,
+              background: T.accentSoft,
+              border: `0.5px solid ${T.accentBorder}`,
+              borderRadius: 4,
+              padding: compact ? "3px 7px" : "3px 8px",
+              fontFamily: T.font,
+            }}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 /* ─────────────────────────────────────────────
-   SUB-COMPONENTS
+   TAB RAIL (desktop/TV — top navigation)
 ───────────────────────────────────────────── */
-
-/* Tab rail — scrollable on mobile */
-function TabRail({ active, onSelect }) {
+function TabRail({ active, onSelect, isTV }) {
   return (
     <div
+      className="pf-tab-rail"
       style={{
         display: "flex",
         overflowX: "auto",
@@ -133,7 +258,7 @@ function TabRail({ active, onSelect }) {
               display: "flex",
               alignItems: "center",
               gap: 6,
-              padding: "12px 16px",
+              padding: isTV ? "16px 22px" : "12px 16px",
               background: "none",
               border: "none",
               borderBottom: isActive
@@ -143,7 +268,7 @@ function TabRail({ active, onSelect }) {
               whiteSpace: "nowrap",
               flexShrink: 0,
               fontFamily: T.font,
-              fontSize: 11,
+              fontSize: isTV ? 13 : 11,
               fontWeight: 500,
               letterSpacing: "0.04em",
               color: isActive ? T.accent : isDone ? T.textMuted : T.textSecondary,
@@ -151,10 +276,9 @@ function TabRail({ active, onSelect }) {
               opacity: isDone ? 0.6 : 1,
             }}
           >
-            {/* Step bubble */}
             <span
               style={{
-                width: 16, height: 16,
+                width: isTV ? 18 : 16, height: isTV ? 18 : 16,
                 borderRadius: "50%",
                 background: isActive || isDone ? T.accent : T.accentSoft,
                 display: "flex", alignItems: "center", justifyContent: "center",
@@ -174,7 +298,6 @@ function TabRail({ active, onSelect }) {
                 </span>
               )}
             </span>
-            {/* Show first word of title only — keeps rail compact */}
             {s.title.split(" ")[0]}
           </button>
         );
@@ -183,10 +306,10 @@ function TabRail({ active, onSelect }) {
   );
 }
 
-/* Step content panel (left) */
+/* ─────────────────────────────────────────────
+   STEP PANEL (desktop/TV — split layout left side)
+───────────────────────────────────────────── */
 function StepPanel({ step, direction }) {
-  const { Icon } = step;
-
   return (
     <AnimatePresence mode="wait" custom={direction}>
       <motion.div
@@ -197,101 +320,16 @@ function StepPanel({ step, direction }) {
         animate="center"
         exit="exit"
         transition={transition}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 14,
-          padding: "28px 32px",
-        }}
       >
-        {/* Top row: step label + icon */}
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-          <span style={{
-            fontSize: 11,
-            fontWeight: 500,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: T.textMuted,
-          }}>
-            Step {step.n} of 07
-          </span>
-          <div style={{
-            width: 40, height: 40,
-            background: T.accentSoft,
-            border: `0.5px solid ${T.accentBorder}`,
-            borderRadius: 10,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            flexShrink: 0,
-          }}>
-            <Icon style={{ width: 18, height: 18, color: T.accent }} />
-          </div>
-        </div>
-
-        {/* Title */}
-        <h3 style={{
-          margin: 0,
-          fontSize: "clamp(1.15rem, 2.2vw, 1.45rem)",
-          fontWeight: 600,
-          color: T.textPrimary,
-          letterSpacing: "-0.03em",
-          lineHeight: 1.2,
-          fontFamily: T.font,
-        }}>
-          {step.title}
-        </h3>
-
-        {/* Summary */}
-        <p style={{
-          margin: 0,
-          fontSize: 12,
-          fontWeight: 600,
-          color: T.accent,
-          letterSpacing: "0.01em",
-          fontFamily: T.font,
-        }}>
-          {step.summary}
-        </p>
-
-        {/* Body */}
-        <p style={{
-          margin: 0,
-          fontSize: 13.5,
-          lineHeight: 1.85,
-          color: T.textSecondary,
-          fontFamily: T.font,
-          flex: 1,
-        }}>
-          {step.body}
-        </p>
-
-        {/* Tags */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-          {step.tags.map((tag) => (
-            <span
-              key={tag}
-              style={{
-                fontSize: 10,
-                fontWeight: 600,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: T.accent,
-                background: T.accentSoft,
-                border: `0.5px solid ${T.accentBorder}`,
-                borderRadius: 4,
-                padding: "3px 8px",
-                fontFamily: T.font,
-              }}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+        <StepContent step={step} compact={false} />
       </motion.div>
     </AnimatePresence>
   );
 }
 
-/* Overview map (right) */
+/* ─────────────────────────────────────────────
+   OVERVIEW PANEL (desktop/TV — right side map)
+───────────────────────────────────────────── */
 function OverviewPanel({ active, onSelect }) {
   return (
     <div
@@ -330,7 +368,6 @@ function OverviewPanel({ active, onSelect }) {
               marginBottom: 1,
             }}
           >
-            {/* Step number */}
             <span style={{
               fontSize: 10,
               fontWeight: 600,
@@ -343,7 +380,6 @@ function OverviewPanel({ active, onSelect }) {
               {s.n}
             </span>
 
-            {/* State dot */}
             <span style={{
               width: 8, height: 8,
               borderRadius: "50%",
@@ -353,7 +389,6 @@ function OverviewPanel({ active, onSelect }) {
               transition: "background 0.2s",
             }} />
 
-            {/* Text */}
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{
                 fontSize: 12,
@@ -375,7 +410,6 @@ function OverviewPanel({ active, onSelect }) {
               </div>
             </div>
 
-            {/* Check indicator */}
             {(isActive || isDone) && (
               <Check style={{
                 width: 12, height: 12,
@@ -392,24 +426,242 @@ function OverviewPanel({ active, onSelect }) {
   );
 }
 
-/* Nav controls + progress bar */
-function Footer({ active, total, onPrev, onNext }) {
+/* ─────────────────────────────────────────────
+   MOBILE / TABLET — SWIPEABLE CAROUSEL
+───────────────────────────────────────────── */
+function StepCarousel({ active, direction, onSwipe, isMobile }) {
+  const step = STEPS[active];
+
+  return (
+    <div style={{ position: "relative", overflow: "hidden" }}>
+      <AnimatePresence mode="wait" custom={direction}>
+        <motion.div
+          key={step.n}
+          custom={direction}
+          variants={stepVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={transition}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.18}
+          onDragEnd={(e, info) => {
+            const threshold = 60;
+            if (info.offset.x < -threshold) onSwipe(1);
+            else if (info.offset.x > threshold) onSwipe(-1);
+          }}
+          style={{ touchAction: "pan-y" }}
+        >
+          <StepContent step={step} compact />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Swipe hint dots */}
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: 6,
+        padding: "0 0 16px",
+      }}>
+        {STEPS.map((s, i) => (
+          <button
+            key={s.n}
+            onClick={() => onSwipe(i > active ? 1 : -1, i)}
+            aria-label={`Go to step ${i + 1}`}
+            style={{
+              border: "none",
+              background: "transparent",
+              padding: 4,
+              cursor: "pointer",
+            }}
+          >
+            <motion.span
+              animate={{
+                width: i === active ? (isMobile ? 18 : 22) : 6,
+                background: i === active ? T.accent : T.border,
+                opacity: i < active ? 0.5 : 1,
+              }}
+              transition={{ duration: 0.3, ease: T.ease }}
+              style={{
+                display: "block",
+                height: 6,
+                borderRadius: 3,
+              }}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   MOBILE / TABLET — ACCORDION OVERVIEW (no long scroll)
+───────────────────────────────────────────── */
+function OverviewAccordion({ active, onSelect }) {
+  const [openIndex, setOpenIndex] = useState(active);
+
+  // Keep accordion in sync with active carousel step
+  useEffect(() => { setOpenIndex(active); }, [active]);
+
+  const toggle = (i) => setOpenIndex((prev) => (prev === i ? -1 : i));
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      {STEPS.map((s, i) => {
+        const isDone   = i < active;
+        const isActive = i === active;
+        const isOpen   = openIndex === i;
+        return (
+          <div
+            key={s.n}
+            style={{
+              border: `0.5px solid ${T.border}`,
+              borderRadius: 10,
+              overflow: "hidden",
+              background: isActive ? T.accentSoft : T.bg,
+              transition: "background 0.25s ease",
+            }}
+          >
+            <motion.button
+              onClick={() => { toggle(i); onSelect(i); }}
+              whileTap={{ scale: 0.99 }}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "12px 14px",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                textAlign: "left",
+                fontFamily: T.font,
+              }}
+            >
+              {/* State dot / number */}
+              <span style={{
+                width: 22, height: 22,
+                borderRadius: "50%",
+                background: isActive || isDone ? T.accent : T.accentSoft,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0,
+              }}>
+                {isDone ? (
+                  <Check style={{ width: 11, height: 11, color: "#fff" }} />
+                ) : (
+                  <span style={{
+                    fontSize: 9, fontWeight: 700,
+                    color: isActive ? "#fff" : T.accent,
+                  }}>
+                    {s.n}
+                  </span>
+                )}
+              </span>
+
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: isActive ? T.textPrimary : T.textSecondary,
+                  lineHeight: 1.3,
+                }}>
+                  {s.title}
+                </div>
+                {!isOpen && (
+                  <div style={{
+                    fontSize: 11,
+                    color: T.textMuted,
+                    marginTop: 2,
+                    lineHeight: 1.4,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}>
+                    {s.summary}
+                  </div>
+                )}
+              </div>
+
+              <motion.div
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={{ duration: 0.3, ease: T.ease }}
+                style={{ color: T.accent, display: "flex", flexShrink: 0 }}
+              >
+                <ChevronDown style={{ width: 16, height: 16 }} />
+              </motion.div>
+            </motion.button>
+
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  key="content"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.35, ease: T.ease }}
+                  style={{ overflow: "hidden" }}
+                >
+                  <div style={{ padding: "0 14px 14px 46px" }}>
+                    <p style={{
+                      margin: "0 0 8px",
+                      fontSize: 12.5,
+                      lineHeight: 1.8,
+                      color: T.textSecondary,
+                    }}>
+                      {s.body}
+                    </p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                      {s.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 600,
+                            letterSpacing: "0.06em",
+                            textTransform: "uppercase",
+                            color: T.accent,
+                            background: T.bg,
+                            border: `0.5px solid ${T.accentBorder}`,
+                            borderRadius: 4,
+                            padding: "3px 7px",
+                          }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   FOOTER — nav controls + progress bar + CTA
+───────────────────────────────────────────── */
+function Footer({ active, total, onPrev, onNext, isMobile }) {
   const pct = Math.round(((active + 1) / total) * 100);
   const nextStep = STEPS[active + 1];
 
   return (
     <div style={{
       display: "flex",
-      alignItems: "center",
+      alignItems: isMobile ? "stretch" : "center",
+      flexDirection: isMobile ? "column" : "row",
       justifyContent: "space-between",
-      gap: 16,
-      padding: "12px 32px",
+      gap: isMobile ? 12 : 16,
+      padding: isMobile ? "14px 18px" : "12px 32px",
       borderTop: `0.5px solid ${T.border}`,
       flexWrap: "wrap",
     }}>
-      {/* Left: prev/next + progress */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        {/* Prev */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: isMobile ? "space-between" : "flex-start" }}>
         <button
           onClick={onPrev}
           disabled={active === 0}
@@ -424,13 +676,10 @@ function Footer({ active, total, onPrev, onNext }) {
             opacity: active === 0 ? 0.3 : 1,
             transition: "background 0.18s, border-color 0.18s",
           }}
-          onMouseEnter={(e) => { if (active > 0) { e.currentTarget.style.background = T.accent; e.currentTarget.style.borderColor = T.accent; e.currentTarget.querySelector("svg").style.color = "#fff"; }}}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = T.border; e.currentTarget.querySelector("svg").style.color = T.textSecondary; }}
         >
           <ChevronLeft style={{ width: 14, height: 14, color: T.textSecondary }} />
         </button>
 
-        {/* Next */}
         <button
           onClick={onNext}
           disabled={active === total - 1}
@@ -445,16 +694,13 @@ function Footer({ active, total, onPrev, onNext }) {
             opacity: active === total - 1 ? 0.3 : 1,
             transition: "background 0.18s, border-color 0.18s",
           }}
-          onMouseEnter={(e) => { if (active < total - 1) { e.currentTarget.style.background = T.accent; e.currentTarget.style.borderColor = T.accent; e.currentTarget.querySelector("svg").style.color = "#fff"; }}}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = T.border; e.currentTarget.querySelector("svg").style.color = T.textSecondary; }}
         >
           <ChevronRight style={{ width: 14, height: 14, color: T.textSecondary }} />
         </button>
 
-        {/* Progress bar */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{
-            width: 100, height: 3,
+            width: isMobile ? 70 : 100, height: 3,
             background: T.border,
             borderRadius: 2,
             overflow: "hidden",
@@ -462,42 +708,27 @@ function Footer({ active, total, onPrev, onNext }) {
             <motion.div
               animate={{ width: `${pct}%` }}
               transition={{ duration: 0.4, ease: T.ease }}
-              style={{
-                height: "100%",
-                background: T.accent,
-                borderRadius: 2,
-              }}
+              style={{ height: "100%", background: T.accent, borderRadius: 2 }}
             />
           </div>
-          <span style={{
-            fontSize: 11,
-            color: T.textMuted,
-            fontFamily: T.font,
-            minWidth: 56,
-          }}>
+          <span style={{ fontSize: 11, color: T.textMuted, fontFamily: T.font, minWidth: 56 }}>
             {pct}% complete
           </span>
         </div>
 
-        {/* Next step hint */}
-        {nextStep && (
-          <span style={{
-            fontSize: 11,
-            color: T.textMuted,
-            fontFamily: T.font,
-            display: "none",  // shown via @media below
-          }} className="pf-next-hint">
+        {nextStep && !isMobile && (
+          <span style={{ fontSize: 11, color: T.textMuted, fontFamily: T.font }} className="pf-next-hint">
             Next: {nextStep.title.split(" ")[0]}…
           </span>
         )}
       </div>
 
-      {/* Right: CTA */}
       <a
         href="#contact"
         style={{
           display: "inline-flex",
           alignItems: "center",
+          justifyContent: "center",
           gap: 6,
           fontSize: 12,
           fontWeight: 600,
@@ -505,22 +736,12 @@ function Footer({ active, total, onPrev, onNext }) {
           background: T.accentSoft,
           border: `0.5px solid ${T.accentBorder}`,
           borderRadius: 6,
-          padding: "7px 16px",
+          padding: "9px 16px",
           textDecoration: "none",
           fontFamily: T.font,
           letterSpacing: "0.01em",
           transition: "background 0.18s, color 0.18s, border-color 0.18s",
           whiteSpace: "nowrap",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = T.accent;
-          e.currentTarget.style.color = "#fff";
-          e.currentTarget.style.borderColor = T.accent;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = T.accentSoft;
-          e.currentTarget.style.color = T.accent;
-          e.currentTarget.style.borderColor = T.accentBorder;
         }}
       >
         Start your engagement
@@ -536,6 +757,7 @@ function Footer({ active, total, onPrev, onNext }) {
 export default function ProcessFlowSection() {
   const [active, setActive] = useState(0);
   const [direction, setDirection] = useState(1);
+  const { isMobile, isTablet, isCompact, isTV } = useViewport();
 
   const go = useCallback((i) => {
     if (i < 0 || i >= STEPS.length) return;
@@ -543,8 +765,20 @@ export default function ProcessFlowSection() {
     setActive(i);
   }, [active]);
 
+  // Swipe handler — supports direct-index jump (from dots/accordion)
+  const handleSwipe = useCallback((dir, jumpIndex) => {
+    if (typeof jumpIndex === "number") {
+      setDirection(jumpIndex > active ? 1 : -1);
+      setActive(jumpIndex);
+      return;
+    }
+    go(active + dir);
+  }, [active, go]);
+
   const goPrev = () => go(active - 1);
   const goNext = () => go(active + 1);
+
+  const maxW = isTV ? 1400 : 1060;
 
   return (
     <section
@@ -553,12 +787,16 @@ export default function ProcessFlowSection() {
         position: "relative",
         background: T.bgSoft,
         fontFamily: T.font,
-        padding: "clamp(60px, 10vw, 120px) clamp(16px, 5vw, 60px)",
+        padding: isMobile
+          ? "48px 14px"
+          : isTablet
+          ? "60px 24px"
+          : "clamp(60px, 10vw, 120px) clamp(16px, 5vw, 60px)",
         overflow: "hidden",
       }}
     >
       {/* ── Section header ── */}
-      <div style={{ textAlign: "center", marginBottom: "clamp(40px, 6vw, 72px)" }}>
+      <div style={{ textAlign: "center", marginBottom: isMobile ? 28 : "clamp(40px, 6vw, 72px)" }}>
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -586,7 +824,7 @@ export default function ProcessFlowSection() {
           transition={{ delay: 0.08, duration: 0.6, ease: T.ease }}
           style={{
             margin: "0 0 16px",
-            fontSize: "clamp(1.9rem, 4vw, 3rem)",
+            fontSize: isTV ? "clamp(2.4rem, 4vw, 3.6rem)" : "clamp(1.9rem, 4vw, 3rem)",
             fontWeight: 700,
             color: T.textPrimary,
             letterSpacing: "-0.05em",
@@ -613,7 +851,7 @@ export default function ProcessFlowSection() {
           style={{
             margin: "0 auto",
             maxWidth: 480,
-            fontSize: "clamp(0.9rem, 1.4vw, 1rem)",
+            fontSize: isTV ? "1.1rem" : "clamp(0.9rem, 1.4vw, 1rem)",
             lineHeight: 1.8,
             color: T.textSecondary,
             fontFamily: T.font,
@@ -631,7 +869,7 @@ export default function ProcessFlowSection() {
         viewport={{ once: true, margin: "-60px" }}
         transition={{ delay: 0.22, duration: 0.65, ease: T.ease }}
         style={{
-          maxWidth: 1060,
+          maxWidth: maxW,
           margin: "0 auto",
           background: T.bg,
           border: `0.5px solid ${T.border}`,
@@ -643,10 +881,13 @@ export default function ProcessFlowSection() {
         {/* ── Header row: title + big step number ── */}
         <div style={{
           display: "flex",
-          alignItems: "flex-end",
+          alignItems: isMobile ? "flex-start" : "flex-end",
+          flexDirection: isMobile ? "column" : "row",
           justifyContent: "space-between",
-          gap: 24,
-          padding: "clamp(20px, 3vw, 36px) clamp(20px, 3vw, 40px) clamp(20px, 3vw, 28px)",
+          gap: isMobile ? 12 : 24,
+          padding: isMobile
+            ? "20px 18px 16px"
+            : "clamp(20px, 3vw, 36px) clamp(20px, 3vw, 40px) clamp(20px, 3vw, 28px)",
           borderBottom: `0.5px solid ${T.border}`,
         }}>
           <div>
@@ -664,7 +905,7 @@ export default function ProcessFlowSection() {
             </div>
             <h3 style={{
               margin: "0 0 8px",
-              fontSize: "clamp(1.2rem, 2.5vw, 1.65rem)",
+              fontSize: isTV ? "clamp(1.5rem, 2.5vw, 2rem)" : "clamp(1.2rem, 2.5vw, 1.65rem)",
               fontWeight: 700,
               color: T.textPrimary,
               letterSpacing: "-0.04em",
@@ -681,68 +922,97 @@ export default function ProcessFlowSection() {
                 Silicon
               </span>
             </h3>
-            <p style={{
-              margin: 0,
-              fontSize: 12.5,
-              color: T.textSecondary,
-              lineHeight: 1.7,
-              maxWidth: 420,
-              fontFamily: T.font,
-            }}>
-              A rigorous, repeatable flow — zero surprises at sign-off.
-            </p>
+            {!isMobile && (
+              <p style={{
+                margin: 0,
+                fontSize: 12.5,
+                color: T.textSecondary,
+                lineHeight: 1.7,
+                maxWidth: 420,
+                fontFamily: T.font,
+              }}>
+                A rigorous, repeatable flow — zero surprises at sign-off.
+              </p>
+            )}
           </div>
 
-          {/* Big ghost step counter */}
-          <div style={{ textAlign: "right", flexShrink: 0 }}>
-            <motion.div
-              key={active}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25 }}
+          {/* Big ghost step counter — hidden on mobile to save space */}
+          {!isMobile && (
+            <div style={{ textAlign: "right", flexShrink: 0 }}>
+              <motion.div
+                key={active}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25 }}
+                style={{
+                  fontSize: isTV ? "clamp(3.2rem, 5vw, 5.5rem)" : "clamp(2.5rem, 6vw, 4.5rem)",
+                  fontWeight: 800,
+                  color: T.textPrimary,
+                  letterSpacing: "-0.08em",
+                  lineHeight: 1,
+                  opacity: 0.07,
+                  fontFamily: T.font,
+                  userSelect: "none",
+                }}
+              >
+                {STEPS[active].n}
+              </motion.div>
+              <div style={{
+                fontSize: 10, fontWeight: 600,
+                letterSpacing: "0.1em",
+                color: T.textMuted,
+                textTransform: "uppercase",
+                marginTop: 2,
+              }}>
+                of 07 stages
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ── DESKTOP / TV: tab rail + split panel ── */}
+        {!isCompact && (
+          <>
+            <TabRail active={active} onSelect={go} isTV={isTV} />
+            <div
               style={{
-                fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
-                fontWeight: 800,
-                color: T.textPrimary,
-                letterSpacing: "-0.08em",
-                lineHeight: 1,
-                opacity: 0.07,
-                fontFamily: T.font,
-                userSelect: "none",
+                display: "grid",
+                gridTemplateColumns: isTV ? "1fr 320px" : "1fr clamp(200px, 32%, 300px)",
               }}
+              className="pf-body-grid"
             >
-              {STEPS[active].n}
-            </motion.div>
-            <div style={{
-              fontSize: 10, fontWeight: 600,
-              letterSpacing: "0.1em",
-              color: T.textMuted,
-              textTransform: "uppercase",
-              marginTop: 2,
-            }}>
-              of 07 stages
+              <StepPanel step={STEPS[active]} direction={direction} />
+              <div className="pf-overview-col" style={{ overflow: "hidden" }}>
+                <OverviewPanel active={active} onSelect={go} />
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* ── MOBILE / TABLET: carousel + accordion ── */}
+        {isCompact && (
+          <div style={{ padding: isMobile ? "8px 0 0" : "12px 0 0" }}>
+            <StepCarousel
+              active={active}
+              direction={direction}
+              onSwipe={handleSwipe}
+              isMobile={isMobile}
+            />
+            <div style={{ padding: isMobile ? "0 14px 16px" : "0 24px 20px" }}>
+              <p style={{
+                margin: "0 0 10px",
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: T.textMuted,
+              }}>
+                All Stages
+              </p>
+              <OverviewAccordion active={active} onSelect={go} />
             </div>
           </div>
-        </div>
-
-        {/* ── Tab rail ── */}
-        <TabRail active={active} onSelect={go} />
-
-        {/* ── Body: step panel + overview ── */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr clamp(200px, 32%, 300px)",
-        }}
-          className="pf-body-grid"
-        >
-          {/* Step content */}
-          <StepPanel step={STEPS[active]} direction={direction} />
-
-          {/* Overview map — hidden on mobile via responsive style below */}
-          <div className="pf-overview-col" style={{ overflow: "hidden" }}>
-            <OverviewPanel active={active} onSelect={go} />
-          </div>
-        </div>
+        )}
 
         {/* ── Footer: nav + progress + CTA ── */}
         <Footer
@@ -750,39 +1020,15 @@ export default function ProcessFlowSection() {
           total={STEPS.length}
           onPrev={goPrev}
           onNext={goNext}
+          isMobile={isMobile}
         />
       </motion.div>
 
       {/* ── Responsive styles ── */}
       <style>{`
-        /* Tablet: narrow overview */
-        @media (max-width: 900px) {
-          .pf-body-grid {
-            grid-template-columns: 1fr 180px !important;
-          }
+        .pf-tab-rail::-webkit-scrollbar {
+          display: none;
         }
-
-        /* Mobile: hide overview, single column */
-        @media (max-width: 640px) {
-          .pf-body-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .pf-overview-col {
-            display: none !important;
-          }
-          .pf-next-hint {
-            display: inline !important;
-          }
-        }
-
-        /* Large desktop: slightly wider overview */
-        @media (min-width: 1280px) {
-          .pf-body-grid {
-            grid-template-columns: 1fr 320px !important;
-          }
-        }
-
-        /* Scrollbar styling for overview */
         .pf-overview-col::-webkit-scrollbar {
           width: 4px;
         }
@@ -794,12 +1040,6 @@ export default function ProcessFlowSection() {
           border-radius: 2px;
         }
 
-        /* Tab rail hide scrollbar */
-        .pf-tab-rail::-webkit-scrollbar {
-          display: none;
-        }
-
-        /* Respect reduced motion */
         @media (prefers-reduced-motion: reduce) {
           * {
             animation-duration: 0.01ms !important;
