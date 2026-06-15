@@ -1,5 +1,6 @@
 // HeroSection.jsx — Physical Design Hero
-// Same structure as Design Verification hero — content swapped
+// AurowinX Physical Design
+// Fully responsive — matches DV/DFT hero pattern exactly
 
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
@@ -57,6 +58,13 @@ const pills = [
   "DRC/LVS Clean",
 ];
 
+const STATS = [
+  { value: "GDSII", label: "Tape-out Ready"    },
+  { value: "5nm+",  label: "Advanced Nodes"    },
+  { value: "100%",  label: "DRC/LVS Clean"     },
+  { value: "150+",  label: "Designs Delivered" },
+];
+
 export default function HeroSection() {
   return (
     <section
@@ -74,7 +82,7 @@ export default function HeroSection() {
       }}
     >
 
-      {/* ── VIDEO BACKGROUND ── */}
+      {/* ── VIDEO BACKGROUND — z-index 0 ── */}
       <video
         autoPlay loop muted playsInline
         style={{
@@ -86,7 +94,7 @@ export default function HeroSection() {
         <source src="/videos/PD.mp4" type="video/mp4" />
       </video>
 
-      {/* ── DARK OVERLAY ── */}
+      {/* ── DARK OVERLAY — z-index 1 ── */}
       <div style={{
         position: "absolute",
         top: 0, left: 0, right: 0, bottom: 0,
@@ -94,7 +102,7 @@ export default function HeroSection() {
         background: "linear-gradient(160deg, rgba(8,4,24,0.78) 0%, rgba(12,8,36,0.72) 50%, rgba(4,8,24,0.80) 100%)",
       }} />
 
-      {/* ── DOT GRID ── */}
+      {/* ── DOT GRID — z-index 2 ── */}
       <div style={{
         position: "absolute",
         top: 0, left: 0, right: 0, bottom: 0,
@@ -103,7 +111,7 @@ export default function HeroSection() {
         backgroundSize: "28px 28px",
       }} />
 
-      {/* ── MAIN CONTENT ── */}
+      {/* ── MAIN CONTENT — z-index 3 ── */}
       <div style={{
         position: "relative", zIndex: 3,
         display: "flex", flexDirection: "column",
@@ -195,11 +203,13 @@ export default function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.38 }}
+          className="sol-hero-pills"
           style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginBottom: 40 }}
         >
           {pills.map((p, i) => (
             <motion.span
               key={p}
+              data-pill-index={i}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.42 + i * 0.07, ease: EASE }}
@@ -233,7 +243,7 @@ export default function HeroSection() {
           </MagButton>
         </motion.div>
 
-        {/* Trust line */}
+        {/* Trust line — short on mobile, full on desktop */}
         <motion.p
           initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ delay: 0.65 }}
@@ -241,16 +251,18 @@ export default function HeroSection() {
             color: "rgba(148,163,184,0.50)",
             fontSize: 12, margin: 0,
             display: "flex", alignItems: "center", gap: 6,
-            justifyContent: "center",
+            justifyContent: "center", flexWrap: "wrap", textAlign: "center",
           }}
         >
           <Activity style={{ width: 13, height: 13, color: "#4ade80" }} />
-          TSMC · Samsung · GlobalFoundries · UMC — down to 5nm
+          <span className="sol-hero-trust-line">Trusted by Tier-1 foundry partners worldwide</span>
+          <span className="sol-hero-trust-full">TSMC · Samsung · GlobalFoundries · UMC — down to 5nm</span>
         </motion.p>
       </div>
 
       {/* ── SCROLL INDICATOR ── */}
       <motion.div
+        className="sol-hero-scroll-cue"
         animate={{ y: [0, 8, 0] }}
         transition={{ duration: 2.2, repeat: Infinity }}
         style={{
@@ -264,11 +276,11 @@ export default function HeroSection() {
         <div style={{ width: 1, height: 32, background: "linear-gradient(180deg, rgba(99,102,241,0.5), transparent)" }} />
       </motion.div>
 
-      {/* ── BOTTOM STAT STRIP ── */}
+      {/* ── BOTTOM STAT STRIP (desktop grid) — pinned to bottom ── */}
       <motion.div
         initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.7 }}
-        className="sol-hero-stats"
+        className="sol-hero-stats sol-hero-stats-grid"
         style={{
           position: "absolute",
           bottom: 0, left: 0, right: 0,
@@ -280,12 +292,7 @@ export default function HeroSection() {
           borderTop: "1px solid rgba(255,255,255,0.08)",
         }}
       >
-        {[
-          { value: "GDSII", label: "Tape-out Ready"    },
-          { value: "5nm+",  label: "Advanced Nodes"    },
-          { value: "100%",  label: "DRC/LVS Clean"     },
-          { value: "150+",  label: "Designs Delivered" },
-        ].map((s, i) => (
+        {STATS.map((s, i) => (
           <motion.div
             key={s.label}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
@@ -311,42 +318,90 @@ export default function HeroSection() {
         ))}
       </motion.div>
 
+      {/* ── RESPONSIVE STYLES ── */}
       <style>{`
-        @media (max-width: 768px) {
+        .sol-hero-trust-line { display: none; }
+        .sol-hero-trust-full { display: inline; }
+
+        @media (max-width: 960px) {
           .sol-hero-section {
             padding-bottom: 0px !important;
             min-height: auto !important;
             padding-top: 80px !important;
           }
-          .sol-hero-stats {
-            grid-template-columns: repeat(2, 1fr) !important;
-            position: relative !important;
-            margin-top: 40px;
+          .sol-hero-scroll-cue {
+            display: none !important;
           }
-          .sol-hero-stat-item {
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            padding: 16px 12px !important;
+          .sol-hero-trust-line { display: inline; }
+          .sol-hero-trust-full { display: none; }
+          .sol-hero-pills [data-pill-index="3"],
+          .sol-hero-pills [data-pill-index="4"],
+          .sol-hero-pills [data-pill-index="5"] {
+            display: none;
           }
-          .sol-hero-stat-item:nth-child(even) {
-            border-right: none !important;
+          .sol-hero-stats-grid {
+            display: none !important;
           }
-          .sol-hero-stat-item:nth-child(3), .sol-hero-stat-item:nth-child(4) {
-            border-bottom: none !important;
+          .sol-hero-stats-scroll {
+            display: flex !important;
           }
         }
         @media (max-width: 480px) {
-          .sol-hero-stats {
-            grid-template-columns: 1fr !important;
-          }
-          .sol-hero-stat-item {
-            border-right: none !important;
-            border-bottom: 1px solid rgba(255,255,255,0.06) !important;
-          }
-          .sol-hero-stat-item:last-child {
-            border-bottom: none !important;
+          .sol-hero-pills [data-pill-index="2"] {
+            display: none;
           }
         }
       `}</style>
+
+      {/* ── MOBILE: horizontal swipe stat strip ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.7 }}
+        className="sol-hero-stats sol-hero-stats-scroll"
+        style={{
+          display: "none",
+          position: "relative",
+          zIndex: 3,
+          marginTop: 32,
+          width: "100%",
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none",
+          gap: 10,
+          padding: "0 16px 4px",
+        }}
+      >
+        {STATS.map((s) => (
+          <div
+            key={s.label}
+            className="sol-hero-stat-item"
+            style={{
+              flex: "0 0 72%",
+              scrollSnapAlign: "start",
+              padding: "18px 16px",
+              textAlign: "center",
+              background: "rgba(0,0,0,0.48)",
+              backdropFilter: "blur(20px)",
+              borderRadius: 14,
+              border: "1px solid rgba(255,255,255,0.07)",
+            }}
+          >
+            <p style={{
+              margin: 0,
+              fontSize: "clamp(1.4rem, 2.5vw, 1.9rem)",
+              fontWeight: 900, color: "#fff",
+              letterSpacing: "-0.04em", fontFamily: FONT,
+            }}>{s.value}</p>
+            <p style={{
+              margin: "4px 0 0", fontSize: 11,
+              color: "rgba(148,163,184,0.55)",
+              fontWeight: 600, letterSpacing: "0.07em", textTransform: "uppercase",
+            }}>{s.label}</p>
+          </div>
+        ))}
+      </motion.div>
+
     </section>
   );
 }

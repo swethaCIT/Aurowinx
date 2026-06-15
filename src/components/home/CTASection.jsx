@@ -538,6 +538,34 @@ const CSS = `
   .con-pad { padding: 0 clamp(1rem, 4vw, 3rem) clamp(2.75rem, 6vw, 4.5rem); }
   .con-pad-compact { padding: 0 clamp(1rem, 4vw, 3rem) clamp(2rem, 4vw, 3rem); }
 
+  /* ── Pill badge: tiny on mobile/tablet, normal on desktop ── */
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 40px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(6,182,212,0.3);
+    background: rgba(6,182,212,0.07);
+  }
+  .status-pill-dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #06b6d4;
+    flex-shrink: 0;
+  }
+  .status-pill-text {
+    color: #0891b2;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
   @media (min-width: 480px) {
     .btn-row { gap: 14px; }
     .img-grid > * { min-height: 120px; }
@@ -547,6 +575,9 @@ const CSS = `
     .contact-grid { grid-template-columns: 1fr 1fr; }
     .newsletter-row { flex-direction: row; }
     .newsletter-row button { width: auto; }
+    .status-pill { padding: 5px 13px; gap: 7px; margin-bottom: 24px; }
+    .status-pill-dot { width: 6px; height: 6px; }
+    .status-pill-text { font-size: 9px; }
   }
 
   @media (min-width: 768px) {
@@ -563,10 +594,54 @@ const CSS = `
     .contact-grid { grid-template-columns: repeat(3, 1fr); }
     .footer-top   { grid-template-columns: 1.8fr 1fr 1fr 1.3fr; gap: 48px; padding: 64px 48px 48px; }
     .footer-bottom { padding: 20px 48px 28px; }
+    .status-pill  { padding: 7px 16px; gap: 9px; margin-bottom: 30px; }
+    .status-pill-dot { width: 7px; height: 7px; }
+    .status-pill-text { font-size: 10px; letter-spacing: 0.2em; }
   }
 
   @media (min-width: 1536px) {
     .cta-inner { max-width: 90rem; }
+  }
+
+  /* ── HUD overlay cards inside chip canvas ── */
+  .hud-card {
+    position: absolute;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(14px);
+    border-radius: 5px;
+    padding: 3px 6px;
+    pointer-events: none;
+  }
+  .hud-card-label {
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0;
+    font-size: 5px;
+  }
+  .hud-card-value {
+    font-weight: 700;
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7px;
+  }
+  .hud-bottom { bottom: 8px; left: 8px; border: 1px solid rgba(6,182,212,0.22); box-shadow: 0 2px 8px rgba(6,182,212,0.1); }
+  .hud-top    { top: 8px; right: 8px; text-align: right; border: 1px solid rgba(139,92,246,0.2); box-shadow: 0 2px 8px rgba(139,92,246,0.08); }
+
+  @media (min-width: 640px) {
+    .hud-card { border-radius: 7px; padding: 4px 8px; }
+    .hud-card-label { font-size: 6px; }
+    .hud-card-value { font-size: 9px; }
+    .hud-bottom { bottom: 12px; left: 10px; }
+    .hud-top    { top: 12px; right: 10px; }
+  }
+
+  @media (min-width: 1100px) {
+    .hud-card { border-radius: 10px; padding: 8px 14px; }
+    .hud-card-label { font-size: 9px; margin-bottom: 2px; }
+    .hud-card-value { font-size: 13px; }
+    .hud-bottom { bottom: 22px; left: 14px; }
+    .hud-top    { top: 22px; right: 14px; }
   }
 `;
 
@@ -611,21 +686,18 @@ export default function CTASection({ compact = false }) {
 
             {/* LEFT */}
             <motion.div>
+              {/* ── Status pill — now uses CSS classes for responsive sizing ── */}
               <motion.div
+                className="status-pill"
                 initial={{ opacity: 0, scale: 0.85 }} animate={inView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ duration: 0.55 }}
-                style={{ display: "inline-flex", alignItems: "center", gap: 9,
-                  padding: "7px 16px", borderRadius: 40, marginBottom: 30,
-                  border: "1px solid rgba(6,182,212,0.3)",
-                  background: "rgba(6,182,212,0.07)" }}
               >
-                <motion.span animate={{ scale: [1, 1.7, 1], opacity: [1, 0.35, 1] }}
+                <motion.span
+                  className="status-pill-dot"
+                  animate={{ scale: [1, 1.7, 1], opacity: [1, 0.35, 1] }}
                   transition={{ duration: 1.8, repeat: Infinity }}
-                  style={{ display: "inline-block", width: 7, height: 7, borderRadius: "50%", background: "#06b6d4" }} />
-                <span style={{ color: "#0891b2", fontSize: 10, fontWeight: 700,
-                  letterSpacing: "0.2em", textTransform: "uppercase" }}>
-                  Ready to Collaborate
-                </span>
+                />
+                <span className="status-pill-text">Ready to Collaborate</span>
               </motion.div>
 
               <motion.h2
@@ -710,24 +782,14 @@ export default function CTASection({ compact = false }) {
                 style={{ position: "absolute", inset: 0 }}
               >
                 <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                  style={{ position: "absolute", bottom: 22, left: 14,
-                    background: "rgba(255,255,255,0.9)", backdropFilter: "blur(14px)",
-                    border: "1px solid rgba(6,182,212,0.22)", borderRadius: 10, padding: "8px 14px",
-                    boxShadow: "0 4px 18px rgba(6,182,212,0.12)" }}>
-                  <p style={{ color: "#0891b2", fontSize: 9, fontWeight: 700,
-                    letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 2px" }}>System Online</p>
-                  <p style={{ color: "#0f172a", fontSize: 13, fontWeight: 700, margin: 0,
-                    fontFamily: "'JetBrains Mono',monospace" }}>AurowinX Core v2.4</p>
+                  className="hud-card hud-bottom">
+                  <p className="hud-card-label" style={{ color: "#0891b2" }}>System Online</p>
+                  <p className="hud-card-value" style={{ color: "#0f172a" }}>AurowinX Core v2.4</p>
                 </motion.div>
                 <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                  style={{ position: "absolute", top: 22, right: 14, textAlign: "right",
-                    background: "rgba(255,255,255,0.9)", backdropFilter: "blur(14px)",
-                    border: "1px solid rgba(139,92,246,0.2)", borderRadius: 10, padding: "8px 14px",
-                    boxShadow: "0 4px 18px rgba(139,92,246,0.1)" }}>
-                  <p style={{ color: "#7c3aed", fontSize: 9, fontWeight: 700,
-                    letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 2px" }}>Response</p>
-                  <p style={{ color: "#0f172a", fontSize: 13, fontWeight: 700, margin: 0,
-                    fontFamily: "'JetBrains Mono',monospace" }}>&lt; 24 hrs</p>
+                  className="hud-card hud-top">
+                  <p className="hud-card-label" style={{ color: "#7c3aed" }}>Response</p>
+                  <p className="hud-card-value" style={{ color: "#0f172a" }}>&lt; 24 hrs</p>
                 </motion.div>
               </motion.div>
             </div>
