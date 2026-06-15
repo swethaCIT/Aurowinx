@@ -40,7 +40,6 @@ function usePCBCanvas(canvasRef) {
     const nodes = [];
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        // Random offset to break grid rigidity — feels organic like real PCB routing
         const jitterX = (Math.random() - 0.5) * spacingX * 0.55;
         const jitterY = (Math.random() - 0.5) * spacingY * 0.55;
         nodes.push(new THREE.Vector3(
@@ -84,7 +83,6 @@ function usePCBCanvas(canvasRef) {
         const threshold = spacingX * 1.45;
         if (dist > threshold) return;
 
-        // L-shaped orthogonal trace (real PCB style — no diagonal routes)
         const mid = new THREE.Vector3(
           Math.random() > 0.5 ? a.x : b.x,
           Math.random() > 0.5 ? a.y : b.y,
@@ -103,7 +101,6 @@ function usePCBCanvas(canvasRef) {
     const PULSE_COUNT = 14;
     const pulses = [];
 
-    // Pick random edges to animate
     const edges = [];
     nodes.forEach((a, i) => {
       nodes.forEach((b, j) => {
@@ -119,7 +116,7 @@ function usePCBCanvas(canvasRef) {
       const edge   = edges[Math.floor(Math.random() * edges.length)];
       const mesh   = new THREE.Mesh(pulseGeo, pulseMat.clone());
       const delay  = Math.random() * 4.0;
-      const speed  = 0.18 + Math.random() * 0.22; // 0 → 1 per second fraction
+      const speed  = 0.18 + Math.random() * 0.22;
       scene.add(mesh);
       pulses.push({ mesh, edge, t: -delay * speed, speed, delay });
     }
@@ -137,7 +134,6 @@ function usePCBCanvas(canvasRef) {
       pulses.forEach(p => {
         p.t += dt * p.speed;
         if (p.t > 1.2) {
-          // Reset to a new random edge
           p.edge = edges[Math.floor(Math.random() * edges.length)];
           p.t = 0;
           p.speed = 0.18 + Math.random() * 0.22;
@@ -146,7 +142,6 @@ function usePCBCanvas(canvasRef) {
         const t = Math.max(0, Math.min(1, p.t));
         p.mesh.position.lerpVectors(p.edge.a, p.edge.b, t);
 
-        // Fade in/out: bright at midpoint
         const fade = Math.sin(t * Math.PI);
         p.mesh.material.opacity = fade * 0.92;
       });
@@ -191,6 +186,8 @@ export default function ContactHero() {
           min-height: 520px;
           display: flex;
           align-items: stretch;
+          /* ✅ FIX: offset for fixed navbar on all screen sizes */
+          padding-top: 64px;
         }
 
         /* ── Subtle noise texture overlay ────────────────────── */
@@ -340,7 +337,6 @@ export default function ContactHero() {
           display: block;
           width: 100%; height: 520px;
           border-radius: 4px;
-          /* No border — the PCB itself is the visual */
         }
 
         /* Stat overlay — bottom-left of the canvas panel */
@@ -425,9 +421,13 @@ export default function ContactHero() {
 
         /* ── Responsive ────────────────────────────────────────── */
         @media (max-width: 1024px) {
+          /* ✅ FIX: slightly taller navbar on some tablets */
+          .ch2-root {
+            padding-top: 68px;
+          }
           .ch2-inner {
             grid-template-columns: 1fr;
-            padding: 56px 40px;
+            padding: 48px 40px 56px;
             gap: 48px;
           }
           .ch2-left { padding-right: 0; }
@@ -435,10 +435,21 @@ export default function ContactHero() {
         }
 
         @media (max-width: 680px) {
-          .ch2-inner { padding: 44px 24px; }
+          /* ✅ FIX: mobile navbar offset */
+          .ch2-root {
+            padding-top: 64px;
+          }
+          .ch2-inner { padding: 36px 24px 48px; }
           .ch2-canvas { height: 300px; }
-          .ch2-stats-overlay { left: 16px; bottom: 16px; padding: 14px 16px; min-width: 0; right: 16px; }
-          .ch2-stats-table { grid-template-columns: repeat(4, 1fr); gap: 10px 12px; }
+          .ch2-stats-overlay {
+            left: 16px; bottom: 16px;
+            padding: 14px 16px;
+            min-width: 0; right: 16px;
+          }
+          .ch2-stats-table {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px 12px;
+          }
           .ch2-stat-val { font-size: 18px; }
         }
 
