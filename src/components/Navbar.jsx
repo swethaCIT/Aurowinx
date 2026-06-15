@@ -137,7 +137,7 @@ const products = [
 {
   icon: Lightbulb,
   name: 'Electronics Development',
-  path: '/products#electronics-development',
+  path: '/products#electronics-dev',
   description: 'EV charging, BLDC motor control, and solar inverter solutions for sustainable power.',
   color: 'text-orange-400',
   bg: 'bg-orange-500/10',

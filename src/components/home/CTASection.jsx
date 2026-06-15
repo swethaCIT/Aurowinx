@@ -491,8 +491,24 @@ const STATS = [
   { num: 8,   suffix: "yr", label: "Expertise" },
 ];
 
-const FOOTER_SERVICES = ["ASIC Design","VLSI & RTL","Embedded Firmware","IoT Systems","Power Electronics","PCB Design","FPGA Development","Product Engineering"];
-const FOOTER_COMPANY  = ["About Us","Our Team","Case Studies","Careers","Blog","Contact"];
+const FOOTER_SERVICES = [
+  { label: "ASIC Design", href: "/products" },
+  { label: "VLSI & RTL", href: "/solutions/semiconductor-design" },
+  { label: "Embedded Firmware", href: "/products" },
+  { label: "IoT Systems", href: "/products" },
+  { label: "Power Electronics", href: "/products" },
+  { label: "PCB Design", href: "/products" },
+  { label: "FPGA Development", href: "/products" },
+  { label: "Product Engineering", href: "/products" },
+];
+const FOOTER_COMPANY = [
+  { label: "About Us", href: "/company" },
+  { label: "Our Team", href: "/company" },
+  { label: "Products", href: "/products" },
+  { label: "Careers", href: "/careers" },
+  { label: "Solutions", href: "/solutions" },
+  { label: "Contact", href: "/contact" },
+];
 const FOOTER_CONTACT  = [
   { icon: "📍", text: "Chennai, Tamil Nadu, India" },
   { icon: "✉",  text: "info@aurowinx.com"         },
@@ -500,10 +516,10 @@ const FOOTER_CONTACT  = [
   { icon: "📞", text: "+91 98400 XXXXX"            },
 ];
 const SOCIALS = [
-  { label: "LI", href: "#", title: "LinkedIn"    },
-  { label: "TW", href: "#", title: "Twitter / X" },
-  { label: "GH", href: "#", title: "GitHub"      },
-  { label: "YT", href: "#", title: "YouTube"     },
+  { label: "LI", href: "https://www.linkedin.com/company/aurowinx/", title: "LinkedIn" },
+  { label: "TW", href: "https://x.com/aurowinx", title: "Twitter / X" },
+  { label: "GH", href: "https://github.com/aurowinx", title: "GitHub" },
+  { label: "YT", href: "https://www.youtube.com/@aurowinx", title: "YouTube" },
 ];
 
 /* ════════════════════════════════════════════════════════
@@ -898,7 +914,7 @@ export default function CTASection({ compact = false }) {
                 letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 18px" }}>Services</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 11 }}>
                 {FOOTER_SERVICES.map(s => (
-                  <a key={s} href="#"
+                  <a key={s.label} href={s.href}
                     style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, textDecoration: "none",
                       display: "flex", alignItems: "center", gap: 8, transition: "color .2s" }}
                     onMouseEnter={e => { e.currentTarget.style.color = "#93c5fd"; }}
@@ -906,7 +922,7 @@ export default function CTASection({ compact = false }) {
                   >
                     <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#3b82f6",
                       display: "inline-block", flexShrink: 0 }} />
-                    {s}
+                    {s.label}
                   </a>
                 ))}
               </div>
@@ -918,7 +934,7 @@ export default function CTASection({ compact = false }) {
                 letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 18px" }}>Company</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 11 }}>
                 {FOOTER_COMPANY.map(s => (
-                  <a key={s} href="#"
+                  <a key={s.label} href={s.href}
                     style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, textDecoration: "none",
                       display: "flex", alignItems: "center", gap: 8, transition: "color .2s" }}
                     onMouseEnter={e => { e.currentTarget.style.color = "#93c5fd"; }}
@@ -926,7 +942,7 @@ export default function CTASection({ compact = false }) {
                   >
                     <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#8b5cf6",
                       display: "inline-block", flexShrink: 0 }} />
-                    {s}
+                    {s.label}
                   </a>
                 ))}
               </div>
@@ -979,12 +995,16 @@ export default function CTASection({ compact = false }) {
               © {new Date().getFullYear()} AurowinX Technologies Pvt. Ltd. · Chennai, Tamil Nadu, India · All rights reserved.
             </p>
             <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-              {["Privacy Policy","Terms of Use","Sitemap"].map(l => (
-                <a key={l} href="#"
+              {[
+                { label: "Privacy Policy", href: "/contact" },
+                { label: "Terms of Use", href: "/company" },
+                { label: "Sitemap", href: "/products" },
+              ].map(l => (
+                <a key={l.label} href={l.href}
                   style={{ color: "rgba(255,255,255,0.2)", fontSize: 12, textDecoration: "none", transition: "color .2s" }}
                   onMouseEnter={e => e.currentTarget.style.color = "rgba(255,255,255,0.6)"}
                   onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.2)"}
-                >{l}</a>
+                >{l.label}</a>
               ))}
             </div>
             <p style={{ color: "rgba(255,255,255,0.12)", fontSize: 11, margin: 0, fontFamily: "'JetBrains Mono',monospace" }}>

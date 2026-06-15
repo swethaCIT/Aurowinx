@@ -376,7 +376,7 @@ export default function ProjectsList() {
             </div>
 
             <motion.a
-              href="/projects" whileHover={{ x: 4 }}
+              href="/products" whileHover={{ x: 4 }}
               style={{
                 display: "inline-flex", alignItems: "center", gap: 6,
                 color: C.primary, fontWeight: 700, fontSize: 13,
