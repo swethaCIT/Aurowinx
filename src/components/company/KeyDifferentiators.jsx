@@ -26,8 +26,8 @@ const differentiators = [
       </svg>
     ),
     title: "Deep Technical Expertise",
-    description: "Engineers with 8–20 years of hands-on experience in complex SoC and ASIC projects, covering the full silicon lifecycle from RTL to GDSII.",
-    highlight: "8–20 Yrs Experience",
+    description: "Engineers spanning 4 to 15+ years of hands-on experience in complex SoC and ASIC projects, covering the full silicon lifecycle from RTL to GDSII.",
+    highlight: "Up to 15+ Yrs Experience",
     color: "#4f46e5",
     bg: "rgba(79,70,229,0.06)",
     border: "rgba(79,70,229,0.12)",
@@ -55,8 +55,8 @@ const differentiators = [
       </svg>
     ),
     title: "Proven Silicon Success",
-    description: "Delivered multiple successful tapeouts at 7nm, 5nm, and advanced FinFET nodes. Achieved target test coverage and faster timing closure for Tier 1 clients.",
-    highlight: "7nm · 5nm · 3nm",
+    description: "Delivered multiple successful tapeouts at 7nm and 5nm FinFET nodes, with faster timing closure for Tier 1 clients.",
+    highlight: "7nm · 5nm FinFET",
     color: "#2563eb",
     bg: "rgba(37,99,235,0.06)",
     border: "rgba(37,99,235,0.12)",

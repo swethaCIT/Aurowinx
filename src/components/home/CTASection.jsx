@@ -739,7 +739,7 @@ export default function CTASection({ compact = false }) {
                 style={{ color: "#475569", fontSize: 16, lineHeight: 1.85, maxWidth: 420, margin: "0 0 38px" }}
               >
                 Silicon-proven ASIC, embedded firmware, IoT automation &amp; certified power electronics —
-                <strong style={{ color: "#1e293b", fontWeight: 700 }}> AurowinX delivers end-to-end.</strong>
+                <strong style={{ color: "#1e293b", fontWeight: 700 }}> all under one roof.</strong>
               </motion.p>
 
               <motion.div className="btn-row"

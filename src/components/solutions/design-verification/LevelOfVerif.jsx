@@ -50,7 +50,7 @@ const LEVEL_ITEMS = [
 const ACHIEVE_ITEMS = [
   { icon: <Zap size={16} />,       title: "Faster Debugging",                desc: "Automated triage and waveform analysis cuts debug cycles by 60%." },
   { icon: <Target size={16} />,    title: "All Possible Scenarios",          desc: "Constrained random + directed tests cover every corner case." },
-  { icon: <BarChart3 size={16} />, title: "100% Code & Functional Coverage", desc: "Disciplined closure across code, toggle, FSM and functional metrics." },
+  { icon: <BarChart3 size={16} />, title: "99%+ Code & Functional Coverage", desc: "Disciplined closure across code, toggle, FSM and functional metrics." },
 ];
 
 const CAPABLE_ITEMS = [
@@ -291,7 +291,7 @@ export default function LevelOfVerif() {
                 <Code2 size={17} style={{ color: "#fff" }} />
               </div>
               <div>
-                <p style={{ margin: 0, fontSize: 12, fontWeight: 800, color: "#fff" }}>100% Coverage Target</p>
+                <p style={{ margin: 0, fontSize: 12, fontWeight: 800, color: "#fff" }}>99%+ Coverage Target</p>
                 <p style={{ margin: "2px 0 0", fontSize: 10, color: "rgba(255,255,255,0.72)" }}>Code · Functional · Toggle · FSM</p>
               </div>
             </motion.div>

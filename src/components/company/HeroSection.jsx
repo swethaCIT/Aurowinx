@@ -9,7 +9,7 @@ const slides = [
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
     description:
-      "Delivering high-quality, low-power, high-performance SoC solutions across the full silicon lifecycle — Architecture to GDSII.",
+      "Delivering high-quality, low-power, high-performance SoC solutions.",
   },
   {
     video: "/videos/AboutAuro.mp4",
@@ -18,7 +18,7 @@ const slides = [
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
     description:
-      "Successful tapeouts at 7nm, 5nm, and 3nm FinFET nodes — trusted by Tier 1 semiconductor companies worldwide.",
+      "Successful tapeouts at 7nm and 5nm FinFET nodes — trusted by Tier 1 semiconductor companies worldwide.",
   },
   {
     video: "/videos/AboutAuro.mp4",
@@ -27,7 +27,7 @@ const slides = [
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
     description:
-      "Specialists in SV-UVM verification, DFT architecture, and low-power PNR — backed by engineers with 8–20 years of hands-on experience.",
+      "Specialists in SV-UVM verification, DFT architecture, and low-power PNR — backed by engineers with up to 15+ years of hands-on experience.",
   },
   {
     video: "/videos/AboutAuro.mp4",

@@ -3,7 +3,6 @@ import ProductEngineering from "../components/products/ProductEngineering";
 import EmbeddedSystems from "../components/products/EmbeddedSystems";
 import IoTAutomation from "../components/products/IoTAutomation";
 import ElectronicsDev from "../components/products/ElectronicsDev";
-import CustomRD from "../components/products/CustomRD";
 import CTASection from "../components/home/CTASection";
 
 export default function ProductPage() {
@@ -14,7 +13,6 @@ export default function ProductPage() {
             <EmbeddedSystems />
             <IoTAutomation />
             <ElectronicsDev />
-            <CustomRD />
             <CTASection />
         </>
     );

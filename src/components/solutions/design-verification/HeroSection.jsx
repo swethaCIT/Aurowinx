@@ -60,7 +60,7 @@ const pills = [
 const STATS = [
   { value: "99%+", label: "Functional Coverage" },
   { value: "UVM",  label: "Industry Methodology" },
-  { value: "12+",  label: "Years Expertise" },
+  { value: "15+",  label: "Years Expertise" },
   { value: "180+", label: "Projects Delivered" },
 ];
 

@@ -86,7 +86,7 @@ const reasons = [
       </svg>
     ),
     title: "Proven Track Record",
-    description: "Trusted by leading semiconductor companies for delivering high-performance designs across 7nm, 5nm, and below — with first silicon success across domains.",
+    description: "Trusted by leading semiconductor companies for first-silicon success across every node we support.",
     stat: "9+",
     statLabel: "Tech Nodes Delivered",
     color: "#4f46e5",

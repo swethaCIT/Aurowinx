@@ -62,9 +62,9 @@ const REASONS = [
     title: "Senior-Led Engineering Bench",
     color: "#dc2626", bg: "#fef2f2",
     icon: <Clock style={{ width: 22, height: 22 }} />,
-    stat: { value: "20+", label: "Yrs, Lead Engineers" },
-    desc: "Every engagement is led by senior engineers with up to two decades of hands-on silicon experience — deep institutional knowledge without the multi-year ramp-up.",
-    proof: ["Senior engineers, 8–20 years each", "Domain expertise across all verticals", "Continuous process refinement", "Long-term client partnerships"],
+    stat: { value: "15+", label: "Yrs, Lead Engineers" },
+    desc: "Every engagement is led by senior engineers with up to 15+ years of hands-on silicon experience — deep institutional knowledge without the multi-year ramp-up.",
+    proof: ["Senior engineers, 4–15+ years each", "Domain expertise across all verticals", "Continuous process refinement", "Long-term client partnerships"],
     img: "https://images.unsplash.com/photo-1744555270794-6d378b9e7cd3?w=700&q=80",
   },
 ];
@@ -291,7 +291,7 @@ function DetailView({ reason, compact }) {
               {[
                 { val: "99%+", label: "Retention" },
                 { val: "0", label: "Escapes" },
-                { val: "20+", label: "Yrs, Lead Eng." },
+                { val: "15+", label: "Yrs, Lead Eng." },
               ].map(s => (
                 <span key={s.label} style={{
                   padding: "6px 12px", borderRadius: 50,
@@ -438,7 +438,7 @@ export default function SDWhySection() {
             {[
               { val: "99%+", label: "Client Retention",  color: "#4f46e5" },
               { val: "0",    label: "Silicon Escapes",   color: "#059669" },
-              { val: "20+",  label: "Yrs, Lead Engineers", color: "#7c3aed" },
+              { val: "15+",  label: "Yrs, Lead Engineers", color: "#7c3aed" },
             ].map((s, i) => (
               <motion.div
                 key={s.label}

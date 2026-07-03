@@ -1,8 +1,8 @@
 // IPOrbitSection.jsx — Analog IP
 // Light theme — uses AurowinX design tokens from theme.js
 
-import { useRef, useEffect, useState } from "react";
-import { motion, useInView, animate } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { C, FONT, EASE, fadeUp } from "../../company/theme";
 
 const IPS = [
@@ -190,22 +190,6 @@ function OrbitRing({ size }) {
   );
 }
 
-/* ── Count-up ── */
-function Counter({ to, suffix = "" }) {
-  const [val, setVal] = useState(0);
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
-  useEffect(() => {
-    if (!inView) return;
-    const ctrl = animate(0, to, {
-      duration: 1.8, ease: "easeOut",
-      onUpdate: (v) => setVal(Math.round(v)),
-    });
-    return ctrl.stop;
-  }, [inView, to]);
-  return <span ref={ref}>{val}{suffix}</span>;
-}
-
 export default function IPOrbitSection() {
   const [active, setActive] = useState(null);
   const ORBIT_RADIUS = 210;
@@ -292,8 +276,8 @@ export default function IPOrbitSection() {
             lineHeight: 1.8,
           }}
         >
-          Silicon-proven analog IP blocks — designed, characterised,
-          and tape-out ready for integration into your SoC at any advanced node.
+          Each block in orbit below is a drop-in macro — hover to see how it
+          plugs directly into your SoC.
         </motion.p>
       </div>
 
@@ -359,60 +343,35 @@ export default function IPOrbitSection() {
         </div>
       </div>
 
-      {/* ── Stats row ── */}
+      {/* ── Supporting line ── */}
       <motion.div
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.65, delay: 0.25 }}
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          maxWidth: 720,
+          maxWidth: 640,
           margin: "88px auto 0",
-          padding: "0 24px",
+          padding: "22px 28px",
           background: C.bgWhite,
           borderRadius: 16,
           border: `1px solid ${C.border}`,
           boxShadow: C.shadowMd,
-          overflow: "hidden",
+          textAlign: "center",
           position: "relative",
           zIndex: 2,
         }}
       >
-        {[
-          { value: 4,   suffix: "+",   label: "Analog IP Families"   },
-          { value: 16,  suffix: "nm+", label: "Process Node Support" },
-          { value: 100, suffix: "%",   label: "Silicon Proven"       },
-          { value: 50,  suffix: "+",   label: "IPs Delivered"        },
-        ].map((s, i) => (
-          <div
-            key={s.label}
-            style={{
-              padding: "28px 16px",
-              textAlign: "center",
-              borderRight: i < 3 ? `1px solid ${C.borderLight}` : "none",
-            }}
-          >
-            <p style={{
-              margin: 0,
-              fontSize: "clamp(1.6rem, 2.8vw, 2.1rem)",
-              fontWeight: 900,
-              color: C.primary,
-              letterSpacing: "-0.05em",
-              fontFamily: FONT,
-            }}>
-              <Counter to={s.value} suffix={s.suffix} />
-            </p>
-            <p style={{
-              margin: "5px 0 0", fontSize: 11,
-              color: C.textMuted,
-              fontWeight: 600,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-            }}>{s.label}</p>
-          </div>
-        ))}
+        <p style={{
+          margin: 0,
+          fontSize: 13.5,
+          lineHeight: 1.7,
+          fontWeight: 500,
+          color: C.textSecondary,
+        }}>
+          No re-spins, no re-characterisation — pick the macro your SoC needs
+          and integrate it as-is.
+        </p>
       </motion.div>
 
     </section>

@@ -17,7 +17,7 @@ const SOLUTIONS = [
     num: "01",
     label: "ASIC & SoC Design",
     tagline: "Spec2GDSII · Silicon Proven",
-    desc: "End-to-end ASIC and SoC design from architecture and RTL through physical design and GDSII tape-out. Tool-agnostic across Cadence, Synopsys, and Siemens — delivering high-quality, low-power, high-performance silicon.",
+    desc: "End-to-end ASIC and SoC design services — delivering high-quality, low-power, high-performance silicon.",
     imageUrl: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=800&q=80&auto=format&fit=crop",
     imageAlt: "Semiconductor circuit",
     href: "/asic",

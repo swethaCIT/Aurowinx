@@ -42,7 +42,7 @@ const STATS = [
     color: "#7c3aed",
   },
   {
-    num: 12, suffix: "+",
+    num: 15, suffix: "+",
     label: "Years of Expertise",
     sub: "Deep verification domain knowledge",
     icon: <Clock style={{ width: 22, height: 22 }} />,

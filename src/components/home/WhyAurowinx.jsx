@@ -50,7 +50,7 @@ const STRENGTHS = [
   {
     num: "04",
     title: "Flexible Engagement Models",
-    desc: "Client-led or Aurowinx-led. T&M, Turnkey, or Milestone-based billing — structured to fit your project and budget.",
+    desc: "Engagement structured around how you want to work with us — from time & materials to full turnkey delivery.",
     color: "#ea580c", colorEnd: "#d97706", bg: "#fff7ed", border: "#fed7aa",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
@@ -74,7 +74,7 @@ const STRENGTHS = [
   {
     num: "06",
     title: "Foundry & IP Relationships",
-    desc: "Working relationships with UMC, TSMC, and Samsung — and IP vendor access for faster, lower-risk silicon delivery.",
+    desc: "Working relationships with TSMC, Samsung, GlobalFoundries, and UMC — and IP vendor access for faster, lower-risk silicon delivery.",
     color: "#6d28d9", colorEnd: "#2563eb", bg: "#ede9fe", border: "#c4b5fd",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">

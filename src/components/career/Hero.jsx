@@ -62,7 +62,7 @@ const PILLS = [
 
 /* ─── Bottom Stat Strip ───────────────────────────────────────────────────── */
 const STATS = [
-  { value: "6+",    label: "Open Positions"    },
+  { value: "Multiple", label: "Open Positions"    },
   { value: "3",     label: "Engineering Domains" },
   { value: "100%",  label: "Full Time Roles"   },
   { value: "India", label: "Primary Location"  },

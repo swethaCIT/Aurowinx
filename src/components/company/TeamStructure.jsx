@@ -123,7 +123,7 @@ const expLevels = [
 ];
 
 const capabilityItems = [
-  { label: "Tech Nodes",      value: "Till 3nm" },
+  { label: "Tech Nodes",      value: "Till 5nm" },
   { label: "Tool Coverage",   value: "Cadence · Synopsys · Siemens" },
   { label: "DV Methodology",  value: "SV-UVM · CPU DV" },
   { label: "DFT Coverage",    value: "All Techniques + ATE" },

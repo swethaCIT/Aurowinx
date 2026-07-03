@@ -144,14 +144,14 @@ const PRODUCTS = [
    TICKER
 ───────────────────────────────────────────────── */
 const TICKER_ITEMS = [
-  { label: "Solar Range",     val: "1kW–2MW" },
-  { label: "EV Max Output",   val: "22kW DC" },
-  { label: "BLDC Efficiency", val: "98%" },
-  { label: "Solar Subsidy",   val: "₹78K Max" },
+  { label: "Solar Config",    val: "Grid-Tied/Off" },
+  { label: "EV Connector",    val: "CCS2" },
+  { label: "BLDC Drive",      val: "SVPWM" },
+  { label: "Solar Safety",    val: "IEC 62109" },
   { label: "OCPP Protocol",   val: "2.0" },
   { label: "Power Factor",    val: ">0.99" },
-  { label: "RPM Accuracy",    val: "±0.1%" },
-  { label: "THD at load",     val: "<2%" },
+  { label: "BLDC Monitoring", val: "IoT/MQTT" },
+  { label: "EV Efficiency",   val: ">95%" },
 ];
 
 function MetricsTicker({ color }) {
@@ -841,9 +841,9 @@ export default function ElectronicsDev() {
               margin: "0 auto", fontFamily: FONT,
             }}
           >
-            From solar power systems to EV charging infrastructure and BLDC
-            motor control — end-to-end power electronics for renewable
-            ecosystems and sustainable mobility.
+            Explore our three flagship product lines below — each engineered
+            in-house from firmware to enclosure, with real turnkey specs and
+            live performance data.
           </motion.p>
         </div>
 

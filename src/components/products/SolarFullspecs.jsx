@@ -8,7 +8,7 @@ import { useRef } from "react";
 import { C, FONT, EASE } from "./theme";
 
 /* ─────────────────────────────────────────────────
-   DATA — from client's Solar Turnkey Project sheet
+   DATA
 ───────────────────────────────────────────────── */
 const TIERS = [
   {

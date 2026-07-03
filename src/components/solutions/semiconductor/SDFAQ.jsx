@@ -13,7 +13,7 @@ const FAQS = [
     category: "Engagement",
     color: "#4f46e5",
     q: "What engagement models does AurowinX offer?",
-    a: "We offer two flexible models: embedded on-site engineering resources — where our engineers work within your team — and full in-house project execution, where we own the entire flow end-to-end. Both models scale from block-level work to full-chip ASIC delivery.",
+    a: "Two ways: engineers embedded on-site with your team, or a full in-house team owning delivery end-to-end — either scales from block-level to full-chip. See \"The AurowinX Difference\" section above for how we tailor each model to your project.",
   },
   {
     id: 1,
@@ -27,7 +27,7 @@ const FAQS = [
     category: "Physical Design",
     color: "#0891b2",
     q: "Which process nodes and foundries do you support?",
-    a: "We support TSMC, Samsung, GlobalFoundries, UMC and Intel foundries across nodes from 5nm FinFET down to 180nm. We handle both flat and hierarchical PNR flows, multi-patterning, flip chip and wire bond packaging, and low-power multi-voltage designs.",
+    a: "We support TSMC, Samsung, GlobalFoundries and UMC across nodes from 5nm FinFET down to 180nm. We handle both flat and hierarchical PNR flows, multi-patterning, flip chip and wire bond packaging, and low-power multi-voltage designs.",
   },
   {
     id: 3,
@@ -48,7 +48,7 @@ const FAQS = [
     category: "Quality",
     color: "#dc2626",
     q: "How do you ensure quality and prevent silicon escapes?",
-    a: "Quality is enforced at every stage through structured review gates: verification plan review, testbench architecture review, coverage closure review and final DV sign-off. We use a layered approach — simulation, formal and emulation — with independent review at each milestone. Our silicon escape rate is zero across 180+ delivered projects.",
+    a: "Quality is enforced at every stage through structured review gates: verification plan review, testbench architecture review, coverage closure review and final DV sign-off. We use a layered approach — simulation, formal and emulation — with independent review at each milestone. The result: a zero silicon-escape record, maintained across every project we deliver.",
   },
   {
     id: 6,

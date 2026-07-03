@@ -16,9 +16,9 @@ const TESTIMONIALS = [
   {
     id: 0,
     quote:
-      "We verified a DDR4-based chiplet memory subsystem — memory controller, DDR PHY, and die-to-die interface — building a fully configurable UVM testbench aligned to DDR4 JEDEC specs and the DFI protocol. Every test scenario closed clean on schedule, and the same verification infrastructure now anchors every memory subsystem engagement that follows.",
+      "A DDR4 chiplet memory subsystem engagement — every test scenario closed clean, on schedule, at 100% coverage. The verification infrastructure we built now anchors every memory subsystem project that follows.",
     name: "DDR4 Chiplet SoC Verification",
-    title: "Memory Controller · DDR PHY · Die-to-Die Interface",
+    title: "Chiplet Memory Subsystem Engagement",
     company: "Engineering Case Study",
     domain: "Memory Subsystem Verification",
     domainShort: "DDR4 / Memory",
@@ -29,9 +29,9 @@ const TESTIMONIALS = [
   {
     id: 1,
     quote:
-      "We built a fully configurable, reusable UVM testbench to verify a family of AMBA bus bridge IPs — AHB2AXI, AXI2AHB, and AHB-to-APB — with custom AHB and APB verification components supporting real-world back-to-back transfer scenarios. Along the way we caught an HRESP reporting gap and a burst-mode data alignment issue before either reached silicon.",
+      "An AMBA bus bridge IP family engagement — two silicon-bound bugs caught before tape-out, including an HRESP reporting gap, closing at 100% functional and code coverage.",
     name: "AMBA Bus Bridge Verification",
-    title: "AHB2AXI · AXI2AHB · AHB-to-APB",
+    title: "AMBA Bridge IP Family Engagement",
     company: "Engineering Case Study",
     domain: "Protocol Bridge Verification",
     domainShort: "AMBA / Bridge",

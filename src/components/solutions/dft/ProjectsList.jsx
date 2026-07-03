@@ -115,55 +115,25 @@ const DFT_PROJECTS = [
 /* ─────────────────────────────────────────
    DFT TOOLS DATA
 ───────────────────────────────────────── */
-const FLOW_STAGES = [
-  {
-    stage: "01",
-    label: "DFT Planning",
-    color: "#4f46e5",
-    bg: "#eef2ff",
-    tools: ["Synopsys TestMAX", "Mentor Tessent Shell", "Cadence Modus"],
-    desc: "Coverage target setting, DFT rules definition, test mode planning",
-  },
-  {
-    stage: "02",
-    label: "Scan Insertion",
-    color: "#7c3aed",
-    bg: "#f5f3ff",
-    tools: ["Synopsys DFT Compiler", "Mentor Tessent Scan", "Cadence Encounter Test"],
-    desc: "Scan chain stitching, compression logic, OCC & clock gating bypass",
-  },
-  {
-    stage: "03",
-    label: "ATPG",
-    color: "#0891b2",
-    bg: "#ecfeff",
-    tools: ["Synopsys TetraMAX", "Mentor Tessent ATPG", "Cadence Modus ATPG"],
-    desc: "Pattern generation for stuck-at, transition, path-delay, bridge faults",
-  },
-  {
-    stage: "04",
-    label: "MBIST / LBIST",
-    color: "#059669",
-    bg: "#ecfdf5",
-    tools: ["Synopsys MemoryBIST", "Mentor Tessent MemoryBIST", "Cadence MBIST Architect"],
-    desc: "Memory self-test controller synthesis, repair logic, logic BIST",
-  },
-  {
-    stage: "05",
-    label: "Boundary Scan",
-    color: "#d97706",
-    bg: "#fffbeb",
-    tools: ["Synopsys BSD Compiler", "Mentor Tessent BSCAN", "XJTAG"],
-    desc: "IEEE 1149.1 / 1149.6 TAP insertion, BSDL export, board-level test",
-  },
-  {
-    stage: "06",
-    label: "Sign-Off & ATE",
-    color: "#dc2626",
-    bg: "#fef2f2",
-    tools: ["Synopsys PrimeSim", "Advantest SmarTest", "Teradyne UltraFLEX"],
-    desc: "Fault simulation, pattern translation, silicon validation & ATE bring-up",
-  },
+const TOOL_STACK = [
+  { tool: "Synopsys TestMAX", tag: "Planning" },
+  { tool: "Mentor Tessent Shell", tag: "Planning" },
+  { tool: "Cadence Modus", tag: "Planning" },
+  { tool: "Synopsys DFT Compiler", tag: "Scan Insertion" },
+  { tool: "Mentor Tessent Scan", tag: "Scan Insertion" },
+  { tool: "Cadence Encounter Test", tag: "Scan Insertion" },
+  { tool: "Synopsys TetraMAX", tag: "ATPG" },
+  { tool: "Mentor Tessent ATPG", tag: "ATPG" },
+  { tool: "Cadence Modus ATPG", tag: "ATPG" },
+  { tool: "Synopsys MemoryBIST", tag: "MBIST / LBIST" },
+  { tool: "Mentor Tessent MemoryBIST", tag: "MBIST / LBIST" },
+  { tool: "Cadence MBIST Architect", tag: "MBIST / LBIST" },
+  { tool: "Synopsys BSD Compiler", tag: "Boundary Scan" },
+  { tool: "Mentor Tessent BSCAN", tag: "Boundary Scan" },
+  { tool: "XJTAG", tag: "Boundary Scan" },
+  { tool: "Synopsys PrimeSim", tag: "Sign-Off & ATE" },
+  { tool: "Advantest SmarTest", tag: "Sign-Off & ATE" },
+  { tool: "Teradyne UltraFLEX", tag: "Sign-Off & ATE" },
 ];
 
 const CAPABILITIES = [
@@ -452,151 +422,6 @@ function ProjectPanel({ project, i, inView, isOpen, onToggle }) {
   );
 }
 
-/* ─────────────────────────────────────────
-   FLOW PIPELINE STAGE
-   — Horizontal card on desktop (hover to expand)
-   — Accordion row on mobile/tablet (tap to expand)
-───────────────────────────────────────── */
-function FlowStage({ stage, i, inView, isActive, onHover, onLeave, onTap }) {
-  return (
-    <motion.div
-      className="dft-flow-stage"
-      data-active={isActive ? "true" : "false"}
-      initial={{ opacity: 0, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.45, delay: 0.15 + i * 0.07, ease: EASE }}
-      onMouseEnter={onHover}
-      onMouseLeave={onLeave}
-      onClick={onTap}
-      style={{
-        position: "relative",
-        flex: 1,
-        minWidth: 0,
-      }}
-    >
-      {/* Connector arrow between stages — hidden on mobile/tablet via CSS */}
-      {i < FLOW_STAGES.length - 1 && (
-        <div className="dft-flow-connector" style={{
-          position: "absolute",
-          right: -1, top: "50%", transform: "translateY(-50%)",
-          zIndex: 3,
-          display: "flex", alignItems: "center",
-        }}>
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path
-              d="M2 9h12M10 4l6 5-6 5"
-              stroke={isActive ? stage.color : C.border}
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{ transition: "stroke 0.25s" }}
-            />
-          </svg>
-        </div>
-      )}
-
-      {/* Stage card */}
-      <div className="dft-flow-card" style={{
-        border: `1.5px solid ${isActive ? stage.color : C.borderLight}`,
-        borderRadius: 12,
-        background: isActive ? stage.bg : C.bgWhite,
-        padding: "16px 14px",
-        transition: "all 0.25s",
-        boxShadow: isActive ? `0 8px 28px ${stage.color}22` : C.shadowSm,
-        height: "100%",
-        display: "flex", flexDirection: "column", gap: 10,
-        marginRight: i < FLOW_STAGES.length - 1 ? 16 : 0,
-        cursor: "pointer",
-      }}>
-        {/* Stage number + label (+ mobile chevron) */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{
-              fontFamily: DISPLAY,
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              color: isActive ? stage.color : C.textMuted,
-              transition: "color 0.25s",
-              letterSpacing: "-0.02em",
-            }}>
-              {stage.stage}
-            </span>
-            <div style={{
-              width: 1, height: 12,
-              background: isActive ? stage.color : C.borderLight,
-              transition: "background 0.25s",
-            }} />
-            <span style={{
-              fontFamily: DISPLAY, fontSize: "0.72rem", fontWeight: 600,
-              letterSpacing: "-0.01em",
-              color: isActive ? stage.color : C.textPrimary,
-              transition: "color 0.25s",
-              lineHeight: 1.2,
-            }}>
-              {stage.label}
-            </span>
-          </div>
-
-          {/* Chevron — only visible on mobile/tablet (accordion affordance) */}
-          <motion.div
-            className="dft-flow-chevron"
-            animate={{ rotate: isActive ? 180 : 0 }}
-            transition={{ duration: 0.25 }}
-            style={{ color: isActive ? stage.color : C.textMuted }}
-          >
-            <ChevronDown size={16} />
-          </motion.div>
-        </div>
-
-        {/* Tools list — collapsible on mobile, always visible on desktop */}
-        <div className="dft-flow-tools" style={{ display: "flex", flexDirection: "column", gap: 5, flex: 1 }}>
-          {stage.tools.map((tool, ti) => (
-            <motion.div
-              key={tool}
-              initial={{ opacity: 0 }}
-              animate={inView ? { opacity: 1 } : {}}
-              transition={{ delay: 0.3 + i * 0.07 + ti * 0.04 }}
-              style={{
-                display: "flex", alignItems: "center", gap: 6,
-                fontFamily: BODY, fontSize: 10.5, fontWeight: 400,
-                color: isActive ? C.textPrimary : C.textSecondary,
-                transition: "color 0.2s",
-              }}
-            >
-              <span style={{
-                width: 3, height: 3, borderRadius: "50%",
-                background: isActive ? stage.color : C.textMuted,
-                flexShrink: 0, transition: "background 0.25s",
-              }} />
-              {tool}
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Desc — only when active */}
-        <AnimatePresence>
-          {isActive && (
-            <motion.p
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.22 }}
-              style={{
-                fontFamily: BODY, fontSize: 10.5, fontWeight: 300,
-                color: C.textSecondary, lineHeight: 1.65,
-                margin: 0, overflow: "hidden",
-                borderTop: `1px solid ${stage.color}30`,
-                paddingTop: 8,
-              }}
-            >
-              {stage.desc}
-            </motion.p>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  );
-}
 
 /* ─────────────────────────────────────────
    CAPABILITY GRID
@@ -657,7 +482,6 @@ export default function ProjectsList() {
 
   const [activeFilter, setActiveFilter] = useState("All");
   const [openPanel, setOpenPanel] = useState(0); // first open by default
-  const [activeStage, setActiveStage] = useState(null);
 
   const filtered =
     activeFilter === "All"
@@ -666,12 +490,6 @@ export default function ProjectsList() {
 
   const handleToggle = (i) => {
     setOpenPanel(openPanel === i ? null : i);
-  };
-
-  // On mobile/tablet, tapping a stage toggles it (acts like an accordion).
-  // On desktop, hover sets the active stage; tap is a harmless no-op duplicate of hover state.
-  const handleStageTap = (i) => {
-    setActiveStage(activeStage === i ? null : i);
   };
 
   return (
@@ -879,7 +697,7 @@ export default function ProjectsList() {
             border: `1px solid ${C.border}`,
             color: C.textSecondary, background: C.bgLight, whiteSpace: "nowrap",
           }}>
-            DFT Tool Flow
+            DFT Tools
           </span>
           <div style={{
             flex: 1, height: 1,
@@ -899,61 +717,57 @@ export default function ProjectsList() {
             transition={{ duration: 0.5, delay: 0.2, ease: EASE }}
             style={{ marginBottom: 24 }}
           >
-            <Eyebrow text="EDA Tool Flow" />
+            <Eyebrow text="EDA Toolchain" />
             <h2 style={{
               fontFamily: DISPLAY,
               fontSize: "clamp(1.9rem, 4vw, 2.9rem)",
               fontWeight: 700, letterSpacing: "-0.04em",
               lineHeight: 1.06, color: C.textPrimary, margin: "0 0 8px",
             }}>
-              End-to-End <GradText>DFT Pipeline</GradText>
+              Tools <GradText>We Use</GradText>
             </h2>
             <p style={{
               fontFamily: BODY, fontSize: 13, fontWeight: 400,
               color: C.textSecondary, lineHeight: 1.75, margin: 0, maxWidth: 440,
             }}>
-              <span className="dft-flow-hint-desktop">Hover any stage to explore the tools and scope. </span>
-              <span className="dft-flow-hint-mobile">Tap any stage to expand the tools and scope. </span>
-              Every phase from planning to ATE bring-up.
+              The Synopsys, Mentor, Cadence, and ATE platforms our engineers run day to day.
             </p>
           </motion.div>
 
-          {/* Flow pipeline — horizontal stages on desktop, stacked accordion on mobile/tablet */}
-          <div className="dft-flow-track" style={{
-            display: "flex",
-            alignItems: "stretch",
-            gap: 0,
-            overflowX: "auto",
-            paddingBottom: 4,
+          {/* Flat tool roster — name + stage tag, no re-narration of the flow */}
+          <div style={{
+            display: "flex", flexWrap: "wrap", gap: 10,
           }}>
-            {FLOW_STAGES.map((stage, i) => (
-              <FlowStage
-                key={stage.stage}
-                stage={stage}
-                i={i}
-                inView={inView}
-                isActive={activeStage === i}
-                onHover={() => setActiveStage(i)}
-                onLeave={() => setActiveStage(null)}
-                onTap={() => handleStageTap(i)}
-              />
+            {TOOL_STACK.map((t, i) => (
+              <motion.div
+                key={t.tool}
+                initial={{ opacity: 0, y: 10 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.35, delay: 0.1 + i * 0.03, ease: EASE }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 8,
+                  padding: "9px 14px", borderRadius: 10,
+                  border: `1px solid ${C.borderLight}`,
+                  background: C.bgWhite, boxShadow: C.shadowSm,
+                }}
+              >
+                <span style={{
+                  fontFamily: BODY, fontSize: 12, fontWeight: 600,
+                  color: C.textPrimary,
+                }}>
+                  {t.tool}
+                </span>
+                <span style={{
+                  fontFamily: UI, fontSize: 9, fontWeight: 600,
+                  letterSpacing: "0.06em", textTransform: "uppercase",
+                  color: C.primary, background: C.bgAccent,
+                  padding: "2px 8px", borderRadius: 50,
+                }}>
+                  {t.tag}
+                </span>
+              </motion.div>
             ))}
           </div>
-
-          {/* Stage hint — desktop only */}
-          <motion.p
-            className="dft-flow-hint-bottom"
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.8 }}
-            style={{
-              fontFamily: UI, fontSize: 10, fontWeight: 500,
-              color: C.textMuted, margin: "10px 0 0",
-              letterSpacing: "0.05em", textAlign: "center",
-            }}
-          >
-            ↑ Hover a stage to expand tool details
-          </motion.p>
 
           {/* Capabilities grid */}
           <motion.div
@@ -982,54 +796,6 @@ export default function ProjectsList() {
       </div>
 
       <style>{`
-        /* ─────────────────────────────────
-           Mobile/tablet hint visibility
-        ───────────────────────────────── */
-        .dft-flow-hint-mobile { display: none; }
-        .dft-flow-hint-desktop { display: inline; }
-        .dft-flow-hint-bottom { display: block; }
-        .dft-flow-chevron { display: none; }
-        .dft-flow-connector { display: flex; }
-        .dft-flow-tools { display: flex; }
-
-        @media (max-width: 900px) {
-          /* Stack the pipeline into a vertical accordion */
-          .dft-flow-track {
-            flex-direction: column !important;
-            overflow-x: visible !important;
-            gap: 10px !important;
-          }
-
-          .dft-flow-stage {
-            flex: none !important;
-            width: 100% !important;
-          }
-
-          .dft-flow-card {
-            margin-right: 0 !important;
-          }
-
-          /* Hide desktop-only connector arrows */
-          .dft-flow-connector { display: none !important; }
-
-          /* Show the accordion chevron */
-          .dft-flow-chevron { display: flex !important; }
-
-          /* Swap hint copy */
-          .dft-flow-hint-desktop { display: none !important; }
-          .dft-flow-hint-mobile { display: inline !important; }
-          .dft-flow-hint-bottom { display: none !important; }
-
-          /* Collapse the tools list when the stage is inactive,
-             reveal it as part of the accordion expansion */
-          .dft-flow-stage .dft-flow-tools {
-            display: none !important;
-          }
-          .dft-flow-stage[data-active="true"] .dft-flow-tools {
-            display: flex !important;
-          }
-        }
-
         @media (max-width: 768px) {
           .dft-project-header-grid {
             display: flex !important;

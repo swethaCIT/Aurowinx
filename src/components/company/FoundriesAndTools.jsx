@@ -14,11 +14,11 @@ const FOUNDRIES = [
     name: "TSMC",
     color: "#4f46e5",
     bg: "#eef2ff",
-    nodes: ["5nm", "7nm", "12nm", "16nm", "28nm", "40nm", "65nm"],
+    nodes: ["7nm", "12nm", "16nm", "28nm", "40nm", "65nm"],
     desc: "Industry-leading foundry with advanced FinFET and 2.5D/3D integration support.",
     icon: <Cpu style={{ width: 20, height: 20 }} />,
     img: "https://images.unsplash.com/photo-1748002388689-c62b45d5c28b?w=600&q=80",
-    highlight: "5nm FinFET",
+    highlight: "7nm FinFET",
   },
   {
     name: "Samsung",
@@ -28,7 +28,7 @@ const FOUNDRIES = [
     desc: "Advanced GAA and FinFET processes with robust multi-patterning support.",
     icon: <Layers style={{ width: 20, height: 20 }} />,
     img: "https://images.unsplash.com/photo-1668600418844-5b3d2e381e10?w=600&q=80",
-    highlight: "GAA 3nm",
+    highlight: "5nm GAA",
   },
   {
     name: "GlobalFoundries",
@@ -44,11 +44,11 @@ const FOUNDRIES = [
     name: "UMC",
     color: "#059669",
     bg: "#ecfdf5",
-    nodes: ["28nm", "40nm", "55nm", "65nm", "90nm", "130nm", "180nm"],
+    nodes: ["22nm", "28nm", "40nm", "55nm", "65nm", "90nm", "130nm", "180nm"],
     desc: "Cost-effective mature nodes for IoT, consumer and industrial applications.",
     icon: <Zap style={{ width: 20, height: 20 }} />,
     img: "https://images.unsplash.com/photo-1561972465-05c968dc2c91?w=600&q=80",
-    highlight: "28nm HPC+",
+    highlight: "22nm HPC+",
   },
 ];
 

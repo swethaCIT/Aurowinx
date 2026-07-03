@@ -430,7 +430,7 @@ export default function WhoWeAre() {
               </span>
             </h2>
             <p style={{ color: C.textSecondary, fontSize: "clamp(13px, 1.4vw, 14px)", lineHeight: 1.8, margin: "0 0 20px", maxWidth: isCompact ? "100%" : 420 }}>
-              A highly specialized consultancy in Physical Design implementation, offering comprehensive RTL-to-GDSII solutions through both embedded on-site engineering resources and full-spectrum in-house project execution.
+              Floorplanning decisions made in week one decide whether timing closes in week ten — our Physical Design team weighs hierarchical vs. flat PNR strategy and node-specific cell-library constraints upfront, so RTL-to-GDSII signoff doesn't stall on late-stage ECOs.
             </p>
             <motion.a
               href="/contact" whileHover={{ x: 4 }}

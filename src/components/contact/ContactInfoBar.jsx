@@ -78,8 +78,8 @@ const STATS = [
   {
     Icon:    ClockIcon,
     label:   "Response Time",
-    value:   "< 1 Business Day",
-    sub:     "Typically same-day for urgent",
+    value:   "Within 1 Business Day",
+    sub:     "We respond to every enquiry",
     accent:  "#059669",
     soft:    "#f0fdf4",
     isStatus: true,

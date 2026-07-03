@@ -10,8 +10,8 @@ import { C, FONT, EASE } from "././theme";
 const STATS = [
   { value: "50+",  label: "Tape-outs delivered"     },
   { value: "10+",  label: "Years of VLSI expertise"  },
-  { value: "3nm",  label: "→ 65nm node coverage"     },
-  { value: "<24h", label: "Typical response time"     },
+  { value: "5nm",  label: "→ 65nm node coverage"     },
+  { value: "1 Day", label: "Typical response time"     },
 ];
 
 // ─── Three.js PCB trace network ─────────────────────────────────────────────

@@ -6,7 +6,7 @@ import { ChevronDown } from "lucide-react";
 const stats = [
   { value: "Private", label: "Owned & Funded" },
   { value: "Chennai", label: "Headquarters" },
-  { value: "3nm", label: "Lowest Node" },
+  { value: "5nm", label: "Lowest Node" },
   { value: "Tier 1", label: "Clients Served" },
 ];
 

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   User, Mail, Phone, Building2, Cpu, Layers,
   Briefcase, FileText, Upload, X, Send,
-  CheckCircle2, MapPin, Clock, Shield,
+  CheckCircle2, Clock, Shield,
   ChevronDown, ArrowRight,
 } from "lucide-react";
 import { C, FONT, EASE } from "././theme";
@@ -19,7 +19,7 @@ const CONFIG = {
   },
   services: {
     heading: "Tell Us About Your Requirement",
-    subheading: "Share your design challenge. Our engineering team will review and respond within 1–2 business days.",
+    subheading: "Share your design challenge. Our engineering team will review and respond within 1 business day.",
     badge: "Engineering Services",
     serviceOptions: [
       "Design Verification (DV)", "Design for Testability (DFT)",
@@ -73,9 +73,9 @@ const CONFIG = {
 };
 
 const TRUST = [
-  { icon: Clock,  label: "Response within 1–2 days",  text: "Our engineering team reviews every enquiry" },
+  { icon: Clock,  label: "Response within 1 business day",  text: "Our engineering team reviews every enquiry" },
   { icon: Shield, label: "Strictly confidential",      text: "Your data is never shared with third parties" },
-  { icon: MapPin, label: "Chennai, India",             text: "Headquartered in Tamil Nadu · Global delivery" },
+  { icon: User,   label: "Direct engineering access",  text: "You talk to engineers, not sales reps" },
 ];
 
 // ─── Decorative SVG ───────────────────────────────────────────────────────────
@@ -310,7 +310,7 @@ const SuccessScreen = ({ onReset, context }) => (
     <p className="cf3-succ-p">
       {context === "career"
         ? "Our talent team will review your application and reach out within 5–7 business days."
-        : "Our engineering team will review your requirement and respond within 1–2 business days."}
+        : "Our engineering team will review your requirement and respond within 1 business day."}
     </p>
     <p className="cf3-succ-note">
       A confirmation has been sent to your registered email address.
@@ -1025,7 +1025,7 @@ export default function ContactForm({ context = "general", sourcePage = "", clas
                     viewport={{ once: true }} transition={{ duration: 0.4, ease: EASE, delay: 0.12 }}>
                     <p className="cf3-submit-note">
                       Fields marked * are required.<br />
-                      We never share your data with third parties.
+                      By submitting, you agree to be contacted about your enquiry.
                     </p>
                     <motion.button
                       className="cf3-btn" onClick={submit}

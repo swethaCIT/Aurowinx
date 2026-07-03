@@ -43,7 +43,7 @@ function useBreakpoint() {
 const TEAM_ROLES = [
   {
     title: "Principal DV Manager",
-    exp: "20+ years of experience",
+    exp: "15+ years of experience",
     color: "#4f46e5",
     bg: "#eef2ff",
     icon: <Award style={{ width: 20, height: 20 }} />,
@@ -85,7 +85,7 @@ const TEAM_ROLES = [
 ];
 
 const ABOUT_POINTS = [
-  "UVM-based verification methodology on every engagement",
+  "Engineers fluent in UVM — the backbone of every testbench we build",
   "Formal property checking alongside constrained-random simulation",
   "Coverage-driven closure — functional, code, and toggle",
   "Proven across ASIC, FPGA and SoC verification programs",
@@ -410,7 +410,7 @@ export default function WhoWeAre() {
             <div style={{ display: "grid", gridTemplateColumns: statsColumns, gap: bp === "mobile" ? 8 : 12 }}>
               {[
                 { val: "50+",  label: "DV Engineers", color: "#4f46e5" },
-                { val: "20+",  label: "Team Experience", color: "#7c3aed" },
+                { val: "15+",  label: "Team Experience", color: "#7c3aed" },
                 { val: "180+", label: "Projects Done", color: "#0891b2" },
               ].map((s, i) => (
                 <motion.div

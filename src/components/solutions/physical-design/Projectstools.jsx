@@ -1086,7 +1086,7 @@ export default function ProjectsTools() {
                 color: C.textSecondary, lineHeight: 1.75,
                 margin: 0, maxWidth: 380,
               }}>
-                Every stage of the physical design flow, covered by best-in-class EDA tools.
+                The EDA toolchain our engineers run day to day, grouped by category.
               </p>
             </div>
 

@@ -338,7 +338,7 @@ export default function SDHero() {
         >
           <Activity style={{ width: 13, height: 13, color: "#4ade80" }} />
           <span className="sol-hero-trust-line">Trusted by Tier-1 silicon teams worldwide</span>
-          <span className="sol-hero-trust-full">Trusted by Qualcomm · TI · ISRO · MediaTek · Samsung · Marvell</span>
+          <span className="sol-hero-trust-full">Trusted by Qualcomm · TI · ISRO · MediaTek · NXP · Marvell</span>
         </motion.p>
       </div>
 
@@ -392,9 +392,9 @@ export default function SDHero() {
         }}
       >
         {[
-  { value: "3nm",  label: "Lowest Tech Node"   },
+  { value: "5nm",  label: "Lowest Tech Node"   },
   { value: "E2E",  label: "Spec to GDSII"      },
-  { value: "3",    label: "Foundry Partners"    },
+  { value: "4",    label: "Foundry Partners"    },
   { value: "150+", label: "Team Engineers"      },
 ].map((s, i) => (
           <motion.div
@@ -488,7 +488,7 @@ export default function SDHero() {
       >
         {[
           { value: "200+", label: "Tape-outs Delivered"  },
-          { value: "28nm", label: "Advanced Process Node" },
+          { value: "5nm",  label: "Lowest Tech Node"      },
           { value: "150+", label: "Team Engineers"        },
           { value: "E2E",  label: "Full Ownership"        },
         ].map((s) => (

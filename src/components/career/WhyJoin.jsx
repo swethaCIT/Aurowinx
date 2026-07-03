@@ -16,7 +16,7 @@ function useBreakpoint() {
 
 /* ─── Data ─── */
 const TICKER = [
-  "DFT Engineering","RTL Synthesis","Physical Design","ASIC Tape-out",
+  "Scan Chain Insertion","RTL Synthesis","Custom Layout Design","ASIC Tape-out",
   "STA & Timing Closure","Formal Verification","ATPG & Fault Coverage",
   "Power Analysis","Floor Planning","Clock Tree Synthesis",
 ];
