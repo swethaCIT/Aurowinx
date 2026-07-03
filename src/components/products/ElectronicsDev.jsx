@@ -18,7 +18,7 @@ import {
   Settings, Radio, Leaf, TrendingUp, Eye, Power,
   Layers,
 } from "lucide-react";
-import SolarFullSpecs from "./SolarFullSpecs";
+import SolarFullSpecs from "./SolarFullspecs";
 
 /* ─────────────────────────────────────────────────
    PRODUCT DEFINITIONS
