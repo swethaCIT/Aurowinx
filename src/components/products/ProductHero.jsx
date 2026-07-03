@@ -92,7 +92,7 @@ const STATS = [
   { value: "3+",    label: "Product Verticals"     },
   { value: "100%",  label: "In-House Engineering"  },
   { value: "E2E",   label: "Concept to Production" },
-  { value: "2025",  label: "Launching Soon"         },
+  { value: "IN",    label: "Made in India"          },
 ];
 
 /* ═══════════════════════════════════════════════
@@ -364,9 +364,9 @@ export default function ProductHero() {
           }}
         >
           <Activity style={{ width: 13, height: 13, color: "#4ade80" }} />
-          <span className="prod-hero-trust-line">Innovate · Engineer · Empower</span>
+          <span className="prod-hero-trust-line">Engineering the Energy Transition</span>
           <span className="prod-hero-trust-full">
-            Innovate · Engineer · Empower — Sustainable Power for EV · Fans · Solar
+            Engineering the Energy Transition — EV Charging · BLDC Fans · Solar Inverters
           </span>
         </motion.p>
       </div>

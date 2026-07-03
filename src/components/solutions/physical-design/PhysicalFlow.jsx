@@ -19,7 +19,7 @@ const PHASES = [
     color: "#4f46e5",
     bg: "#eef2ff",
     icon: <Layers style={{ width: 24, height: 24 }} />,
-    img: "https://images.unsplash.com/photo-1743090661053-3d1feb2beab7?w=600&q=80",
+    img: "https://images.unsplash.com/photo-1759661881353-5b9cc55e1cf4?w=600&q=80",
     desc: "Transform RTL descriptions into optimized gate-level netlists with full DFT insertion, targeting area, timing and power constraints.",
     points: [
       { label: "Flat Synthesis",        sub: "Single-block full-chip netlist" },
@@ -38,7 +38,7 @@ const PHASES = [
     color: "#7c3aed",
     bg: "#f5f3ff",
     icon: <Cpu style={{ width: 24, height: 24 }} />,
-    img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80",
+    img: "https://images.unsplash.com/photo-1562408590-e32931084e23?w=600&q=80",
     desc: "Full physical implementation from floorplanning through detailed routing — optimized for timing closure, power and signal integrity.",
     points: [
       { label: "Floorplanning & Power Planning", sub: "PDN, macro placement, voltage domains" },
@@ -58,7 +58,7 @@ const PHASES = [
     color: "#0891b2",
     bg: "#ecfeff",
     icon: <Zap style={{ width: 24, height: 24 }} />,
-    img: "https://images.unsplash.com/photo-1543727166-222902a0c7d2?w=600&q=80",
+    img: "https://images.unsplash.com/photo-1754039985001-ccafee437736?w=600&q=80",
     desc: "Comprehensive sign-off analysis covering timing, power, reliability and physical verification — ensuring first-pass tape-out success.",
     points: [
       { label: "STA Sign-Off",         sub: "Multi-corner multi-mode timing closure" },

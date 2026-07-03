@@ -1,4 +1,4 @@
-// TechNodes.jsx — Physical Design Page
+// FoundriesAndTools.jsx — Company Page
 // AurowinX — Process Nodes & Foundry Support
 // Desktop/TV: 4-col grid with image cards
 // Mobile/Tablet: swipeable drag carousel + animated node chips accordion
@@ -17,7 +17,7 @@ const FOUNDRIES = [
     nodes: ["5nm", "7nm", "12nm", "16nm", "28nm", "40nm", "65nm"],
     desc: "Industry-leading foundry with advanced FinFET and 2.5D/3D integration support.",
     icon: <Cpu style={{ width: 20, height: 20 }} />,
-    img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80",
+    img: "https://images.unsplash.com/photo-1748002388689-c62b45d5c28b?w=600&q=80",
     highlight: "5nm FinFET",
   },
   {
@@ -27,7 +27,7 @@ const FOUNDRIES = [
     nodes: ["5nm", "8nm", "14nm", "28nm", "65nm"],
     desc: "Advanced GAA and FinFET processes with robust multi-patterning support.",
     icon: <Layers style={{ width: 20, height: 20 }} />,
-    img: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&q=80",
+    img: "https://images.unsplash.com/photo-1668600418844-5b3d2e381e10?w=600&q=80",
     highlight: "GAA 3nm",
   },
   {
@@ -37,7 +37,7 @@ const FOUNDRIES = [
     nodes: ["12nm", "14nm", "22nm", "28nm", "55nm", "130nm", "180nm"],
     desc: "Specialised in RF, embedded memory and automotive-grade processes.",
     icon: <Shield style={{ width: 20, height: 20 }} />,
-    img: "https://images.unsplash.com/photo-1601132359864-c974e79890ac?w=600&q=80",
+    img: "https://images.unsplash.com/photo-1717962688747-7e13dfa31538?w=600&q=80",
     highlight: "22FDX FD-SOI",
   },
   {
@@ -47,7 +47,7 @@ const FOUNDRIES = [
     nodes: ["28nm", "40nm", "55nm", "65nm", "90nm", "130nm", "180nm"],
     desc: "Cost-effective mature nodes for IoT, consumer and industrial applications.",
     icon: <Zap style={{ width: 20, height: 20 }} />,
-    img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80",
+    img: "https://images.unsplash.com/photo-1561972465-05c968dc2c91?w=600&q=80",
     highlight: "28nm HPC+",
   },
 ];

@@ -1,4 +1,4 @@
-// KeyDifferentiators.jsx — Physical Design Page
+// KeyDifferentiators.jsx — Company Page
 // AurowinX — What Sets Us Apart
 //
 // Mobile   : vertical tab rail (numbered pill selector) + single animated panel

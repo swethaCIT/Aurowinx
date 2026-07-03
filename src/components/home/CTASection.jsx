@@ -374,10 +374,10 @@ function CountUp({ to, suffix = "", inView }) {
    HOLO CARD
 ════════════════════════════════════════════════════════ */
 const IMAGES = [
-  { src: "https://images.unsplash.com/photo-1601132359864-c974e79890ac?w=800&q=85", alt: "Silicon chip close-up",       label: "ASIC Design",   span: "wide" },
-  { src: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&q=85", alt: "Semiconductor wafer",         label: "Silicon Fab"             },
-  { src: "https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=800&q=85", alt: "PCB electronics engineering", label: "PCB & Firmware"          },
-  { src: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=85",    alt: "IoT connected devices",       label: "IoT & Embedded"          },
+  { src: "https://images.unsplash.com/photo-1756083895945-a37995995b2a?w=800&q=85", alt: "Silicon chip close-up",       label: "ASIC Design",   span: "wide" },
+  { src: "https://images.unsplash.com/photo-1543727166-222902a0c7d2?w=800&q=85",    alt: "Semiconductor wafer",         label: "Silicon Fab"             },
+  { src: "https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?w=800&q=85", alt: "PCB electronics engineering", label: "PCB & Firmware"          },
+  { src: "https://images.unsplash.com/photo-1677092590812-78e7db4900d2?w=800&q=85", alt: "IoT connected devices",       label: "IoT & Embedded"          },
 ];
 
 function HoloCard({ src, alt, label, delay, inView }) {
@@ -882,7 +882,7 @@ export default function CTASection({ compact = false }) {
                 </div>
               </div>
               <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 14, lineHeight: 1.75, margin: "0 0 28px", maxWidth: 300 }}>
-                Engineering Today · Empowering Tomorrow. Silicon-proven ASIC, embedded systems &amp; IoT innovation from Chennai, India.
+                Precision Engineering, End to End. Silicon-proven ASIC, embedded systems &amp; IoT innovation from Chennai, India.
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {FOOTER_CONTACT.map(({ icon, text }) => (

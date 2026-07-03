@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const slides = [
   {
     video: "/videos/AboutAuro.mp4",
-    badge: "Enlightening Tech World",
+    badge: "End-to-End Silicon Ownership",
     title: "End-To-End Silicon Design From Concept To Tapeout",
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",
@@ -31,7 +31,7 @@ const slides = [
   },
   {
     video: "/videos/AboutAuro.mp4",
-    badge: "Established 2020 · Chennai",
+    badge: "Senior Engineers, Chennai-Based",
     title: "Your Extended Engineering Arm For Silicon Product Success",
     headingClass:
       "text-[1.8rem] md:text-[2.6rem] lg:text-[3.2rem] max-w-[900px]",

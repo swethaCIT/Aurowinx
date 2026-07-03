@@ -22,16 +22,14 @@ const PRODUCTS = [
     border: "rgba(22,163,74,.22)",
     text: "#15803d",
     stat: { v: "22kW", l: "Max Output" },
-    img: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=85&fit=crop",
+    img: "https://images.unsplash.com/photo-1703860271509-b50f5679f2a0?w=800&q=85&fit=crop",
     feats: [
-      { icon: "⚡", label: "AC & DC Charger Development" },
-      { icon: "🧠", label: "Smart Charging Control" },
-      { icon: "📡", label: "OCPP Communication" },
-      { icon: "🔋", label: "High Efficiency Conversion" },
-      { icon: "🛡", label: "Safety & Diagnostics" },
-      { icon: "💻", label: "Embedded Monitoring" },
-    ],
-    badges: ["Safe Charging", "High Efficiency", "Smart Connectivity", "Scalable"],
+  { icon: "⚡", label: "AC & DC Charger Development" },
+  { icon: "🧠", label: "Smart Charging Control" },
+  { icon: "📡", label: "OCPP Communication" },
+  { icon: "🛡", label: "Safety & Diagnostics" },
+],
+badges: ["High Efficiency", "Smart Connectivity", "Scalable"],
     chips: [
       { t: "AC 22kW", x: "10%", y: "28%", delay: 0 },
       { t: "DC 60kW", x: "55%", y: "22%", delay: 0.6 },
@@ -50,16 +48,14 @@ const PRODUCTS = [
     border: "rgba(37,99,235,.22)",
     text: "#1d4ed8",
     stat: { v: "98%", l: "Efficiency" },
-    img: "https://images.unsplash.com/photo-1565184099246-7c2dfcbf5811?w=800&q=85&fit=crop",
+    img: "https://images.pexels.com/photos/34194564/pexels-photo-34194564.jpeg?w=800&q=85&fit=crop",
     feats: [
-      { icon: "🔄", label: "Sensor & Sensorless Control" },
-      { icon: "⚡", label: "High Efficiency BLDC Drive" },
-      { icon: "🧠", label: "Smart Control Algorithms" },
-      { icon: "📡", label: "IoT Enabled Monitoring" },
-      { icon: "🔋", label: "Low Power Consumption" },
-      { icon: "🛡", label: "Compact Silent Design" },
-    ],
-    badges: ["Energy Efficient", "Low Noise", "IoT Control", "Long Life"],
+  { icon: "🔄", label: "Sensor & Sensorless Control" },
+  { icon: "⚡", label: "High Efficiency BLDC Drive" },
+  { icon: "📡", label: "IoT Enabled Monitoring" },
+  { icon: "🛡", label: "Compact Silent Design" },
+],
+badges: ["Energy Efficient", "IoT Control", "Long Life"],
     chips: [
       { t: "Sensorless", x: "8%", y: "25%", delay: 0 },
       { t: "IoT Ready",  x: "54%", y: "20%", delay: 0.7 },
@@ -78,16 +74,14 @@ const PRODUCTS = [
     border: "rgba(234,88,12,.22)",
     text: "#c2410c",
     stat: { v: "99.5%", l: "Uptime" },
-    img: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=85&fit=crop",
+    img: "https://images.pexels.com/photos/37929911/pexels-photo-37929911.jpeg?w=800&q=85&fit=crop",
     feats: [
-      { icon: "🔌", label: "Grid-Tied & Off-Grid" },
-      { icon: "📈", label: "MPPT Based Control" },
-      { icon: "⚡", label: "High Efficiency Conversion" },
-      { icon: "📊", label: "Real-time Monitoring" },
-      { icon: "🧠", label: "Smart Energy Management" },
-      { icon: "🛡", label: "Robust & Future Ready" },
-    ],
-    badges: ["Maximum Energy", "Reliable & Safe", "Smart Monitoring", "Sustainable"],
+  { icon: "🔌", label: "Grid-Tied & Off-Grid" },
+  { icon: "📈", label: "MPPT Based Control" },
+  { icon: "📊", label: "Real-time Monitoring" },
+  { icon: "🛡", label: "Robust & Future Ready" },
+],
+badges: ["Maximum Energy", "Smart Monitoring", "Sustainable"],
     chips: [
       { t: "MPPT",      x: "8%",  y: "26%", delay: 0 },
       { t: "Grid-Tied", x: "54%", y: "20%", delay: 0.8 },
@@ -97,10 +91,9 @@ const PRODUCTS = [
 ];
 
 const STATS = [
-  { v: "22kW",  l: "Max EV Output",   color: "#16a34a" },
-  { v: "98%",   l: "BLDC Efficiency", color: "#2563eb" },
-  { v: "99.5%", l: "Solar Uptime",    color: "#ea580c" },
-  { v: "3+",    l: "Product Lines",   color: "#8b5cf6" },
+  { v: "AC+DC",  l: "Charger Types",   color: "#16a34a" },
+  { v: "3",      l: "Product Lines",   color: "#8b5cf6" },
+  { v: "IoT",    l: "Ready",           color: "#2563eb" },
 ];
 
 /* ══════════════════════════════════════════════════════════════
@@ -248,7 +241,7 @@ function ProductCard({ p, index, inView }) {
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           onError={(e) => {
             e.target.src =
-              "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop";
+              "https://images.unsplash.com/photo-1717444308866-dcfc964bab23?w=800&q=80&fit=crop";
           }}
         />
 

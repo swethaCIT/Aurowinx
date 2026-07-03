@@ -64,7 +64,7 @@ const ABOUT_POINTS = [
 
 const DOMAIN_STATS = [
   { val: "5nm+",  label: "Advanced Nodes", color: "#4f46e5" },
-  { val: "15+",   label: "Years Active",   color: "#7c3aed" },
+  { val: "15+",   label: "Team Experience", color: "#7c3aed" },
   { val: "150+",  label: "Tape-outs Done", color: "#0891b2" },
 ];
 

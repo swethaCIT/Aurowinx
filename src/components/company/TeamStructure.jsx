@@ -1,4 +1,4 @@
-// TeamStructure.jsx — Physical Design Page
+// TeamStructure.jsx — Company Page
 // AurowinX — The Team Behind Every Tapeout
 //
 // Mobile   : Leadership as stacked minimal cards

@@ -1,7 +1,10 @@
 // src/components/products/ElectronicsDev.jsx
 // ─────────────────────────────────────────────────
 // Section : Electronics Development — Smart Power Solutions
-// Change  : 3D canvas animation embedded as background inside gradient header
+// Change  : Solar reordered to priority #1 (default tab), real turnkey
+//           metrics swapped in for Solar, SolarFullSpecs mounted below
+//           the tab panel when Solar is active.
+//           3D canvas animation embedded as background inside gradient header
 //           Right dark PowerFlowPanel remains UNCHANGED
 // Theme   : theme.js tokens (C.*, FONT, EASE, fadeUp)
 // Requires: framer-motion, lucide-react
@@ -15,11 +18,52 @@ import {
   Settings, Radio, Leaf, TrendingUp, Eye, Power,
   Layers,
 } from "lucide-react";
+import SolarFullSpecs from "./SolarFullSpecs";
 
 /* ─────────────────────────────────────────────────
    PRODUCT DEFINITIONS
+   Solar moved to index 0 — priority #1, launching first.
 ───────────────────────────────────────────────── */
 const PRODUCTS = [
+  {
+    id: "solar",
+    tabLabel: "Solar Inverter",
+    Icon: Sun,
+    color: "#d97706",
+    colorDark: "#78350f",
+    colorSoft: "#fef3c7",
+    colorBorder: "#fcd34d",
+    gradA: "#f59e0b",
+    gradB: "#d97706",
+    title: "Solar Inverter Solutions",
+    subtitle: "Harness Solar. Power the World.",
+    description:
+      "Turnkey solar power systems from residential rooftops to utility-scale farms — inverter, panels, and full electrical accessories, engineered for maximum harvest and long-term field reliability.",
+    // Real headline numbers from the turnkey spec sheet — replaces earlier
+    // generic tech-spec placeholders (99.5% uptime, MPPT, Grid Tied/Off).
+    metrics: [
+      { value: "1kW–2MW", label: "Capacity Range" },
+      { value: "5",        label: "Inverter Brands" },
+      { value: "10Yr",     label: "Free Warranty" },
+      { value: "₹78K",     label: "Max Subsidy" },
+    ],
+    features: [
+      { Icon: Power,      title: "Grid-Tied & Off-Grid",        desc: "Seamless islanding detection and transfer switching" },
+      { Icon: TrendingUp, title: "MPPT Based Control",          desc: "Perturb & observe, incremental conductance methods" },
+      { Icon: Zap,        title: "High Efficiency Conversion",  desc: "SiC/GaN topologies, <2% THD at full load" },
+      { Icon: Eye,        title: "Real-time Monitoring",        desc: "Yield tracking, fault log, cloud sync dashboard" },
+      { Icon: BarChart2,  title: "Smart Energy Management",     desc: "Load scheduling, battery arbitrage, grid export" },
+      { Icon: Shield,     title: "Robust & Future Ready",       desc: "IEC 62109 safety, surge protection, IP65 ready" },
+    ],
+    visual: {
+      primary: { label: "Max Capacity", value: "2MW" },
+      secondary: [
+        { label: "House Rooftop", pct: 20 },
+        { label: "Industries",    pct: 60 },
+        { label: "Solar Farm",    pct: 100 },
+      ],
+    },
+  },
   {
     id: "ev",
     tabLabel: "EV Charging",
@@ -94,55 +138,18 @@ const PRODUCTS = [
       ],
     },
   },
-  {
-    id: "solar",
-    tabLabel: "Solar Inverter",
-    Icon: Sun,
-    color: "#d97706",
-    colorDark: "#78350f",
-    colorSoft: "#fef3c7",
-    colorBorder: "#fcd34d",
-    gradA: "#f59e0b",
-    gradB: "#d97706",
-    title: "Solar Inverter Solutions",
-    subtitle: "Harness Solar. Power the World.",
-    description:
-      "Grid-tied and off-grid inverter development with advanced MPPT algorithms, real-time monitoring, and smart energy management — engineered for maximum harvest and long-term field reliability.",
-    metrics: [
-      { value: "99.5%", label: "Uptime" },
-      { value: "MPPT",  label: "Algorithm" },
-      { value: "98%",   label: "Conversion η" },
-      { value: "Grid",  label: "Tied / Off" },
-    ],
-    features: [
-      { Icon: Power,      title: "Grid-Tied & Off-Grid",        desc: "Seamless islanding detection and transfer switching" },
-      { Icon: TrendingUp, title: "MPPT Based Control",          desc: "Perturb & observe, incremental conductance methods" },
-      { Icon: Zap,        title: "High Efficiency Conversion",  desc: "SiC/GaN topologies, <2% THD at full load" },
-      { Icon: Eye,        title: "Real-time Monitoring",        desc: "Yield tracking, fault log, cloud sync dashboard" },
-      { Icon: BarChart2,  title: "Smart Energy Management",     desc: "Load scheduling, battery arbitrage, grid export" },
-      { Icon: Shield,     title: "Robust & Future Ready",       desc: "IEC 62109 safety, surge protection, IP65 ready" },
-    ],
-    visual: {
-      primary: { label: "Solar Harvest", value: "98.1% η" },
-      secondary: [
-        { label: "PV Input",   pct: 96 },
-        { label: "MPPT Track", pct: 99 },
-        { label: "AC Output",  pct: 98 },
-      ],
-    },
-  },
 ];
 
 /* ─────────────────────────────────────────────────
    TICKER
 ───────────────────────────────────────────────── */
 const TICKER_ITEMS = [
+  { label: "Solar Range",     val: "1kW–2MW" },
   { label: "EV Max Output",   val: "22kW DC" },
   { label: "BLDC Efficiency", val: "98%" },
-  { label: "Solar Uptime",    val: "99.5%" },
+  { label: "Solar Subsidy",   val: "₹78K Max" },
   { label: "OCPP Protocol",   val: "2.0" },
   { label: "Power Factor",    val: ">0.99" },
-  { label: "Conversion η",    val: "98.1%" },
   { label: "RPM Accuracy",    val: "±0.1%" },
   { label: "THD at load",     val: "<2%" },
 ];
@@ -725,7 +732,7 @@ function PowerFlowPanel({ product, inView }) {
 export default function ElectronicsDev() {
   const ref    = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(0); // Solar (index 0) is default — priority #1
 
   const product = PRODUCTS[active];
 
@@ -796,7 +803,7 @@ export default function ElectronicsDev() {
             }}
           >
             <span style={{ width: 28, height: 1, background: C.gradPrimary, display: "inline-block" }} />
-            Innovate · Engineer · Empower
+            Solar · EV · BLDC
             <span style={{ width: 28, height: 1, background: C.gradPrimary, display: "inline-block" }} />
           </motion.p>
 
@@ -834,9 +841,9 @@ export default function ElectronicsDev() {
               margin: "0 auto", fontFamily: FONT,
             }}
           >
-            From EV charging infrastructure to BLDC motor control and solar
-            inverters — end-to-end power electronics for sustainable mobility
-            and renewable ecosystems.
+            From solar power systems to EV charging infrastructure and BLDC
+            motor control — end-to-end power electronics for renewable
+            ecosystems and sustainable mobility.
           </motion.p>
         </div>
 
@@ -1035,6 +1042,9 @@ export default function ElectronicsDev() {
             <PowerFlowPanel product={product} inView={inView} />
           </motion.div>
         </AnimatePresence>
+
+        {/* ── FULL SPEC BREAKDOWN — Solar only, since it's the only real/launching product ── */}
+        {product.id === "solar" && <SolarFullSpecs product={product} />}
       </div>
 
       {/* Metrics ticker */}

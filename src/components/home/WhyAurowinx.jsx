@@ -10,71 +10,77 @@ import { motion, useInView, useScroll, useTransform, AnimatePresence } from "fra
 const STRENGTHS = [
   {
     num: "01",
-    title: "End-to-End Ownership",
-    desc: "From concept to silicon to smart product — we own every stage. No handoffs, no gaps, complete accountability.",
+    title: "Single Point of Accountability",
+    desc: "One team, one point of contact, from architecture through tape-out — you're never stitching together updates across multiple vendors.",
     color: "#2563eb", colorEnd: "#0891b2", bg: "#eff6ff", border: "#bfdbfe",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
       </svg>
     ),
   },
   {
     num: "02",
-    title: "Silicon-Proven Expertise",
-    desc: "Real tape-out experience. DFT, physical design, GDSII sign-off — not just simulations, but delivered silicon.",
+    title: "Structured Review Methodology",
+    desc: "Predefined quality gates at every phase — verification plans, testbench architecture, coverage metrics, and sign-off checkpoints.",
     color: "#7c3aed", colorEnd: "#db2777", bg: "#f5f3ff", border: "#ddd6fe",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-        <rect x="4" y="4" width="16" height="16" rx="2"/>
-        <line x1="9" y1="4" x2="9" y2="20"/><line x1="15" y1="4" x2="15" y2="20"/>
-        <line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/>
+        <polyline points="9 11 12 14 22 4"/>
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
       </svg>
     ),
   },
   {
     num: "03",
-    title: "Embedded + IoT Depth",
-    desc: "Bare-metal to Linux. MCU drivers to industrial automation. Full firmware stack, not just peripheral code.",
+    title: "Schedule Certainty You Can Plan Around",
+    desc: "Your product roadmap and go-to-market decisions don't get held hostage by a late-cycle engineering surprise.",
     color: "#0891b2", colorEnd: "#059669", bg: "#ecfeff", border: "#a5f3fc",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-        <path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/>
-        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/>
+        <line x1="12" y1="20" x2="12" y2="10"/>
+        <line x1="18" y1="20" x2="18" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="16"/>
       </svg>
     ),
   },
   {
     num: "04",
-    title: "Power Electronics Mastery",
-    desc: "EV chargers, BLDC controllers, solar inverters — production-certified hardware with firmware integration.",
+    title: "Flexible Engagement Models",
+    desc: "Client-led or Aurowinx-led. T&M, Turnkey, or Milestone-based billing — structured to fit your project and budget.",
     color: "#ea580c", colorEnd: "#d97706", bg: "#fff7ed", border: "#fed7aa",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        <rect x="2" y="3" width="20" height="14" rx="2"/>
+        <line x1="8" y1="21" x2="16" y2="21"/>
+        <line x1="12" y1="17" x2="12" y2="21"/>
       </svg>
     ),
   },
   {
     num: "05",
-    title: "Quality by Design",
-    desc: "Built-in verification, DFT-first methodology, and coverage-driven development — quality at every stage, not as an afterthought.",
+    title: "Secured Infrastructure",
+    desc: "Dedicated VNC servers, VPN-secured server LAN, LDAP authentication — your design data stays protected at every level.",
     color: "#059669", colorEnd: "#0891b2", bg: "#ecfdf5", border: "#a7f3d0",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        <polyline points="9 12 11 14 15 10"/>
       </svg>
     ),
   },
   {
     num: "06",
-    title: "Industry-Ready Tools",
-    desc: "Synopsys, Cadence, Siemens, Ansys, Altium, MATLAB — same toolchain as the world's top semiconductor companies.",
+    title: "Foundry & IP Relationships",
+    desc: "Working relationships with UMC, TSMC, and Samsung — and IP vendor access for faster, lower-risk silicon delivery.",
     color: "#6d28d9", colorEnd: "#2563eb", bg: "#ede9fe", border: "#c4b5fd",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="2" y1="12" x2="22" y2="12"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
       </svg>
     ),
   },
@@ -686,7 +692,7 @@ function WideStatBar({ triggered }) {
     { label: "Tape-outs Delivered", val: "40+", color: "#2563eb" },
     { label: "VLSI Projects", val: "120+", color: "#7c3aed" },
     { label: "Industry Tools", val: "24+", color: "#0891b2" },
-    { label: "Years Experience", val: "12+", color: "#059669" },
+    { label: "Team Engineers", val: "150+", color: "#059669" },
   ];
   return (
     <motion.div

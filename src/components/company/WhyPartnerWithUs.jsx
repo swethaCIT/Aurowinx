@@ -1,4 +1,4 @@
-// WhyPartnerWithUs.jsx — Physical Design Page
+// WhyPartnerWithUs.jsx — Company Page
 // AurowinX — Built For Silicon Success
 //
 // Mobile   : Swipeable 3D flip cards (tap to reveal stat on back)
@@ -388,7 +388,7 @@ function TabletHeroCard() {
         marginBottom: 20,
         minHeight: 220,
         display: "flex", alignItems: "center", gap: 32,
-        backgroundImage: `url("https://images.pexels.com/photos/6755065/pexels-photo-6755065.jpeg?auto=compress&cs=tinysrgb&w=800")`,
+        backgroundImage: `url("https://images.pexels.com/photos/3912477/pexels-photo-3912477.jpeg?auto=compress&cs=tinysrgb&w=800")`,
         backgroundSize: "cover", backgroundPosition: "center",
       }}
     >
@@ -540,7 +540,7 @@ function DesktopFeatureCard({ item, isTV }) {
         height: "100%", minHeight: 380,
         display: "flex", flexDirection: "column", justifyContent: "flex-end",
         cursor: "default",
-        backgroundImage: `url("https://images.pexels.com/photos/6755065/pexels-photo-6755065.jpeg?auto=compress&cs=tinysrgb&w=800")`,
+        backgroundImage: `url("https://images.pexels.com/photos/3912477/pexels-photo-3912477.jpeg?auto=compress&cs=tinysrgb&w=800")`,
         backgroundSize: "cover", backgroundPosition: "center",
       }}
     >

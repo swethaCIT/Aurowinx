@@ -34,18 +34,18 @@ function useCountUp(target, duration = 1800) {
    DATA
 ════════════════════════════════════════════════════════ */
 const STATS = [
-  { numeric: 50,  suffix: "+", label: "Projects Delivered",  sub: "Silicon to smart products",               color: "#2563eb", colorEnd: "#0891b2" },
-  { numeric: 20,  suffix: "+", label: "Global Clients",       sub: "Across 4+ industry domains",             color: "#0891b2", colorEnd: "#7c3aed" },
-  { numeric: 100, suffix: "%", label: "End-to-End Owned",     sub: "Concept → Silicon → Product",            color: "#7c3aed", colorEnd: "#db2777" },
+  { numeric: 10,  suffix: "+", label: "Projects Delivered",  sub: "Silicon to smart products",               color: "#2563eb", colorEnd: "#0891b2" },
+  { numeric: 5,  suffix: "+", label: "Global Clients",       sub: "Across 4+ industry domains",             color: "#0891b2", colorEnd: "#7c3aed" },
+  { numeric: 75, suffix: "%", label: "End-to-End Owned",     sub: "Concept → Silicon → Product",            color: "#7c3aed", colorEnd: "#db2777" },
   { numeric: 3,   suffix: "",  label: "Core Divisions",       sub: "Semiconductor · Embedded · Electronics", color: "#059669", colorEnd: "#2563eb" },
-  { numeric: 6,   suffix: "+", label: "Industry Verticals",   sub: "Auto · IoT · Energy · AI/ML",            color: "#ea580c", colorEnd: "#db2777" },
+  { numeric: 4,   suffix: "+", label: "Industry Verticals",   sub: "Auto · IoT · Energy",            color: "#ea580c", colorEnd: "#db2777" },
 ];
 
 const CAPS = [
   "ASIC Design","FPGA Development","SoC Architecture","RTL Design",
   "DFT & ATPG","UVM Verification","Physical Design","GDSII Sign-off",
-  "Embedded Firmware","IoT Automation","Industrial Control",
-  "EV Charging Systems","BLDC Motor Control","Solar Inverters",
+  "Embedded Firmware","IoT Automation",
+  "(UPCOMING)","EV Charging Systems","BLDC Motor Control","Solar Inverters",
   "Power Electronics","End-to-End Product Engineering",
 ];
 const MARQUEE_ITEMS = [...CAPS, ...CAPS];

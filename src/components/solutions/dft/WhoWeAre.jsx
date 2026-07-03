@@ -44,15 +44,15 @@ const TEAM_ROLES = [
     ],
   },
   {
-    title: "Execution DV Manager",
+    title: "Execution DFT Manager",
     exp: "10+ years of experience",
     color: "#7c3aed",
     bg: "#f5f3ff",
     icon: <Briefcase style={{ width: 20, height: 20 }} />,
     points: [
-      "Responsible for tactical project execution and engineering throughput",
-      "Ensures milestone adherence across all project phases",
-      "Resource alignment and continuous process refinement",
+      "Drives day-to-day DFT implementation across scan, MBIST and ATPG workstreams",
+      "Tracks pattern generation and fault-coverage targets against schedule",
+      "Coordinates with design and verification teams on DFT hook sign-off",
     ],
   },
   {
@@ -69,10 +69,10 @@ const TEAM_ROLES = [
 ];
 
 const ABOUT_POINTS = [
-  "Highly specialized consultancy in Design for Testability",
-  "Comprehensive solutions through embedded on-site engineering resources",
-  "Full-spectrum in-house project execution capability",
-  "Proven track record across ASIC, FPGA and SoC domains",
+  "DFT architecture planned from day one, not bolted on late",
+  "Full scan, MBIST, and ATPG implementation and validation",
+  "ATE handoff and post-silicon test support",
+  "Proven across ASIC, FPGA and SoC testability programs",
 ];
 
 /* ─── RoleCard ───────────────────────────────── */
@@ -342,7 +342,7 @@ export default function WhoWeAre() {
               </span>
             </h2>
             <p style={{ color: C.textSecondary, fontSize: isMobile ? 13.5 : 14, lineHeight: 1.8, margin: "0 0 20px", maxWidth: 420 }}>
-              A highly specialized consultancy in Design for Testability, offering comprehensive solutions through both embedded on-site engineering resources and full-spectrum in-house project execution.
+              Testability isn't an afterthought — our DFT team architects scan, MBIST, and ATPG strategy from day one, so every design ships ATE-ready with fault coverage that holds up in production.
             </p>
             <motion.a
               href="/contact" whileHover={{ x: 4 }}
@@ -387,7 +387,7 @@ export default function WhoWeAre() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: isMobile ? 8 : 12 }}>
               {[
                 { val: "50+",  label: "DFT Engineers", color: "#4f46e5" },
-                { val: "15+",  label: "Years Active",  color: "#7c3aed" },
+                { val: "15+",  label: "Team Experience", color: "#7c3aed" },
                 { val: "100+", label: "Projects Done", color: "#0891b2" },
               ].map((s, i) => (
                 <motion.div
@@ -436,7 +436,7 @@ export default function WhoWeAre() {
             Our Team Structure
           </h3>
           <p style={{ color: C.textSecondary, fontSize: isMobile ? 12.5 : 13, margin: "6px 0 0" }}>
-            Three-tier leadership ensuring DFT quality at every stage.
+            Three tiers, one focus: silicon that tests clean on the first pass.
           </p>
         </motion.div>
 

@@ -236,7 +236,7 @@ export default function HeroSection() {
           style={{ display: "flex", gap: 14, flexWrap: "wrap", justifyContent: "center", marginBottom: 28 }}
         >
           <MagButton primary href="/contact">
-            Start Your Analog IP Project <ArrowRight style={{ width: 16, height: 16 }} />
+            Start Analog IP Project <ArrowRight style={{ width: 16, height: 16 }} />
           </MagButton>
           <MagButton href="/contact">
             Talk to an Analog Engineer

@@ -15,7 +15,7 @@ const REASONS = [
     stat: { value: "99%+", label: "Bug Detection Rate" },
     desc: "We don't ship bugs to silicon. Every engagement follows a layered verification strategy — simulation, formal, emulation — ensuring zero functional escapes before tape-out.",
     proof: ["Layered sim + formal + emulation", "SVA assertions on every block", "100% coverage before sign-off", "Independent verification review"],
-    img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=700&q=80",
+    img: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?w=700&q=80",
   },
   {
     id: 1,
@@ -25,7 +25,7 @@ const REASONS = [
     stat: { value: "180+", label: "Successful Tape-Outs" },
     desc: "Over 180 designs successfully taped out across TSMC, Samsung, GlobalFoundries and UMC — from 5nm FinFET to 180nm mature nodes.",
     proof: ["5nm to 180nm node expertise", "TSMC · Samsung · GF · UMC", "First-pass silicon success", "AEC-Q100 automotive grade"],
-    img: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=700&q=80",
+    img: "https://images.unsplash.com/photo-1672307613484-3254a04651fd?w=700&q=80",
   },
   {
     id: 2,
@@ -35,7 +35,7 @@ const REASONS = [
     stat: { value: "50+", label: "Senior Engineers" },
     desc: "One team. Every domain. RTL, DV, DFT, Synthesis and Physical Design specialists working in a unified flow — no handoff gaps, no delays.",
     proof: ["RTL + DV + DFT + PD unified", "Senior 10–20yr engineers", "No third-party subcontracting", "Dedicated project manager"],
-    img: "https://images.unsplash.com/photo-1601132359864-c974e79890ac?w=700&q=80",
+    img: "https://images.unsplash.com/photo-1758873268695-1b55590e507a?w=700&q=80",
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const REASONS = [
     stat: { value: "40%", label: "Faster Closure" },
     desc: "Automated regression, parallel simulation farms and reusable UVM IP libraries slash schedule time — without cutting corners on quality.",
     proof: ["24/7 simulation farms", "Reusable UVM component library", "Automated coverage closure", "Parallel formal + simulation"],
-    img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=700&q=80",
+    img: "https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?w=700&q=80",
   },
   {
     id: 4,
@@ -55,17 +55,17 @@ const REASONS = [
     stat: { value: "2", label: "Engagement Models" },
     desc: "Whether you need embedded engineers on-site or a full in-house project team, we match our model to your workflow and timeline.",
     proof: ["On-site embedded resources", "Full in-house execution", "Block-level to full chip", "Flexible ramp up/down"],
-    img: "https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=700&q=80",
+    img: "https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=700&q=80",
   },
   {
     id: 5,
-    title: "12+ Years of Expertise",
+    title: "Senior-Led Engineering Bench",
     color: "#dc2626", bg: "#fef2f2",
     icon: <Clock style={{ width: 22, height: 22 }} />,
-    stat: { value: "2012", label: "Established" },
-    desc: "Over a decade of continuous ASIC delivery means deep institutional knowledge, proven processes and a team that has seen — and solved — every edge case.",
-    proof: ["Est. 2012 — 12+ years active", "Domain expertise across all verticals", "Continuous process refinement", "Long-term client partnerships"],
-    img: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=700&q=80",
+    stat: { value: "20+", label: "Yrs, Lead Engineers" },
+    desc: "Every engagement is led by senior engineers with up to two decades of hands-on silicon experience — deep institutional knowledge without the multi-year ramp-up.",
+    proof: ["Senior engineers, 8–20 years each", "Domain expertise across all verticals", "Continuous process refinement", "Long-term client partnerships"],
+    img: "https://images.unsplash.com/photo-1744555270794-6d378b9e7cd3?w=700&q=80",
   },
 ];
 
@@ -291,7 +291,7 @@ function DetailView({ reason, compact }) {
               {[
                 { val: "99%+", label: "Retention" },
                 { val: "0", label: "Escapes" },
-                { val: "12+", label: "Years" },
+                { val: "20+", label: "Yrs, Lead Eng." },
               ].map(s => (
                 <span key={s.label} style={{
                   padding: "6px 12px", borderRadius: 50,
@@ -438,7 +438,7 @@ export default function SDWhySection() {
             {[
               { val: "99%+", label: "Client Retention",  color: "#4f46e5" },
               { val: "0",    label: "Silicon Escapes",   color: "#059669" },
-              { val: "12+",  label: "Years Experience",  color: "#7c3aed" },
+              { val: "20+",  label: "Yrs, Lead Engineers", color: "#7c3aed" },
             ].map((s, i) => (
               <motion.div
                 key={s.label}

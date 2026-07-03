@@ -1,8 +1,8 @@
-// TestimonialsSection.jsx — AurowinX Analog IP
-// Redesign: Editorial stacked carousel — one full-bleed testimonial at a time,
-// domain-indexed navigation strip, staggered word reveal on quote text,
+// SDTestimonials.jsx — AurowinX Semiconductor Design
+// Case-study carousel — one full-bleed engagement at a time,
+// domain-indexed navigation strip, staggered word reveal on summary text,
 // monochromatic palette using theme tokens throughout.
-// No rainbow per-testimonial colors. No sidebar card grid.
+// Real delivered engagements, not third-party quotes.
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
@@ -16,54 +16,28 @@ const TESTIMONIALS = [
   {
     id: 0,
     quote:
-      "AurowinX delivered a 12-bit 500 MSPS ADC that hit every spec on first silicon. Their team's attention to layout parasitics and corner analysis was exceptional — we had zero re-spins.",
-    name: "Dr. Arjun Mehta",
-    title: "VP of Silicon Engineering",
-    company: "NexaSoC Technologies",
-    domain: "High-Speed Data Acquisition",
-    domainShort: "ADC / DAC",
-    initials: "AM",
-    result: "Zero re-spins",
-    resultDetail: "First-silicon success",
+      "We verified a DDR4-based chiplet memory subsystem — memory controller, DDR PHY, and die-to-die interface — building a fully configurable UVM testbench aligned to DDR4 JEDEC specs and the DFI protocol. Every test scenario closed clean on schedule, and the same verification infrastructure now anchors every memory subsystem engagement that follows.",
+    name: "DDR4 Chiplet SoC Verification",
+    title: "Memory Controller · DDR PHY · Die-to-Die Interface",
+    company: "Engineering Case Study",
+    domain: "Memory Subsystem Verification",
+    domainShort: "DDR4 / Memory",
+    initials: "D4",
+    result: "100% coverage",
+    resultDetail: "Achieved on schedule",
   },
   {
     id: 1,
     quote:
-      "The Sub-GHz transceiver IP we licensed from AurowinX passed FCC pre-compliance on the first attempt. Their RF expertise and thorough simulation methodology saved us at least two months of schedule.",
-    name: "Priya Sundaram",
-    title: "Chief Hardware Architect",
-    company: "Orbis IoT Systems",
-    domain: "IoT & Wireless",
-    domainShort: "RF / Wireless",
-    initials: "PS",
-    result: "2 months saved",
-    resultDetail: "First-pass FCC compliance",
-  },
-  {
-    id: 2,
-    quote:
-      "We integrated their PLL and LDO IP into our automotive SoC. The PVT characterisation data was incredibly thorough, which gave our system validation team full confidence during AEC-Q100 qualification.",
-    name: "Ravi Krishnamurthy",
-    title: "Director, Mixed-Signal Design",
-    company: "Pinnacle Automotive Chips",
-    domain: "Automotive Grade",
-    domainShort: "Auto / AEC-Q100",
-    initials: "RK",
-    result: "AEC-Q100 qualified",
-    resultDetail: "Full PVT characterisation",
-  },
-  {
-    id: 3,
-    quote:
-      "Their SERDES IP at 28 Gbps integrated cleanly into our SerDes-based switch fabric. The IBIS-AMI models were accurate enough that our channel simulation matched silicon within 2%.",
-    name: "Ananya Iyer",
-    title: "Principal Analog Engineer",
-    company: "Stratosphere Semiconductors",
-    domain: "High-Speed Interconnect",
-    domainShort: "SerDes / 28G",
-    initials: "AI",
-    result: "2% simulation accuracy",
-    resultDetail: "IBIS-AMI model fidelity",
+      "We built a fully configurable, reusable UVM testbench to verify a family of AMBA bus bridge IPs — AHB2AXI, AXI2AHB, and AHB-to-APB — with custom AHB and APB verification components supporting real-world back-to-back transfer scenarios. Along the way we caught an HRESP reporting gap and a burst-mode data alignment issue before either reached silicon.",
+    name: "AMBA Bus Bridge Verification",
+    title: "AHB2AXI · AXI2AHB · AHB-to-APB",
+    company: "Engineering Case Study",
+    domain: "Protocol Bridge Verification",
+    domainShort: "AMBA / Bridge",
+    initials: "AB",
+    result: "2 bugs caught",
+    resultDetail: "100% functional & code coverage",
   },
 ];
 
@@ -115,7 +89,7 @@ function DomainStrip({ active, onChange }) {
   return (
     <div
       role="tablist"
-      aria-label="Select testimonial"
+      aria-label="Select case study"
       className="sd-testimonial-domain-strip"
       style={{
         display: "flex",
@@ -318,7 +292,7 @@ export default function SDTestimonials() {
   return (
     <section
       ref={ref}
-      aria-label="Client testimonials"
+      aria-label="Verification case studies"
       className="sd-testimonials-section"
       style={{
         position: "relative",
@@ -384,7 +358,7 @@ export default function SDTestimonials() {
                 fontSize: 10, fontWeight: 700, letterSpacing: "0.2em",
                 textTransform: "uppercase", color: C.primary,
               }}>
-                Client Voices
+                Case Studies
               </span>
             </div>
             <h2 style={{
@@ -396,8 +370,8 @@ export default function SDTestimonials() {
               lineHeight: 1.04,
               margin: 0,
             }}>
-              Trusted by<br />
-              <span style={{ color: C.primary }}>silicon teams.</span>
+              Proven in<br />
+              <span style={{ color: C.primary }}>verification.</span>
             </h2>
           </motion.div>
 
@@ -411,8 +385,8 @@ export default function SDTestimonials() {
               fontSize: 14, color: C.textSecondary,
               lineHeight: 1.8, margin: "0 0 20px", maxWidth: 360,
             }}>
-              Engineers and architects at leading semiconductor companies share
-              their experience working with AurowinX on ASIC delivery.
+              A closer look at two verification engagements — approach,
+              execution, and the outcomes our team delivered.
             </p>
             {/* Domain strip nav */}
             <DomainStrip active={active} onChange={pick} />
@@ -567,7 +541,7 @@ export default function SDTestimonials() {
                   <motion.button
                     key={i}
                     onClick={() => pick(i)}
-                    aria-label={`Go to testimonial ${i + 1}`}
+                    aria-label={`Go to case study ${i + 1}`}
                     animate={{
                       height: active === i ? 20 : 6,
                       backgroundColor: active === i ? C.primary : C.borderLight,
@@ -687,11 +661,11 @@ export default function SDTestimonials() {
           padding: clamp(48px, 6vw, 88px) clamp(20px, 5vw, 60px);
         }
         @media (max-width: 860px) {
-          section[aria-label="Client testimonials"] > div > div:first-child {
+          section[aria-label="Verification case studies"] > div > div:first-child {
             grid-template-columns: 1fr !important;
             gap: 20px !important;
           }
-          section[aria-label="Client testimonials"] > div > div:first-child > div:last-child p {
+          section[aria-label="Verification case studies"] > div > div:first-child > div:last-child p {
             max-width: 100% !important;
           }
         }

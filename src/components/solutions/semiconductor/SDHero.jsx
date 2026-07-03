@@ -75,7 +75,7 @@ const PILLS = [
   "FPGA Development",
   "SoC Architecture",
   "DFT & ATPG",
-  "Physical Design (PNR)",
+  "Physical Design",
 ];
 
 /* ═══════════════════════════════════════════════
@@ -253,9 +253,8 @@ export default function SDHero() {
             margin: "0 0 36px",
           }}
         >
-          Silicon-proven teams delivering end-to-end ASIC, FPGA, and SoC design
-          across TSMC, Samsung, and GlobalFoundries nodes — from architecture
-          and RTL through DFT, physical design, and GDSII tapeout.
+          "Silicon-proven teams delivering end-to-end ASIC, FPGA, and SoC design — 
+          from architecture and RTL through DFT, physical design, and GDSII tape-out."
         </motion.p>
 
         {/* ── PILL TAGS ── */}
@@ -313,7 +312,7 @@ export default function SDHero() {
           }}
         >
           <MagButton primary href="/contact">
-            Start a Project <ArrowRight style={{ width: 16, height: 16 }} />
+            Start ASIC Project <ArrowRight style={{ width: 16, height: 16 }} />
           </MagButton>
           <MagButton href="/contact">
             Talk to an Engineer
@@ -393,11 +392,11 @@ export default function SDHero() {
         }}
       >
         {[
-          { value: "200+", label: "Tape-outs Delivered"  },
-          { value: "28nm", label: "Advanced Process Node" },
-          { value: "12+",  label: "Years of Expertise"   },
-          { value: "E2E",  label: "Full Ownership"        },
-        ].map((s, i) => (
+  { value: "3nm",  label: "Lowest Tech Node"   },
+  { value: "E2E",  label: "Spec to GDSII"      },
+  { value: "3",    label: "Foundry Partners"    },
+  { value: "150+", label: "Team Engineers"      },
+].map((s, i) => (
           <motion.div
             key={s.label}
             initial={{ opacity: 0 }}
@@ -490,7 +489,7 @@ export default function SDHero() {
         {[
           { value: "200+", label: "Tape-outs Delivered"  },
           { value: "28nm", label: "Advanced Process Node" },
-          { value: "12+",  label: "Years of Expertise"   },
+          { value: "150+", label: "Team Engineers"        },
           { value: "E2E",  label: "Full Ownership"        },
         ].map((s) => (
           <div

@@ -85,10 +85,10 @@ const TEAM_ROLES = [
 ];
 
 const ABOUT_POINTS = [
-  "Highly specialized consultancy in Integrated Circuit Design Verification",
-  "Comprehensive solutions through embedded on-site engineering resources",
-  "Full-spectrum in-house project execution capability",
-  "Proven track record across ASIC, FPGA and SoC domains",
+  "UVM-based verification methodology on every engagement",
+  "Formal property checking alongside constrained-random simulation",
+  "Coverage-driven closure — functional, code, and toggle",
+  "Proven across ASIC, FPGA and SoC verification programs",
 ];
 
 /* ─── RoleCard ──────────────────────────────────────────────────────── */
@@ -365,7 +365,7 @@ export default function WhoWeAre() {
               </span>
             </h2>
             <p style={{ color: C.textSecondary, fontSize: bp === "mobile" ? 13.5 : 14, lineHeight: 1.8, margin: "0 0 20px", maxWidth: 420 }}>
-              A highly specialized consultancy in Integrated Circuit Design Verification, offering comprehensive solutions through both embedded on-site engineering resources and full-spectrum in-house project execution.
+              Verification is where we eliminate risk before it ever reaches silicon — a dedicated bench of DV engineers running UVM methodology, formal checks, and coverage-driven closure on every engagement.
             </p>
             <motion.a
               href="/contact" whileHover={{ x: 4 }}
@@ -410,7 +410,7 @@ export default function WhoWeAre() {
             <div style={{ display: "grid", gridTemplateColumns: statsColumns, gap: bp === "mobile" ? 8 : 12 }}>
               {[
                 { val: "50+",  label: "DV Engineers", color: "#4f46e5" },
-                { val: "12+",  label: "Years Active",  color: "#7c3aed" },
+                { val: "20+",  label: "Team Experience", color: "#7c3aed" },
                 { val: "180+", label: "Projects Done", color: "#0891b2" },
               ].map((s, i) => (
                 <motion.div
@@ -461,7 +461,7 @@ export default function WhoWeAre() {
             Our Team Structure
           </h3>
           <p style={{ color: C.textSecondary, fontSize: bp === "mobile" ? 12.5 : 13, margin: "6px 0 0" }}>
-            Three-tier leadership ensuring quality at every stage of verification.
+            Three tiers of review, from verification-plan sign-off to final coverage closure.
           </p>
         </motion.div>
 

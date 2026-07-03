@@ -149,15 +149,15 @@ const BIG_STATS = [
     featured: false,
   },
   {
-    num: 12, suffix: "+",
-    label: "Years of Expertise",
-    sub: "Silicon-proven since 2012",
+    num: 20, suffix: "+",
+    label: "Senior Team Expertise",
+    sub: "Engineers with up to 20 years each",
     tag: "Deep expertise",
-    trend: "★ Est. 2012",
+    trend: "★ Senior-Led Team",
     trendColor: "#854d0e",
     trendBg: "#fef9c3",
     trendBorder: "#fde68a",
-    sparkData: [1, 2, 3, 4, 5, 7, 9, 12],
+    sparkData: [12, 14, 15, 16, 17, 18, 19, 20],
     featured: false,
   },
   {
@@ -496,7 +496,7 @@ export default function SDMetrics() {
                 background: "#4ade80",
                 animation: "sdm-blink 2s infinite",
               }} />
-              Silicon-proven since 2012
+              Led by senior engineering talent
             </div>
             <p style={{
               fontSize: 13, color: C.textSecondary,

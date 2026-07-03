@@ -15,7 +15,7 @@ export default function SolutionsPage() {
         <p style={{ textTransform: "uppercase", letterSpacing: "0.24em", color: "#93c5fd", fontSize: 12, marginBottom: 12 }}>Solutions</p>
         <h1 style={{ fontSize: "clamp(2rem, 6vw, 3.4rem)", lineHeight: 1.05, margin: "0 0 14px", fontWeight: 800 }}>Explore AurowinX engineering capabilities.</h1>
         <p style={{ maxWidth: 760, color: "#dbeafe", fontSize: 17, lineHeight: 1.7, marginBottom: 32 }}>
-          This landing page resolves the /solutions route used by the site navigation and directs visitors to the existing solution pages.
+          Five engineering disciplines, one accountable team — from architecture and RTL through verification, test, physical design, and analog IP.
         </p>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 18 }}>

@@ -566,7 +566,7 @@ export default function WhyJoin() {
 
           <motion.div initial={{ opacity:0, x:16 }} animate={inView?{opacity:1,x:0}:{}} transition={{ duration:.5, delay:.22 }}
             style={{ display:"flex", gap: isMobile ? 20 : 32, alignItems:"center", flexShrink:0 }}>
-            {[["250+","engineers"],["18yr","heritage"]].map(([v,l],i) => (
+            {[["150+","engineers"],["20+ yr","team expertise"]].map(([v,l],i) => (
               <div key={l} style={{ textAlign:"right", ...(i===0?{paddingRight: isMobile?16:32, borderRight:"1px solid #c7d2fe"}:{}) }}>
                 <div style={{
                   fontFamily:FONT, fontWeight:800,

@@ -4,7 +4,7 @@ import { C, FONT, fadeUp, EASE } from "././theme";
 import { ChevronDown } from "lucide-react";
 
 const stats = [
-  { value: "2020", label: "Established" },
+  { value: "Private", label: "Owned & Funded" },
   { value: "Chennai", label: "Headquarters" },
   { value: "3nm", label: "Lowest Node" },
   { value: "Tier 1", label: "Clients Served" },
@@ -525,7 +525,7 @@ export default function CompanyOverview() {
               fontSize: 13, fontWeight: 700,
               color: "rgba(255,255,255,0.85)", letterSpacing: "0.05em", whiteSpace: "nowrap",
             }}>
-              "Enlightening Tech World"
+              "Engineered for Certainty."
             </div>
           </div>
         </motion.div>

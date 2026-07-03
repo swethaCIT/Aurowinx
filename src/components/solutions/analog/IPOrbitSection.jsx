@@ -329,7 +329,7 @@ export default function IPOrbitSection() {
             }}
           >
             <img
-              src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80"
+              src="https://images.unsplash.com/photo-1675602488512-bdd631490fcb?w=400&q=80"
               alt="Semiconductor chip"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
               loading="lazy"
