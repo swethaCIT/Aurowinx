@@ -8,6 +8,7 @@
 //  • Shimmer sweep on Card now skips entirely if prefers-reduced-motion
 
 import { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   motion,
   useInView,
@@ -100,7 +101,7 @@ function ChipVisual({ shouldReduceMotion }) {
 /* ══════════════════════════════════════════════════════════════════════════
    SHIMMER CARD WRAPPER
 ══════════════════════════════════════════════════════════════════════════ */
-function Card({ children, className = "", style = {}, delay = 0, triggered, dark = false }) {
+function Card({ children, className = "", style = {}, delay = 0, triggered, dark = false, onClick }) {
   const [hovered, setHovered] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
@@ -109,8 +110,10 @@ function Card({ children, className = "", style = {}, delay = 0, triggered, dark
       className={`relative overflow-hidden rounded-[28px] ${className}`}
       style={{
         border: dark ? "1px solid rgba(255,255,255,0.06)" : "1px solid rgba(148,163,184,0.13)",
+        cursor: onClick ? "pointer" : undefined,
         ...style,
       }}
+      onClick={onClick}
       initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 36, scale: shouldReduceMotion ? 1 : 0.97 }}
       animate={triggered ? { opacity: 1, y: 0, scale: 1 } : {}}
       transition={{ duration: 0.75, delay: shouldReduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
@@ -328,12 +331,14 @@ function SmallCard({ title, text, icon, triggered, delay, accent }) {
 /* ══════════════════════════════════════════════════════════════════════════
    DIVISION CARD
 ══════════════════════════════════════════════════════════════════════════ */
-function DivisionCard({ title, desc, tags, color, colorEnd, triggered, delay, number }) {
+function DivisionCard({ title, desc, tags, color, colorEnd, triggered, delay, number, to }) {
   const [hov, setHov] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+  const navigate = useNavigate();
 
   return (
     <Card triggered={triggered} delay={shouldReduceMotion ? 0 : delay}
+      onClick={() => navigate(to)}
       style={{
         background: "rgba(255,255,255,0.8)",
         backdropFilter: "blur(20px)",
@@ -468,15 +473,18 @@ export default function AboutSnapshot() {
           <DivisionCard triggered={isInView} delay={0.3} number="1" color="#2563eb" colorEnd="#0891b2"
             title="Semiconductor Design"
             desc="ASIC · FPGA · SoC · RTL Design · Verification · DFT · Physical Design · Low-Power Architecture"
-            tags={["High Performance", "Silicon Ready", "Verification", "Scalable"]} />
+            tags={["High Performance", "Silicon Ready", "Verification", "Scalable"]}
+            to="/solutions/semiconductor-design" />
           <DivisionCard triggered={isInView} delay={0.42} number="2" color="#0891b2" colorEnd="#7c3aed"
             title="Embedded & Industrial IoT"
             desc="Embedded Firmware · RTOS · Industrial IoT · Automation Systems · Edge Connectivity · Smart Control"
-            tags={["Real-Time", "Automation", "Connected", "Industrial"]} />
+            tags={["Real-Time", "Automation", "Connected", "Industrial"]}
+            to="/products#embedded-systems" />
           <DivisionCard triggered={isInView} delay={0.54} number="3" color="#ea580c" colorEnd="#db2777"
             title="Power Electronics & Products"
             desc="EV Chargers · BLDC Controllers · Solar Inverters · Power Electronics · Embedded Products · Custom R&D"
-            tags={["Energy Efficient", "Smart Power", "Sustainable", "Future Ready"]} />
+            tags={["Energy Efficient", "Smart Power", "Sustainable", "Future Ready"]}
+            to="/products" />
         </div>
       </div>
     </section>

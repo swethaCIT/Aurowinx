@@ -8,7 +8,7 @@
 import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import {
-  ChevronDown, ArrowUpRight, Cpu, Shield, Zap,
+  ChevronDown, Cpu, Shield, Zap,
   GitMerge, Activity, Layers, FlaskConical,
 } from "lucide-react";
 import { C, EASE } from "./theme";
@@ -400,19 +400,6 @@ function ProjectPanel({ project, i, inView, isOpen, onToggle }) {
                     {project.tag}
                   </p>
                 </div>
-                <div style={{ height: 1, background: `${project.color}20` }} />
-                <motion.div
-                  whileHover={{ gap: 8 }}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 5,
-                    fontFamily: UI, fontSize: 10, fontWeight: 700,
-                    letterSpacing: "0.08em", textTransform: "uppercase",
-                    color: project.color, cursor: "pointer",
-                    transition: "gap 0.2s",
-                  }}
-                >
-                  View Project <ArrowUpRight size={12} />
-                </motion.div>
               </div>
             </div>
           </motion.div>

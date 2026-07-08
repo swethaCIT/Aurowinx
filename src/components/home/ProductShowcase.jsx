@@ -4,6 +4,7 @@
 // <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
 
 import { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 
 /* ══════════════════════════════════════════════════════════════
@@ -196,6 +197,7 @@ function ParticleCanvas() {
 ══════════════════════════════════════════════════════════════ */
 function ProductCard({ p, index, inView }) {
   const [hovered, setHovered] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <motion.div
@@ -352,6 +354,7 @@ function ProductCard({ p, index, inView }) {
         <motion.button
           whileHover={{ scale: 1.02, filter: "brightness(1.07)" }}
           whileTap={{ scale: 0.98 }}
+          onClick={() => navigate("/products#electronics-dev")}
           style={{
             width: "100%", padding: "14px 20px", borderRadius: 16,
             fontSize: 13, fontWeight: 700, color: "#fff",

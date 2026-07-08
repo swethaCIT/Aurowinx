@@ -20,7 +20,7 @@ const SOLUTIONS = [
     desc: "End-to-end ASIC and SoC design services — delivering high-quality, low-power, high-performance silicon.",
     imageUrl: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=800&q=80&auto=format&fit=crop",
     imageAlt: "Semiconductor circuit",
-    href: "/asic",
+    href: "/solutions/semiconductor-design",
     capabilities: [
       { title: "RTL Design",          sub: "Verilog · SystemVerilog · Low Power" },
       { title: "Design Verification", sub: "UVM · Assertions · Coverage Closure" },
@@ -38,7 +38,7 @@ const SOLUTIONS = [
     desc: "Firmware development and IoT connectivity solutions bridging hardware and software — from bare-metal embedded systems to industrial automation across automotive, IoT, and consumer domains.",
     imageUrl: "https://images.unsplash.com/photo-1677092419414-e974582c492c?w=800&q=80&auto=format&fit=crop",
     imageAlt: "Embedded circuit board",
-    href: "/embedded",
+    href: "/products#embedded-systems",
     capabilities: [
       { title: "Embedded Firmware",     sub: "C/C++ · RTOS · Bare Metal" },
       { title: "Industrial Automation", sub: "PLC · SCADA" },

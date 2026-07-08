@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 const slides = [
@@ -41,6 +42,7 @@ const slides = [
 ];
 
 export default function CompanyHeroSection() {
+  const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -300,6 +302,7 @@ export default function CompanyHeroSection() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
+                  onClick={() => document.getElementById("key-differentiators")?.scrollIntoView({ behavior: "smooth" })}
                   style={{
                     borderRadius: 9999,
                     background:
@@ -322,6 +325,7 @@ export default function CompanyHeroSection() {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  onClick={() => navigate("/contact")}
                   style={{
                     borderRadius: 9999,
                     border: "1px solid rgba(255,255,255,0.5)",

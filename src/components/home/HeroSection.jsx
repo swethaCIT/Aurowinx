@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const slides = [
   {
@@ -37,6 +38,7 @@ const slides = [
 ];
 
 export default function HeroSection() {
+  const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -172,6 +174,7 @@ export default function HeroSection() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
+                  onClick={() => navigate("/solutions")}
                   className="w-full min-w-0 rounded-full border-none px-6 py-3.5 text-[10px] font-bold uppercase tracking-[0.16em] text-white sm:w-auto sm:px-8 sm:py-3.5 sm:text-[11px] sm:tracking-[0.2em]"
                   style={{
                     background: "linear-gradient(135deg, #2563eb, #0891b2)",
@@ -186,6 +189,7 @@ export default function HeroSection() {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  onClick={() => navigate("/contact")}
                   className="w-full min-w-0 rounded-full px-6 py-3.5 text-[10px] font-bold uppercase tracking-[0.16em] text-white sm:w-auto sm:px-8 sm:py-3.5 sm:text-[11px] sm:tracking-[0.2em]"
                   style={{
                     border: "1px solid rgba(255,255,255,0.5)",

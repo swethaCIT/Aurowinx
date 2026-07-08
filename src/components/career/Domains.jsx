@@ -237,6 +237,7 @@ function DomainDetail({ domain, compact = false }) {
         <motion.button
           whileHover={{ scale: 1.03, boxShadow: `0 8px 28px ${domain.color}33` }}
           whileTap={{ scale: 0.97 }}
+          onClick={() => document.getElementById("open-roles")?.scrollIntoView({ behavior: "smooth" })}
           style={{
             display: "flex", alignItems: "center", gap: 7,
             padding: "10px 20px", borderRadius: 10,
@@ -735,6 +736,7 @@ function DesktopLayout({ domains, inView, isTV }) {
               <motion.button
                 whileHover={{ scale: 1.03, boxShadow: `0 8px 28px ${domain.color}33` }}
                 whileTap={{ scale: 0.98 }}
+                onClick={() => document.getElementById("open-roles")?.scrollIntoView({ behavior: "smooth" })}
                 style={{
                   display: "flex", alignItems: "center", gap: 8,
                   padding: isTV ? "13px 26px" : "11px 22px",

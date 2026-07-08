@@ -610,7 +610,7 @@ export default function KeyDifferentiators() {
   const maxW = isTV ? 1500 : 1200;
 
   return (
-    <section style={{
+    <section id="key-differentiators" style={{
       background: "#ffffff",
       fontFamily: FONT,
       position: "relative",

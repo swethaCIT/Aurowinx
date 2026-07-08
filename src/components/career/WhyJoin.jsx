@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { C, FONT, EASE } from "././theme";
-import { ChevronDown, ArrowRight, ArrowUpRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 /* ─── Breakpoint hook ─── */
 function useBreakpoint() {
@@ -200,21 +200,8 @@ function MobileFeatures({ features, inView }) {
                 }}>
                   <p style={{
                     fontFamily:FONT, fontSize:".82rem", color:"#475569",
-                    lineHeight:1.72, margin:"0 0 16px",
+                    lineHeight:1.72, margin:0,
                   }}>{item.detail}</p>
-                  <motion.button
-                    whileTap={{ scale:0.97 }}
-                    style={{
-                      display:"inline-flex", alignItems:"center", gap:6,
-                      padding:"9px 18px", borderRadius:100,
-                      background:`linear-gradient(135deg,${item.accent},#7c3aed)`,
-                      color:"#fff", border:"none",
-                      fontFamily:FONT, fontSize:".72rem", fontWeight:700,
-                      letterSpacing:".4px", cursor:"pointer",
-                    }}
-                  >
-                    Learn more <ArrowUpRight size={13} />
-                  </motion.button>
                 </div>
               </motion.div>
             )}
@@ -383,20 +370,7 @@ function TabletFeatures({ features, inView }) {
               color:"#0f172a", lineHeight:1.25, letterSpacing:"-.3px",
               whiteSpace:"pre-line", margin:"0 0 12px",
             }}>{item.heading}</h3>
-            <p style={{ fontFamily:FONT, fontSize:".83rem", color:"#475569", lineHeight:1.72, margin:"0 0 16px", maxWidth:480 }}>{item.detail}</p>
-            <motion.button
-              whileTap={{ scale:0.97 }} whileHover={{ opacity:0.88 }}
-              style={{
-                display:"inline-flex", alignItems:"center", gap:6,
-                padding:"9px 20px", borderRadius:100,
-                background:`linear-gradient(135deg,${item.accent},#7c3aed)`,
-                color:"#fff", border:"none",
-                fontFamily:FONT, fontSize:".72rem", fontWeight:700,
-                letterSpacing:".4px", cursor:"pointer",
-              }}
-            >
-              Explore this benefit <ArrowRight size={13} />
-            </motion.button>
+            <p style={{ fontFamily:FONT, fontSize:".83rem", color:"#475569", lineHeight:1.72, margin:0, maxWidth:480 }}>{item.detail}</p>
           </div>
 
           <div style={{ position:"relative", zIndex:1, textAlign:"right", flexShrink:0 }}>
@@ -618,20 +592,13 @@ export default function WhyJoin() {
         </div>
         <div style={{ display:"flex", gap:8, flexShrink:0, flexWrap:"wrap" }}>
           <motion.button whileHover={{ opacity:.88 }} whileTap={{ scale:.97 }}
+            onClick={() => document.getElementById("open-roles")?.scrollIntoView({ behavior: "smooth" })}
             style={{
               fontFamily:FONT, fontWeight:700, fontSize:".78rem", letterSpacing:".4px",
               padding:"10px 22px", borderRadius:100,
               background:C.gradPrimary, color:"#fff", border:"none", cursor:"pointer",
             }}>
             View open roles →
-          </motion.button>
-          <motion.button whileHover={{ borderColor:"rgba(255,255,255,.5)" }} whileTap={{ scale:.97 }}
-            style={{
-              fontFamily:FONT, fontWeight:600, fontSize:".78rem", padding:"10px 20px",
-              borderRadius:100, background:"transparent", color:"#fff",
-              border:"1px solid rgba(255,255,255,.2)", cursor:"pointer",
-            }}>
-            Life at AurowinX
           </motion.button>
         </div>
       </div>

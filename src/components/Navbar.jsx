@@ -623,6 +623,7 @@ const MobileAccordionItem = ({ sec, onClose, delay }) => {
 //   2. All plain items include a 'path' field so navigate(sec.path) works correctly.
 //
 const MobileMenu = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   // Every entry uses 'name' (not 'title') and includes a 'path' for non-dropdown items
   const sections = [
     { name: 'Home',      items: [],        path: '/'          },
@@ -680,6 +681,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
             <div className="absolute bottom-0 left-0 right-0 px-5 py-5 bg-white/95 backdrop-blur-sm border-t border-slate-100">
               <button
                 type="button"
+                onClick={() => { onClose(); navigate('/contact'); }}
                 className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-white text-[13px] font-semibold tracking-wide transition-all group"
                 style={{
                   background: 'linear-gradient(135deg, #2563eb 0%, #0891b2 100%)',

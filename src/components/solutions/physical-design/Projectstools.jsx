@@ -8,7 +8,7 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import {
   Cpu, Layers, Zap, GitBranch, Radio, Shield,
-  ArrowUpRight, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight,
+  CheckCircle2, ChevronDown, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { C, FONT, EASE } from "./theme";
 
@@ -373,25 +373,6 @@ function ProjectRow({ project, i, inView }) {
               {project.tag}
             </div>
 
-            {/* View link */}
-            <AnimatePresence>
-              {hovered && (
-                <motion.div
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 4 }}
-                  transition={{ duration: 0.2 }}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 4,
-                    color: project.color,
-                    fontFamily: UI_FONT, fontSize: 9.5, fontWeight: 700,
-                    letterSpacing: "0.08em", textTransform: "uppercase",
-                  }}
-                >
-                  View Project <ArrowUpRight size={11} />
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </div>
       </div>

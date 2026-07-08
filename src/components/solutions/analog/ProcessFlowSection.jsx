@@ -724,7 +724,7 @@ function Footer({ active, total, onPrev, onNext, isMobile }) {
       </div>
 
       <a
-        href="#contact"
+        href="/contact"
         style={{
           display: "inline-flex",
           alignItems: "center",

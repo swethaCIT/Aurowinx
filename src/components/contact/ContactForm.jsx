@@ -805,7 +805,7 @@ export default function ContactForm({ context = "general", sourcePage = "", clas
         }
       `}</style>
 
-      <section className={`cf3-shell ${className}`} aria-labelledby="cf3-title">
+      <section id="contact-form" className={`cf3-shell ${className}`} aria-labelledby="cf3-title">
         <div className="cf3-blob cf3-blob-a" aria-hidden="true" />
         <div className="cf3-blob cf3-blob-b" aria-hidden="true" />
 

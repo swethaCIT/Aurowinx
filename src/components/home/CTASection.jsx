@@ -7,6 +7,7 @@ import {
   useMotionValue, useSpring,
 } from "framer-motion";
 import * as THREE from "three";
+import { supabase } from "../../lib/supabase";
 
 /* ════════════════════════════════════════════════════════
    THREE.JS — REAL CHIP / PCB 3D SCENE
@@ -670,6 +671,27 @@ export default function CTASection({ compact = false }) {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const parallaxY = useTransform(scrollYProgress, [0, 1], ["-4%", "4%"]);
 
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterStatus, setNewsletterStatus] = useState("idle"); // idle | submitting | success | error
+  const [newsletterError, setNewsletterError] = useState("");
+
+  const handleNewsletterSubmit = async () => {
+    if (!/\S+@\S+\.\S+/.test(newsletterEmail)) {
+      setNewsletterStatus("error");
+      setNewsletterError("Enter a valid email address");
+      return;
+    }
+    setNewsletterStatus("submitting");
+    const { error } = await supabase.from("newsletter_subscribers").insert({ email: newsletterEmail });
+    if (error) {
+      setNewsletterStatus("error");
+      setNewsletterError(error.code === "23505" ? "You're already subscribed" : error.message);
+      return;
+    }
+    setNewsletterStatus("success");
+    setNewsletterEmail("");
+  };
+
   return (
     <>
       <style>{CSS}</style>
@@ -955,21 +977,40 @@ export default function CTASection({ compact = false }) {
               <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, lineHeight: 1.65, margin: "0 0 18px" }}>
                 Get the latest on semiconductor breakthroughs, embedded innovations &amp; AurowinX product launches.
               </p>
-              <div className="newsletter-row" style={{ display: "flex", gap: 0, borderRadius: 10, overflow: "hidden",
-                border: "1.5px solid rgba(59,130,246,0.25)", background: "rgba(255,255,255,0.04)" }}>
-                <input placeholder="you@company.com" style={{
-                  flex: 1, minWidth: 0, width: "100%", background: "transparent", border: "none", outline: "none",
-                  color: "#fff", fontSize: 13, padding: "11px 14px",
-                  fontFamily: "'Sora',sans-serif",
-                }} />
-                <button style={{
-                  background: "linear-gradient(135deg,#2563eb,#7c3aed)",
-                  border: "none", color: "#fff", fontWeight: 700, fontSize: 12,
-                  padding: "11px 16px", cursor: "pointer", whiteSpace: "nowrap",
-                  fontFamily: "'Sora',sans-serif", letterSpacing: "0.05em",
-                  width: "100%",
-                }}>Subscribe →</button>
-              </div>
+              {newsletterStatus === "success" ? (
+                <p style={{ color: "#86efac", fontSize: 13, fontWeight: 600 }}>
+                  You're subscribed — thanks!
+                </p>
+              ) : (
+                <>
+                  <div className="newsletter-row" style={{ display: "flex", gap: 0, borderRadius: 10, overflow: "hidden",
+                    border: "1.5px solid rgba(59,130,246,0.25)", background: "rgba(255,255,255,0.04)" }}>
+                    <input
+                      type="email"
+                      value={newsletterEmail}
+                      onChange={e => { setNewsletterEmail(e.target.value); setNewsletterStatus("idle"); }}
+                      onKeyDown={e => { if (e.key === "Enter") handleNewsletterSubmit(); }}
+                      placeholder="you@company.com" style={{
+                      flex: 1, minWidth: 0, width: "100%", background: "transparent", border: "none", outline: "none",
+                      color: "#fff", fontSize: 13, padding: "11px 14px",
+                      fontFamily: "'Sora',sans-serif",
+                    }} />
+                    <button
+                      onClick={handleNewsletterSubmit}
+                      disabled={newsletterStatus === "submitting"}
+                      style={{
+                      background: "linear-gradient(135deg,#2563eb,#7c3aed)",
+                      border: "none", color: "#fff", fontWeight: 700, fontSize: 12,
+                      padding: "11px 16px", cursor: "pointer", whiteSpace: "nowrap",
+                      fontFamily: "'Sora',sans-serif", letterSpacing: "0.05em",
+                      width: "100%", opacity: newsletterStatus === "submitting" ? 0.6 : 1,
+                    }}>{newsletterStatus === "submitting" ? "Subscribing…" : "Subscribe →"}</button>
+                  </div>
+                  {newsletterStatus === "error" && (
+                    <p style={{ color: "#fca5a5", fontSize: 12, marginTop: 8 }}>{newsletterError}</p>
+                  )}
+                </>
+              )}
               <div style={{ marginTop: 24, display: "flex", gap: 8, flexWrap: "wrap" }}>
                 {["ISO 9001","VLSI Certified","IPC Class II","RoHS"].map(b => (
                   <span key={b} style={{
@@ -994,19 +1035,6 @@ export default function CTASection({ compact = false }) {
             <p style={{ color: "rgba(255,255,255,0.2)", fontSize: 12, margin: 0 }}>
               © {new Date().getFullYear()} AurowinX Technologies Pvt. Ltd. · Chennai, Tamil Nadu, India · All rights reserved.
             </p>
-            <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-              {[
-                { label: "Privacy Policy", href: "/contact" },
-                { label: "Terms of Use", href: "/company" },
-                { label: "Sitemap", href: "/products" },
-              ].map(l => (
-                <a key={l.label} href={l.href}
-                  style={{ color: "rgba(255,255,255,0.2)", fontSize: 12, textDecoration: "none", transition: "color .2s" }}
-                  onMouseEnter={e => e.currentTarget.style.color = "rgba(255,255,255,0.6)"}
-                  onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.2)"}
-                >{l.label}</a>
-              ))}
-            </div>
             <p style={{ color: "rgba(255,255,255,0.12)", fontSize: 11, margin: 0, fontFamily: "'JetBrains Mono',monospace" }}>
               v2.4.1 · build_2025
             </p>
