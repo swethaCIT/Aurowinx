@@ -12,6 +12,7 @@ import SolutionsPage from "./pages/SolutionsPage";
 const JobDetailPage = lazy(() => import("./pages/JobDetailPage"));
 const SolutionsRoutes = lazy(() => import("./routes/SolutionsRoutes"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
+const AdminRoutes = lazy(() => import("./admin/AdminRoutes"));
 
 function ScrollToTopAndHash() {
   const { pathname, hash } = useLocation();
@@ -35,32 +36,52 @@ function ScrollToTopAndHash() {
   return null;
 }
 
+function PublicSite() {
+  return (
+    <div className="min-h-screen overflow-x-clip bg-white">
+      <Navbar />
+
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            Loading...
+          </div>
+        }
+      >
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/products" element={<ProductPage />} />
+          <Route path="/solutions" element={<SolutionsPage />} />
+          <Route path="/solutions/*" element={<SolutionsRoutes />} />
+          <Route path="/company" element={<CompanyPage />} />
+          <Route path="/careers" element={<CareerPage />} />
+          <Route path="/careers/:slug" element={<JobDetailPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+        </Routes>
+      </Suspense>
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTopAndHash />
-      <div className="min-h-screen overflow-x-clip bg-white">
-        <Navbar />
-
-        <Suspense
-          fallback={
-            <div className="min-h-screen flex items-center justify-center">
-              Loading...
-            </div>
-          }
-        >
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/products" element={<ProductPage />} />
-            <Route path="/solutions" element={<SolutionsPage />} />
-            <Route path="/solutions/*" element={<SolutionsRoutes />} />
-            <Route path="/company" element={<CompanyPage />} />
-            <Route path="/careers" element={<CareerPage />} />
-            <Route path="/careers/:slug" element={<JobDetailPage />} />
-            <Route path="/contact" element={<ContactPage />} /> 
-          </Routes>
-        </Suspense>
-      </div>
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            Loading...
+          </div>
+        }
+      >
+        <Routes>
+          <Route
+            path="/admin/*"
+            element={<AdminRoutes />}
+          />
+          <Route path="/*" element={<PublicSite />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }
