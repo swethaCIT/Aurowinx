@@ -598,12 +598,12 @@ export default function EmbeddedSystems() {
           .es-wrap {
             padding: 0 20px !important;
           }
-        }
-        /* Mobile */
-        @media (max-width: 600px) {
           #embedded-systems {
             padding: 72px 0 64px !important;
           }
+        }
+        /* Mobile */
+        @media (max-width: 600px) {
           .es-wrap { padding: 0 16px !important; }
           .es-caps {
             grid-template-columns: 1fr !important;

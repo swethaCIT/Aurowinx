@@ -149,19 +149,20 @@ export default function ContactModal({ isOpen, onClose, context = "general", sou
         }
 
         /* Override ContactForm inside drawer — remove two-col layout */
-        .cm-body .cpf-layout {
+        .cm-body .cf3-card {
           display: flex !important;
           flex-direction: column !important;
           min-height: unset !important;
+          box-shadow: none !important;
         }
-        .cm-body .cpf-left { display: none !important; }
-        .cm-body .cpf-right {
+        .cm-body .cf3-left { display: none !important; }
+        .cm-body .cf3-right {
           padding: 0 !important;
           overflow: visible !important;
         }
-        .cm-body .cpf-right-head { margin-bottom: 20px !important; }
-        .cm-body .cpf-right-title { font-size: 16px !important; }
-        .cm-body .cpf-right-sub { font-size: 13px !important; }
+        .cm-body .cf3-rh { margin-bottom: 20px !important; }
+        .cm-body .cf3-rtitle { font-size: 16px !important; }
+        .cm-body .cf3-rsub { font-size: 13px !important; }
 
         /* Footer */
         .cm-foot {

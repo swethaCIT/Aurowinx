@@ -1056,9 +1056,9 @@ export default function ElectronicsDev() {
       <style>{`
         @media (max-width: 900px) {
           .ed2-panel { grid-template-columns: 1fr !important; }
+          #electronics-dev { padding-top: 72px !important; }
         }
         @media (max-width: 600px) {
-          #electronics-dev { padding-top: 72px !important; }
           .ed2-wrap { padding: 0 16px !important; }
           .ed2-panel > div:first-child > div:last-child {
             grid-template-columns: 1fr !important;

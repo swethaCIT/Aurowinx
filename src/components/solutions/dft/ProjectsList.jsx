@@ -535,7 +535,7 @@ export default function ProjectsList() {
         {/* ════════════════════════════
             PROJECTS SECTION
         ════════════════════════════ */}
-        <div style={{ padding: "60px 44px 0" }}>
+        <div style={{ padding: "clamp(32px, 6vw, 60px) clamp(20px, 5vw, 44px) 0" }}>
 
           {/* Section header */}
           <motion.div
@@ -708,7 +708,7 @@ export default function ProjectsList() {
         {/* ════════════════════════════
             TOOLS SECTION
         ════════════════════════════ */}
-        <div style={{ padding: "40px 44px 0" }}>
+        <div style={{ padding: "clamp(24px, 5vw, 40px) clamp(20px, 5vw, 44px) 0" }}>
 
           {/* Section header */}
           <motion.div

@@ -375,11 +375,10 @@ export default function Hero() {
         .sol-hero-trust-line { display: none; }
         .sol-hero-trust-full { display: inline; }
 
-        @media (max-width: 960px) {
+        @media (max-width: 1023px) {
           .sol-hero-section {
             padding-bottom: 0px !important;
             min-height: auto !important;
-            padding-top: 80px !important;
           }
           .sol-hero-scroll-cue {
             display: none !important;

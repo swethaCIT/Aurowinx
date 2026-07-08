@@ -2,7 +2,7 @@
 // AurowinX — Who We Are / Team section
 // Fully responsive: mobile carousel → tablet carousel → desktop 3-col → TV wide
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Users, Award, Briefcase, CheckCircle2, ChevronRight, ChevronLeft } from "lucide-react";
 import { C, FONT, EASE } from "./theme";
@@ -27,14 +27,10 @@ function useBreakpoint() {
     else setBp("desktop");
   }, []);
 
-  // Light event listener – no ResizeObserver dep needed
-  if (typeof window !== "undefined") {
-    // Attach once via a ref trick
-  }
-  // We use a simple effect-free approach: inline useEffect via a small helper.
-  // Since we can't import useEffect separately here, we just read on mount.
-  // For a Vite/React project this is fine – re-renders on route changes pick up changes.
-  // For true reactivity add: useEffect(() => { window.addEventListener("resize", update); return () => window.removeEventListener("resize", update); }, [update]);
+  useEffect(() => {
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [update]);
 
   return bp;
 }

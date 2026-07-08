@@ -659,9 +659,9 @@ export default function IoTAutomation() {
           .iot-stats > div:nth-child(2) {
             border-bottom: 1px solid ${C.borderLight} !important;
           }
+          #iot-automation { padding: 72px 0 64px !important; }
         }
         @media (max-width: 600px) {
-          #iot-automation { padding: 72px 0 64px !important; }
           .iot-wrap       { padding: 0 16px !important; }
           .iot-features   { grid-template-columns: 1fr !important; gap: 8px !important; }
           .iot-stats      { grid-template-columns: repeat(2,1fr) !important; }

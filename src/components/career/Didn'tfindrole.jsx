@@ -33,7 +33,7 @@ export default function DidntFindRole() {
     <section
       style={{
         background: C.bgLight,
-        padding: "80px 24px",
+        padding: "clamp(48px, 9vw, 80px) 24px",
         fontFamily: FONT,
       }}
     >
@@ -48,7 +48,7 @@ export default function DidntFindRole() {
             borderRadius: 28,
             overflow: "hidden",
             background: C.gradPrimary,
-            padding: "72px 48px",
+            padding: "clamp(40px, 8vw, 72px) clamp(24px, 6vw, 48px)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
