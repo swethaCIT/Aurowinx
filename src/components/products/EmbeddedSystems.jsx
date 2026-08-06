@@ -1,6 +1,6 @@
 // src/components/products/EmbeddedSystems.jsx
 // ─────────────────────────────────────────────────
-// Section : Embedded Systems — Coming Soon teaser
+// Section : Embedded Systems
 // Theme   : theme.js light palette — indigo/violet
 // Layout  : Light bg + animated terminal/code visual
 // Feel    : Technical · Monospace · Grid lines · Data
@@ -8,7 +8,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { Terminal, Cpu, Zap, Code2, Activity, Radio, ChevronRight } from "lucide-react";
+import { Terminal, Cpu, Zap, Code2, Activity, Radio } from "lucide-react";
 
 /* ── THEME (theme.js) ── */
 const C = {
@@ -48,8 +48,7 @@ const TERMINAL_LINES = [
   { type: "ok",      text: "✓ Sleep: 18µA | Active: 4.2mA" },
   { type: "info",    text: "> Running driver stack validation..." },
   { type: "ok",      text: "✓ SPI · I²C · UART · CAN — PASS" },
-  { type: "warn",    text: "⚡ Firmware build: AUROWINX-ES v0.9" },
-  { type: "muted",   text: "  Launching 2025 — Stay tuned." },
+  { type: "ok",      text: "✓ Firmware build validated — production ready" },
 ];
 
 const LINE_COLORS = {
@@ -62,20 +61,20 @@ const LINE_COLORS = {
 
 /* ── STAT TILES ── */
 const STATS = [
-  { label: "Targets",      value: "ARM · RISC-V",   icon: Cpu      },
-  { label: "OS Support",   value: "FreeRTOS · Bare", icon: Activity },
-  { label: "Power Mode",   value: "18 µA sleep",    icon: Zap      },
-  { label: "Interfaces",   value: "SPI · I²C · CAN", icon: Radio    },
+  { label: "Firmware",     value: "Real-Time Control",     icon: Cpu      },
+  { label: "RTOS",         value: "Deterministic Sched.",  icon: Activity },
+  { label: "DSP & MCU",    value: "Signal Processing",     icon: Zap      },
+  { label: "Protocols",    value: "CAN · Modbus · SPI",     icon: Radio    },
 ];
 
 /* ── CAPABILITIES ── */
 const CAPS = [
-  { icon: Code2,    label: "BSP Bring-up",         tag: "01" },
-  { icon: Activity, label: "RTOS Porting",          tag: "02" },
-  { icon: Zap,      label: "Power Management",      tag: "03" },
-  { icon: Cpu,      label: "Driver Stack Dev",      tag: "04" },
-  { icon: Radio,    label: "Bare Metal Firmware",   tag: "05" },
-  { icon: Terminal, label: "Debug & Profiling",     tag: "06" },
+  { icon: Code2,    label: "Embedded Firmware",       tag: "01" },
+  { icon: Activity, label: "RTOS",                    tag: "02" },
+  { icon: Cpu,      label: "DSP & MCU Software",       tag: "03" },
+  { icon: Radio,    label: "Communication Protocols", tag: "04" },
+  { icon: Zap,      label: "BSP & Device Drivers",     tag: "05" },
+  { icon: Terminal, label: "Real-Time Control SW",     tag: "06" },
 ];
 
 /* ═══════════════════════════════════════════════
@@ -215,7 +214,7 @@ function TerminalWindow({ inView }) {
         {[
           { dot: "#16a34a", label: "BSP: OK"    },
           { dot: "#4f46e5", label: "RTOS: READY" },
-          { dot: "#d97706", label: "BUILD: v0.9" },
+          { dot: "#d97706", label: "BUILD: STABLE" },
         ].map((s) => (
           <div key={s.label} style={{
             display: "flex", alignItems: "center", gap: 5,
@@ -297,15 +296,7 @@ export default function EmbeddedSystems() {
             boxShadow: C.shadowSm, fontFamily: MONO,
           }}>
             <Terminal style={{ width: 12, height: 12 }} />
-            embedded_systems.init()
-            <ChevronRight style={{ width: 11, height: 11, opacity: 0.5 }} />
-            <span style={{
-              padding: "2px 11px", borderRadius: 50,
-              background: C.gradPrimary,
-              color: "#fff", fontSize: 10, letterSpacing: "0.1em",
-            }}>
-              COMING_SOON
-            </span>
+            Embedded Systems
           </span>
         </motion.div>
 
@@ -382,9 +373,10 @@ export default function EmbeddedSystems() {
                 maxWidth: 480,
               }}
             >
-              BSP bring-up, driver stacks, power management and RTOS porting
-              for ARM, RISC-V, and proprietary cores — engineered for
-              resource-constrained, performance-critical targets.
+              Embedded firmware, RTOS, BSP, device drivers, communication
+              protocols, and real-time control software — engineered for
+              real-time control, hardware interfacing, and efficient system
+              operation across ARM, RISC-V, and proprietary targets.
             </motion.p>
 
             {/* Capabilities grid */}
@@ -438,52 +430,6 @@ export default function EmbeddedSystems() {
                 </motion.div>
               ))}
             </motion.div>
-
-            {/* Stat strip */}
-            <motion.div
-              className="es-stats"
-              initial={{ opacity: 0, y: 12 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.54, ease: EASE }}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: 1,
-                borderRadius: 14,
-                overflow: "hidden",
-                border: `1px solid ${C.borderLight}`,
-                boxShadow: C.shadowSm,
-              }}
-            >
-              {STATS.map((s, i) => (
-                <div key={s.label} style={{
-                  padding: "16px 18px",
-                  background: i % 2 === 0 ? C.bgWhite : C.bgAccent,
-                  borderRight: i % 2 === 0 ? `1px solid ${C.borderLight}` : "none",
-                  borderBottom: i < 2 ? `1px solid ${C.borderLight}` : "none",
-                }}>
-                  <div style={{
-                    display: "flex", alignItems: "center", gap: 6,
-                    marginBottom: 5,
-                  }}>
-                    <s.icon style={{ width: 12, height: 12, color: C.primary }} strokeWidth={2} />
-                    <span style={{
-                      fontSize: 10, fontWeight: 700,
-                      color: C.textMuted, fontFamily: MONO,
-                      letterSpacing: "0.10em", textTransform: "uppercase",
-                    }}>
-                      {s.label}
-                    </span>
-                  </div>
-                  <p style={{
-                    margin: 0, fontSize: 12.5, fontWeight: 700,
-                    color: C.textPrimary, fontFamily: MONO,
-                  }}>
-                    {s.value}
-                  </p>
-                </div>
-              ))}
-            </motion.div>
           </div>
 
           {/* ── RIGHT: TERMINAL ── */}
@@ -492,7 +438,7 @@ export default function EmbeddedSystems() {
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.85, delay: 0.22, ease: EASE }}
           >
-            {/* Coming soon badge above terminal */}
+            {/* Simulated demo label above terminal */}
             <div style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
               marginBottom: 12,
@@ -504,9 +450,7 @@ export default function EmbeddedSystems() {
               }}>
                 // live preview
               </span>
-              <motion.span
-                animate={{ opacity: [0.6, 1, 0.6] }}
-                transition={{ duration: 2, repeat: Infinity }}
+              <span
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 6,
                   padding: "4px 12px", borderRadius: 50,
@@ -525,8 +469,8 @@ export default function EmbeddedSystems() {
                     background: C.primary, display: "inline-block",
                   }}
                 />
-                Coming Soon
-              </motion.span>
+                Simulated Demo
+              </span>
             </div>
 
             <TerminalWindow inView={inView} />
@@ -567,7 +511,7 @@ export default function EmbeddedSystems() {
                     margin: 0, fontSize: 11, color: C.textMuted,
                     fontFamily: MONO,
                   }}>
-                    v0.9-beta — release TBD 2025
+                    Production toolchain
                   </p>
                 </div>
               </div>
@@ -579,12 +523,59 @@ export default function EmbeddedSystems() {
                 color: C.primary, letterSpacing: "0.10em",
                 textTransform: "uppercase", fontFamily: MONO,
               }}>
-                Upcoming
+                Active
               </span>
             </motion.div>
           </motion.div>
 
         </div>
+
+        {/* ── STAT STRIP — full width, compact ── */}
+        <motion.div
+          className="es-stats"
+          initial={{ opacity: 0, y: 12 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.54, ease: EASE }}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 1,
+            marginTop: 40,
+            borderRadius: 14,
+            overflow: "hidden",
+            border: `1px solid ${C.borderLight}`,
+            boxShadow: C.shadowSm,
+          }}
+        >
+          {STATS.map((s, i) => (
+            <div key={s.label} style={{
+              padding: "12px 16px",
+              background: i % 2 === 0 ? C.bgWhite : C.bgAccent,
+              borderRight: i < STATS.length - 1 ? `1px solid ${C.borderLight}` : "none",
+              display: "flex", alignItems: "center", gap: 10,
+              whiteSpace: "nowrap",
+            }}>
+              <s.icon style={{ width: 14, height: 14, color: C.primary, flexShrink: 0 }} strokeWidth={2} />
+              <div style={{ overflow: "hidden" }}>
+                <span style={{
+                  display: "block",
+                  fontSize: 9.5, fontWeight: 700,
+                  color: C.textMuted, fontFamily: MONO,
+                  letterSpacing: "0.10em", textTransform: "uppercase",
+                }}>
+                  {s.label}
+                </span>
+                <p style={{
+                  margin: 0, fontSize: 12.5, fontWeight: 700,
+                  color: C.textPrimary, fontFamily: MONO,
+                  whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                }}>
+                  {s.value}
+                </p>
+              </div>
+            </div>
+          ))}
+        </motion.div>
       </div>
 
       {/* ── RESPONSIVE ── */}
@@ -610,8 +601,10 @@ export default function EmbeddedSystems() {
             gap: 7px !important;
           }
           .es-stats {
-            grid-template-columns: 1fr 1fr !important;
+            grid-template-columns: repeat(2, 1fr) !important;
           }
+          .es-stats > div:nth-child(2) { border-right: none !important; }
+          .es-stats > div:nth-child(3) { border-bottom: 1px solid ${C.borderLight} !important; }
         }
         /* Large screens / TV */
         @media (min-width: 1400px) {

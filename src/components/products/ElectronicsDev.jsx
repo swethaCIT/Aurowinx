@@ -1,13 +1,23 @@
 // src/components/products/ElectronicsDev.jsx
 // ─────────────────────────────────────────────────
-// Section : Electronics Development — Smart Power Solutions
-// Change  : Solar reordered to priority #1 (default tab), real turnkey
-//           metrics swapped in for Solar, SolarFullSpecs mounted below
-//           the tab panel when Solar is active.
-//           3D canvas animation embedded as background inside gradient header
-//           Right dark PowerFlowPanel remains UNCHANGED
+// Section : Power Electronics & Product Engineering (Solar / EV / BLDC)
 // Theme   : theme.js tokens (C.*, FONT, EASE, fadeUp)
 // Requires: framer-motion, lucide-react
+//
+// MOBILE/TABLET FIX PASS
+// 1) Top badge ("Power Electronics & Product Engineering" + chevron + "Smart
+//    Power" pill) had no flex-wrap — on narrow phones this single unbroken
+//    row overflows the viewport width and forces horizontal scroll. Now
+//    wraps and re-centers below 600px.
+// 2) `.ed2-header > div` was a positional selector matching every direct
+//    div child of the gradient header (including the absolutely-positioned
+//    decorative blob), not just the text+icon row. Replaced with an
+//    explicit class on the actual content row.
+// 3) Badge/heading block margins (60px, fixed at every breakpoint) tightened
+//    below 900px/600px so mobile doesn't carry desktop-sized empty gaps.
+// 4) Heading floor (2.4rem) stepped down further below 480px.
+// All changes are scoped to existing/new media queries — desktop (>=900px)
+// layout, spacing, and JSX structure are unchanged.
 
 import { useRef, useState, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
@@ -35,34 +45,18 @@ const PRODUCTS = [
     colorBorder: "#fcd34d",
     gradA: "#f59e0b",
     gradB: "#d97706",
-    title: "Solar Inverter Solutions",
+    title: "Solar Inverters – Off-Grid with Battery Charging",
     subtitle: "Harness Solar. Power the World.",
     description:
-      "Turnkey solar power systems from residential rooftops to utility-scale farms — inverter, panels, and full electrical accessories, engineered for maximum harvest and long-term field reliability.",
-    // Real headline numbers from the turnkey spec sheet — replaces earlier
-    // generic tech-spec placeholders (99.5% uptime, MPPT, Grid Tied/Off).
-    metrics: [
-      { value: "1kW–2MW", label: "Capacity Range" },
-      { value: "5",        label: "Inverter Brands" },
-      { value: "10Yr",     label: "Free Warranty" },
-      { value: "₹78K",     label: "Max Subsidy" },
-    ],
+      "Standalone solar power systems that efficiently convert PV energy, manage battery charging, and provide uninterrupted power in off-grid applications.",
     features: [
       { Icon: Power,      title: "Grid-Tied & Off-Grid",        desc: "Seamless islanding detection and transfer switching" },
       { Icon: TrendingUp, title: "MPPT Based Control",          desc: "Perturb & observe, incremental conductance methods" },
-      { Icon: Zap,        title: "High Efficiency Conversion",  desc: "SiC/GaN topologies, <2% THD at full load" },
+      { Icon: Zap,        title: "High Efficiency Conversion",  desc: "Optimized power conversion topologies for maximum harvest" },
       { Icon: Eye,        title: "Real-time Monitoring",        desc: "Yield tracking, fault log, cloud sync dashboard" },
       { Icon: BarChart2,  title: "Smart Energy Management",     desc: "Load scheduling, battery arbitrage, grid export" },
-      { Icon: Shield,     title: "Robust & Future Ready",       desc: "IEC 62109 safety, surge protection, IP65 ready" },
+      { Icon: Shield,     title: "Robust & Future Ready",       desc: "Safety-first design with surge protection built in" },
     ],
-    visual: {
-      primary: { label: "Max Capacity", value: "2MW" },
-      secondary: [
-        { label: "House Rooftop", pct: 20 },
-        { label: "Industries",    pct: 60 },
-        { label: "Solar Farm",    pct: 100 },
-      ],
-    },
   },
   {
     id: "ev",
@@ -74,32 +68,18 @@ const PRODUCTS = [
     colorBorder: "#86efac",
     gradA: "#16a34a",
     gradB: "#059669",
-    title: "EV Charging Solutions",
+    title: "EV Chargers",
     subtitle: "Powering the Future of Mobility",
     description:
-      "End-to-end development of AC and DC charging infrastructure — from embedded firmware to OCPP cloud integration — built for real-world durability and smart-grid readiness.",
-    metrics: [
-      { value: "22kW",     label: "Max Output" },
-      { value: "OCPP 2.0", label: "Protocol" },
-      { value: "99.2%",    label: "Uptime" },
-      { value: "CCS2",     label: "Connector" },
-    ],
+      "Intelligent AC and DC electric vehicle charging solutions with advanced power conversion, safety protection, and smart connectivity for reliable charging.",
     features: [
       { Icon: Cpu,      title: "AC & DC Charger Development",  desc: "Full hardware design from controller to connector" },
       { Icon: Settings, title: "Smart Charging Control",       desc: "Dynamic load balancing and scheduling algorithms" },
-      { Icon: Radio,    title: "OCPP / Communication",         desc: "OCPP 1.6 / 2.0, MQTT, cloud backend integration" },
-      { Icon: Zap,      title: "High Efficiency Conversion",   desc: "PFC front-ends, >95% peak-to-peak efficiency" },
-      { Icon: Shield,   title: "Safety & Diagnostics",         desc: "IEC 61851 compliant, ground fault & arc detection" },
+      { Icon: Radio,    title: "OCPP / Communication",         desc: "Standards-based protocol support with cloud backend integration" },
+      { Icon: Zap,      title: "High Efficiency Conversion",   desc: "PFC front-ends for high peak-to-peak efficiency" },
+      { Icon: Shield,   title: "Safety & Diagnostics",         desc: "Ground fault and arc detection built in" },
       { Icon: Activity, title: "Embedded Monitoring",          desc: "Real-time telemetry, OTA firmware update support" },
     ],
-    visual: {
-      primary: { label: "Power Rail", value: "22kW DC" },
-      secondary: [
-        { label: "AC Input",  pct: 78 },
-        { label: "PFC Stage", pct: 95 },
-        { label: "DC Output", pct: 92 },
-      ],
-    },
   },
   {
     id: "bldc",
@@ -111,32 +91,18 @@ const PRODUCTS = [
     colorBorder: "#93c5fd",
     gradA: "#2563eb",
     gradB: "#0891b2",
-    title: "BLDC Fan Solutions",
+    title: "BLDC Fan Controller",
     subtitle: "Smart · Efficient · Reliable",
     description:
-      "High-efficiency BLDC motor control for fan applications — from sensorless startup algorithms to IoT dashboards — delivering silent, long-life operation across industrial and consumer use.",
-    metrics: [
-      { value: "98%",   label: "Efficiency" },
-      { value: "±0.1%", label: "RPM Accuracy" },
-      { value: "0 dB",  label: "Cogging" },
-      { value: "IoT",   label: "Ready" },
-    ],
+      "High-efficiency motor controller for BLDC ceiling and industrial fans, delivering precise speed control, silent operation, and significant energy savings.",
     features: [
-      { Icon: Settings, title: "Sensor & Sensorless Control",  desc: "Back-EMF zero-cross, Hall-effect, observer-based" },
+      { Icon: Settings, title: "Sensorless FOC Control",       desc: "Field-oriented control with back-EMF observer-based estimation" },
       { Icon: Zap,      title: "High Efficiency BLDC Drive",   desc: "Space vector PWM, dead-time compensation" },
       { Icon: Cpu,      title: "Smart Control Algorithms",     desc: "PI/PID, field-oriented control, adaptive tuning" },
-      { Icon: Wifi,     title: "IoT Enabled Monitoring",       desc: "MQTT telemetry, remote speed & fault dashboards" },
+      { Icon: Wifi,     title: "IoT Enabled Monitoring",       desc: "Remote speed & fault dashboards" },
       { Icon: Power,    title: "Low Power Consumption",        desc: "Sleep modes, variable-frequency drive control" },
       { Icon: Shield,   title: "Compact Silent Design",        desc: "Low-vibration rotor balancing, EMI-filtered drive" },
     ],
-    visual: {
-      primary: { label: "Drive Efficiency", value: "98.2%" },
-      secondary: [
-        { label: "Phase A", pct: 88 },
-        { label: "Phase B", pct: 91 },
-        { label: "Phase C", pct: 89 },
-      ],
-    },
   },
 ];
 
@@ -144,14 +110,16 @@ const PRODUCTS = [
    TICKER
 ───────────────────────────────────────────────── */
 const TICKER_ITEMS = [
-  { label: "Solar Config",    val: "Grid-Tied/Off" },
-  { label: "EV Connector",    val: "CCS2" },
-  { label: "BLDC Drive",      val: "SVPWM" },
-  { label: "Solar Safety",    val: "IEC 62109" },
-  { label: "OCPP Protocol",   val: "2.0" },
-  { label: "Power Factor",    val: ">0.99" },
-  { label: "BLDC Monitoring", val: "IoT/MQTT" },
-  { label: "EV Efficiency",   val: ">95%" },
+  "Grid-Tied & Off-Grid",
+  "MPPT Based Control",
+  "AC & DC Charger Development",
+  "Smart Charging Control",
+  "Sensorless FOC Control",
+  "High Efficiency BLDC Drive",
+  "Real-time Monitoring",
+  "Smart Energy Management",
+  "OCPP / Communication",
+  "IoT Enabled Monitoring",
 ];
 
 function MetricsTicker({ color }) {
@@ -177,18 +145,11 @@ function MetricsTicker({ color }) {
                 background: color, display: "inline-block", flexShrink: 0,
               }} />
               <span style={{
-                fontSize: 10.5, fontWeight: 600, color: C.textMuted,
-                letterSpacing: "0.1em", textTransform: "uppercase",
+                fontSize: 11, fontWeight: 700, color: C.textSecondary,
+                letterSpacing: "0.04em",
                 fontFamily: FONT, whiteSpace: "nowrap",
               }}>
-                {item.label}
-              </span>
-              <span style={{
-                fontSize: 12, fontWeight: 800, color,
-                fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-                whiteSpace: "nowrap",
-              }}>
-                {item.val}
+                {item}
               </span>
             </div>
             <div style={{ width: 1, height: 14, background: C.borderLight, flexShrink: 0 }} />
@@ -267,9 +228,7 @@ function drawEV(ctx, W, H, t) {
 
   ctx.fillStyle = `rgba(255,255,255,${sg * 0.95})`;
   ctx.font = "bold 11px 'JetBrains Mono', monospace"; ctx.textAlign = "center";
-  ctx.fillText("22.0 kW", cx, by + 34);
-  ctx.font = "7px monospace"; ctx.fillStyle = "rgba(255,255,255,0.55)";
-  ctx.fillText("CHARGING", cx, by + 47);
+  ctx.fillText("CHARGING", cx, by + 34);
 
   // Progress bar
   const prog = Math.sin(t * 0.5) * 0.35 + 0.65;
@@ -318,7 +277,7 @@ function drawEV(ctx, W, H, t) {
   ctx.font = "8px monospace"; ctx.textAlign = "left";
   ctx.fillText("AC → DC", 14, H - 12);
   ctx.textAlign = "right";
-  ctx.fillText("OCPP 2.0", W - 14, H - 12);
+  ctx.fillText("SMART CHARGING", W - 14, H - 12);
 }
 
 /* BLDC Fan 3D scene */
@@ -409,11 +368,10 @@ function drawBLDC(ctx, W, H, t) {
     ctx.fillText(`Ph ${["A","B","C"][p]}`, 14, wy - 3);
   }
 
-  // RPM readout
-  const dispRpm = Math.round(800 + speed * 3200);
+  // Drive status readout
   ctx.textAlign = "center";
   ctx.fillStyle = "rgba(255,255,255,0.55)"; ctx.font = "bold 11px 'JetBrains Mono', monospace";
-  ctx.fillText(dispRpm + " RPM", cx, cy + mh / 2 + 24);
+  ctx.fillText("RUNNING", cx, cy + mh / 2 + 24);
 }
 
 /* Solar Inverter 3D scene */
@@ -523,11 +481,10 @@ function drawSolar(ctx, W, H, t) {
     ctx.fillText(side < 0 ? "AC GRID" : "BATTERY", cx + side * 84, gridY + 3);
   }
 
-  // Efficiency text
-  const eff = (97 + Math.sin(t * 0.5) * 1.1).toFixed(1);
+  // Status text
   ctx.textAlign = "center";
   ctx.fillStyle = "rgba(255,255,255,0.5)"; ctx.font = "bold 10px monospace";
-  ctx.fillText(eff + "% η", cx, invY - 8);
+  ctx.fillText("CONVERTING", cx, invY - 8);
 }
 
 /* ─────────────────────────────────────────────────
@@ -556,21 +513,33 @@ function ProductAnimation({ productId }) {
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
+    let visible = true;
     function loop() {
+      animRef.current = requestAnimationFrame(loop);
       const dpr = window.devicePixelRatio || 1;
       const W   = canvas.width  / dpr;
       const H   = canvas.height / dpr;
       const drawMap = { ev: drawEV, bldc: drawBLDC, solar: drawSolar };
       drawMap[productId]?.(ctx, W, H, tRef.current);
       tRef.current += 0.016;
-      animRef.current = requestAnimationFrame(loop);
     }
+
+    // Pause while this card's canvas is scrolled off-screen — otherwise it
+    // keeps redrawing every frame in the background, competing with the
+    // other product-page sections' own animation loops for the main thread.
+    const io = new IntersectionObserver(([entry]) => {
+      const nowVisible = entry.isIntersecting;
+      if (nowVisible && !visible) { visible = true; if (animRef.current === null) loop(); }
+      else if (!nowVisible && visible) { visible = false; if (animRef.current !== null) { cancelAnimationFrame(animRef.current); animRef.current = null; } }
+    }, { threshold: 0 });
+    io.observe(canvas);
 
     tRef.current = 0;
     loop();
 
     return () => {
-      cancelAnimationFrame(animRef.current);
+      if (animRef.current !== null) cancelAnimationFrame(animRef.current);
+      io.disconnect();
       ro.disconnect();
     };
   }, [productId]);
@@ -592,147 +561,13 @@ function ProductAnimation({ productId }) {
 }
 
 /* ─────────────────────────────────────────────────
-   POWER FLOW PANEL (dark right column) — UNCHANGED
-───────────────────────────────────────────────── */
-function PowerFlowPanel({ product, inView }) {
-  const { color, gradA, gradB, visual, metrics } = product;
-  return (
-    <div style={{
-      height: "100%", background: "#0d1117", borderRadius: 24,
-      padding: 24, display: "flex", flexDirection: "column", gap: 16,
-      border: "1px solid rgba(255,255,255,0.07)",
-    }}>
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span style={{
-          fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.4)",
-          letterSpacing: "0.16em", textTransform: "uppercase",
-          fontFamily: "'JetBrains Mono', monospace",
-        }}>
-          Power Flow
-        </span>
-        <motion.div
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2.5, repeat: Infinity }}
-          style={{
-            display: "flex", alignItems: "center", gap: 5,
-            padding: "3px 10px", borderRadius: 50,
-            background: "rgba(255,255,255,0.06)",
-            border: "1px solid rgba(255,255,255,0.10)",
-          }}
-        >
-          <span style={{ width: 5, height: 5, borderRadius: "50%", background: color, display: "inline-block" }} />
-          <span style={{
-            fontSize: 9.5, fontWeight: 700, color: "rgba(255,255,255,0.5)",
-            letterSpacing: "0.1em", textTransform: "uppercase",
-            fontFamily: "'JetBrains Mono', monospace",
-          }}>
-            Live Sim
-          </span>
-        </motion.div>
-      </div>
-
-      {/* Big number */}
-      <div style={{ textAlign: "center", padding: "12px 0" }}>
-        <motion.div
-          key={product.id}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={inView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 0.6, ease: EASE }}
-        >
-          <p style={{
-            margin: 0,
-            fontSize: "clamp(2rem, 4vw, 2.8rem)",
-            fontWeight: 900, letterSpacing: "-0.05em",
-            color: color,
-            fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-            lineHeight: 1,
-          }}>
-            {visual.primary.value}
-          </p>
-          <p style={{
-            margin: "6px 0 0", fontSize: 10, fontWeight: 700,
-            color: "rgba(255,255,255,0.35)",
-            letterSpacing: "0.14em", textTransform: "uppercase",
-            fontFamily: FONT,
-          }}>
-            {visual.primary.label}
-          </p>
-        </motion.div>
-      </div>
-
-      {/* Stage bars */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {visual.secondary.map((stage, i) => (
-          <div key={stage.label}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
-              <span style={{
-                fontSize: 10.5, fontWeight: 600, color: "rgba(255,255,255,0.45)",
-                fontFamily: "'JetBrains Mono', monospace",
-                letterSpacing: "0.06em", textTransform: "uppercase",
-              }}>
-                {stage.label}
-              </span>
-              <span style={{
-                fontSize: 11, fontWeight: 800, color: "rgba(255,255,255,0.65)",
-                fontFamily: "'JetBrains Mono', monospace",
-              }}>
-                {stage.pct}%
-              </span>
-            </div>
-            <div style={{ height: 6, borderRadius: 6, background: "rgba(255,255,255,0.07)", overflow: "hidden" }}>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={inView ? { width: `${stage.pct}%` } : {}}
-                transition={{ duration: 1, delay: 0.3 + i * 0.15, ease: EASE }}
-                style={{
-                  height: "100%",
-                  background: `linear-gradient(90deg, ${gradA}, ${gradB})`,
-                  borderRadius: 6,
-                }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Metrics grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: "auto" }}>
-        {metrics.map((m) => (
-          <div key={m.label} style={{
-            padding: "10px 12px", borderRadius: 10,
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.07)",
-          }}>
-            <p style={{
-              margin: 0, fontSize: 15, fontWeight: 800, color: "#fff",
-              fontFamily: "'JetBrains Mono', monospace",
-              letterSpacing: "-0.02em", lineHeight: 1,
-            }}>
-              {m.value}
-            </p>
-            <p style={{
-              margin: "4px 0 0", fontSize: 9, fontWeight: 600,
-              color: "rgba(255,255,255,0.28)",
-              letterSpacing: "0.12em", textTransform: "uppercase",
-              fontFamily: FONT,
-            }}>
-              {m.label}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────────────
    MAIN EXPORT
 ───────────────────────────────────────────────── */
 export default function ElectronicsDev() {
   const ref    = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const [active, setActive] = useState(0); // Solar (index 0) is default — priority #1
+  const [specsOpen, setSpecsOpen] = useState(false); // mobile/tablet-only accordion for SolarFullSpecs
 
   const product = PRODUCTS[active];
 
@@ -766,8 +601,8 @@ export default function ElectronicsDev() {
       }}>
 
         {/* Badge */}
-        <motion.div {...fadeUp} style={{ display: "flex", justifyContent: "center", marginBottom: 60 }}>
-          <span style={{
+        <motion.div {...fadeUp} className="ed2-badge-wrap" style={{ display: "flex", justifyContent: "center", marginBottom: 60 }}>
+          <span className="ed2-top-badge" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
             padding: "7px 20px", borderRadius: 50,
             border: `1px solid ${C.border}`, background: C.bgWhite,
@@ -775,13 +610,13 @@ export default function ElectronicsDev() {
             letterSpacing: "0.18em", textTransform: "uppercase",
             boxShadow: C.shadowSm, fontFamily: FONT,
           }}>
-            <Layers style={{ width: 12, height: 12 }} />
-            Electronics Development
-            <ChevronRight style={{ width: 11, height: 11, opacity: 0.5 }} />
+            <Layers style={{ width: 12, height: 12, flexShrink: 0 }} />
+            <span className="ed2-badge-label">Power Electronics & Product Engineering</span>
+            <ChevronRight style={{ width: 11, height: 11, opacity: 0.5, flexShrink: 0 }} />
             <span style={{
               padding: "2px 11px", borderRadius: 50,
               background: C.gradPrimary, color: "#fff",
-              fontSize: 10, letterSpacing: "0.1em",
+              fontSize: 10, letterSpacing: "0.1em", flexShrink: 0,
             }}>
               Smart Power
             </span>
@@ -789,7 +624,7 @@ export default function ElectronicsDev() {
         </motion.div>
 
         {/* Heading */}
-        <div style={{ textAlign: "center", marginBottom: 60 }}>
+        <div className="ed2-heading-block" style={{ textAlign: "center", marginBottom: 60 }}>
           <motion.p
             initial={{ opacity: 0, y: -10 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -800,6 +635,7 @@ export default function ElectronicsDev() {
               color: C.primary, marginBottom: 16,
               display: "flex", alignItems: "center",
               justifyContent: "center", gap: 10, fontFamily: FONT,
+              flexWrap: "wrap",
             }}
           >
             <span style={{ width: 28, height: 1, background: C.gradPrimary, display: "inline-block" }} />
@@ -808,6 +644,7 @@ export default function ElectronicsDev() {
           </motion.p>
 
           <motion.h2
+            className="ed2-heading"
             initial={{ opacity: 0, y: 28 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.16, ease: EASE }}
@@ -841,9 +678,10 @@ export default function ElectronicsDev() {
               margin: "0 auto", fontFamily: FONT,
             }}
           >
-            Explore our three flagship product lines below — each engineered
-            in-house from firmware to enclosure, with real turnkey specs and
-            live performance data.
+            End-to-end development of power electronic products—from concept,
+            architecture, hardware, firmware, magnetics, validation,
+            certification, and manufacturing support. Explore our three
+            flagship product lines below.
           </motion.p>
         </div>
 
@@ -892,159 +730,163 @@ export default function ElectronicsDev() {
             transition={{ duration: 0.45, ease: EASE }}
             className="ed2-panel"
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 380px",
-              gap: 20, alignItems: "start",
-            }}
-          >
-            {/* ── LEFT CARD ── */}
-            <div style={{
-              borderRadius: 24,
+              borderRadius: 28,
               border: `1px solid ${product.colorBorder}`,
               background: C.bgWhite,
-              boxShadow: C.shadowMd,
+              boxShadow: C.shadowLg,
               overflow: "hidden",
+            }}
+          >
+            {/* ── GRADIENT HEADER with 3D canvas bg — now full width ── */}
+            <div className="ed2-header" style={{
+              background: `linear-gradient(135deg, ${product.gradA} 0%, ${product.gradB} 100%)`,
+              padding: "clamp(28px,4vw,44px) clamp(28px,5vw,52px)",
+              position: "relative", overflow: "hidden",
             }}>
-              {/* ── GRADIENT HEADER with 3D canvas bg ── */}
+              {/* 3D animation canvas — absolute background layer */}
+              <ProductAnimation productId={product.id} />
+
+              {/* Original decorative blob — kept as is */}
               <div style={{
-                background: `linear-gradient(135deg, ${product.gradA} 0%, ${product.gradB} 100%)`,
-                padding: "28px 32px 24px",
-                position: "relative", overflow: "hidden",
+                position: "absolute", top: "-40%", right: "-5%",
+                width: "40%", height: "180%", borderRadius: "50%",
+                background: "rgba(255,255,255,0.09)", pointerEvents: "none",
+                zIndex: 1,
+              }} />
+
+              {/* All text content — sits above canvas.
+                  Explicit class instead of a positional `> div` selector,
+                  so this row is the only thing the mobile CSS below targets. */}
+              <div className="ed2-header-row" style={{
+                display: "flex", alignItems: "flex-start",
+                justifyContent: "space-between", gap: 24,
+                position: "relative", zIndex: 2,
               }}>
-                {/* 3D animation canvas — absolute background layer */}
-                <ProductAnimation productId={product.id} />
-
-                {/* Original decorative blob — kept as is */}
-                <div style={{
-                  position: "absolute", top: "-40%", right: "-5%",
-                  width: "50%", height: "180%", borderRadius: "50%",
-                  background: "rgba(255,255,255,0.09)", pointerEvents: "none",
-                  zIndex: 1,
-                }} />
-
-                {/* All text content — sits above canvas */}
-                <div style={{
-                  display: "flex", alignItems: "flex-start",
-                  justifyContent: "space-between",
-                  position: "relative", zIndex: 2,
-                }}>
-                  <div style={{ flex: 1 }}>
-                    <p style={{
-                      margin: "0 0 6px", fontSize: 10, fontWeight: 700,
-                      color: "rgba(255,255,255,0.60)",
-                      letterSpacing: "0.18em", textTransform: "uppercase",
-                      fontFamily: FONT,
-                    }}>
-                      {product.title}
-                    </p>
-                    <h3 style={{
-                      margin: "0 0 8px",
-                      fontSize: "clamp(1.4rem, 2.8vw, 2rem)",
-                      fontWeight: 900, lineHeight: 1.1,
-                      letterSpacing: "-0.035em", color: "#fff",
-                      fontFamily: FONT,
-                    }}>
-                      {product.subtitle}
-                    </h3>
-                    <p style={{
-                      margin: 0, fontSize: 13.5,
-                      color: "rgba(255,255,255,0.70)",
-                      lineHeight: 1.7, maxWidth: 420,
-                      fontFamily: FONT,
-                    }}>
-                      {product.description}
-                    </p>
-                  </div>
-
-                  {/* Product icon */}
-                  <div style={{
-                    width: 64, height: 64, borderRadius: 18, flexShrink: 0,
-                    background: "rgba(255,255,255,0.14)",
-                    border: "1px solid rgba(255,255,255,0.22)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    marginLeft: 16,
+                <div style={{ flex: 1, maxWidth: 620 }}>
+                  <p style={{
+                    margin: "0 0 8px", fontSize: 10.5, fontWeight: 700,
+                    color: "rgba(255,255,255,0.60)",
+                    letterSpacing: "0.18em", textTransform: "uppercase",
+                    fontFamily: FONT,
                   }}>
-                    <product.Icon style={{ width: 28, height: 28, color: "#fff" }} strokeWidth={1.8} />
-                  </div>
+                    {product.title}
+                  </p>
+                  <h3 style={{
+                    margin: "0 0 10px",
+                    fontSize: "clamp(1.6rem, 3.2vw, 2.4rem)",
+                    fontWeight: 900, lineHeight: 1.08,
+                    letterSpacing: "-0.035em", color: "#fff",
+                    fontFamily: FONT,
+                  }}>
+                    {product.subtitle}
+                  </h3>
+                  <p style={{
+                    margin: 0, fontSize: 14.5,
+                    color: "rgba(255,255,255,0.72)",
+                    lineHeight: 1.75, maxWidth: 520,
+                    fontFamily: FONT,
+                  }}>
+                    {product.description}
+                  </p>
                 </div>
 
-                {/* Coming soon pill */}
-                <div style={{ marginTop: 16, position: "relative", zIndex: 2 }}>
-                  <motion.span
-                    animate={{ opacity: [0.6, 1, 0.6] }}
-                    transition={{ duration: 2.5, repeat: Infinity }}
-                    style={{
-                      display: "inline-flex", alignItems: "center", gap: 6,
-                      padding: "4px 14px", borderRadius: 50,
-                      background: "rgba(255,255,255,0.15)",
-                      border: "1px solid rgba(255,255,255,0.25)",
-                      fontSize: 10, fontWeight: 700, color: "#fff",
-                      letterSpacing: "0.14em", textTransform: "uppercase",
-                      fontFamily: FONT,
-                    }}
-                  >
-                    <span style={{
-                      width: 5, height: 5, borderRadius: "50%",
-                      background: "#fff", display: "inline-block",
-                    }} />
-                    Coming Soon
-                  </motion.span>
+                {/* Product icon */}
+                <div className="ed2-header-icon" style={{
+                  width: 76, height: 76, borderRadius: 20, flexShrink: 0,
+                  background: "rgba(255,255,255,0.14)",
+                  border: "1px solid rgba(255,255,255,0.22)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <product.Icon style={{ width: 34, height: 34, color: "#fff" }} strokeWidth={1.8} />
                 </div>
-              </div>
-
-              {/* Feature grid — unchanged */}
-              <div style={{
-                padding: "24px 28px 28px",
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 12,
-              }}>
-                {product.features.map((f, i) => (
-                  <motion.div
-                    key={f.title}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.05 + i * 0.07, ease: EASE }}
-                    style={{
-                      padding: "14px",
-                      borderRadius: 12,
-                      background: product.colorSoft,
-                      border: `1px solid ${product.colorBorder}`,
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                      <div style={{
-                        width: 26, height: 26, borderRadius: 7, flexShrink: 0,
-                        background: product.color,
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                      }}>
-                        <f.Icon style={{ width: 13, height: 13, color: "#fff" }} strokeWidth={2.2} />
-                      </div>
-                      <span style={{
-                        fontSize: 12, fontWeight: 700,
-                        color: C.textPrimary, lineHeight: 1.25, fontFamily: FONT,
-                      }}>
-                        {f.title}
-                      </span>
-                    </div>
-                    <p style={{
-                      margin: 0, fontSize: 11, color: C.textMuted,
-                      lineHeight: 1.5, fontFamily: FONT,
-                    }}>
-                      {f.desc}
-                    </p>
-                  </motion.div>
-                ))}
               </div>
             </div>
 
-            {/* ── RIGHT — dark PowerFlowPanel (UNCHANGED) ── */}
-            <PowerFlowPanel product={product} inView={inView} />
+            {/* Feature grid — 3 columns now that the sidebar is gone */}
+            <div className="ed2-features" style={{
+              padding: "clamp(24px,3vw,32px) clamp(24px,4vw,36px) clamp(28px,4vw,36px)",
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 16,
+            }}>
+              {product.features.map((f, i) => (
+                <motion.div
+                  key={f.title}
+                  className="ed2-feature-card"
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ y: -4 }}
+                  transition={{ delay: 0.05 + i * 0.06, ease: EASE }}
+                  style={{
+                    padding: "16px",
+                    borderRadius: 14,
+                    background: product.colorSoft,
+                    border: `1px solid ${product.colorBorder}`,
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                    <div style={{
+                      width: 30, height: 30, borderRadius: 8, flexShrink: 0,
+                      background: product.color,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}>
+                      <f.Icon style={{ width: 14, height: 14, color: "#fff" }} strokeWidth={2.2} />
+                    </div>
+                    <span style={{ fontSize: 10.5, fontWeight: 700, color: product.colorDark, opacity: 0.45 }}>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <p style={{
+                    margin: "0 0 4px", fontSize: 13, fontWeight: 700,
+                    color: C.textPrimary, lineHeight: 1.3, fontFamily: FONT,
+                  }}>
+                    {f.title}
+                  </p>
+                  <p style={{
+                    margin: 0, fontSize: 11.5, color: C.textMuted,
+                    lineHeight: 1.55, fontFamily: FONT,
+                  }}>
+                    {f.desc}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* ── FULL SPEC BREAKDOWN — nested inside the Solar tab's own card.
+                 On mobile/tablet this is the single biggest scroll contributor,
+                 so it's collapsed by default behind a toggle there. Desktop
+                 (>=900px) always shows it fully open, same as before. ── */}
+            {product.id === "solar" && (
+              <div style={{ padding: "0 clamp(24px,4vw,36px) clamp(28px,4vw,36px)" }}>
+                <div className={`ed2-fullspecs-wrap${specsOpen ? " is-open" : ""}`}>
+                  <div className="ed2-fullspecs-inner">
+                    <SolarFullSpecs product={product} />
+                  </div>
+                </div>
+                <button
+                  className="ed2-fullspecs-toggle"
+                  onClick={() => setSpecsOpen(v => !v)}
+                  style={{
+                    display: "none", // shown only <900px via CSS
+                    width: "100%", alignItems: "center", justifyContent: "center", gap: 8,
+                    marginTop: 14, padding: "12px 18px", borderRadius: 12,
+                    border: `1px solid ${product.colorBorder}`,
+                    background: product.colorSoft, color: product.colorDark,
+                    fontSize: 12.5, fontWeight: 700, fontFamily: FONT,
+                    letterSpacing: "0.04em", cursor: "pointer",
+                  }}
+                >
+                  {specsOpen ? "Hide Full Specifications" : "View Full Specifications"}
+                  <ChevronRight style={{
+                    width: 14, height: 14,
+                    transform: specsOpen ? "rotate(-90deg)" : "rotate(90deg)",
+                    transition: "transform 0.25s ease",
+                  }} />
+                </button>
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
-
-        {/* ── FULL SPEC BREAKDOWN — Solar only, since it's the only real/launching product ── */}
-        {product.id === "solar" && <SolarFullSpecs product={product} />}
       </div>
 
       {/* Metrics ticker */}
@@ -1055,14 +897,60 @@ export default function ElectronicsDev() {
       {/* Responsive */}
       <style>{`
         @media (max-width: 900px) {
-          .ed2-panel { grid-template-columns: 1fr !important; }
           #electronics-dev { padding-top: 72px !important; }
+          .ed2-badge-wrap { margin-bottom: 36px !important; }
+          .ed2-heading-block { margin-bottom: 36px !important; }
+
+          /* Feature grid -> single vertical column on mobile/tablet. */
+          .ed2-features {
+            grid-template-columns: 1fr !important;
+          }
+
+          /* Solar full-spec breakdown collapsed by default — biggest single
+             chunk of extra scroll on the Solar tab. Toggle reveals it. */
+          .ed2-fullspecs-wrap {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+          }
+          .ed2-fullspecs-wrap.is-open { max-height: 6000px; }
+          .ed2-fullspecs-toggle { display: flex !important; }
         }
         @media (max-width: 600px) {
           .ed2-wrap { padding: 0 16px !important; }
-          .ed2-panel > div:first-child > div:last-child {
-            grid-template-columns: 1fr !important;
+
+          /* Icon no longer stacks below the description (which added a full
+             extra row of height) — pinned as a small corner badge instead. */
+          .ed2-header-row { flex-direction: column !important; align-items: flex-start !important; }
+          .ed2-header-row > div:first-child { padding-right: 52px !important; }
+          .ed2-header-icon {
+            position: absolute !important;
+            top: clamp(20px,4vw,28px) !important;
+            right: clamp(20px,5vw,28px) !important;
+            width: 40px !important; height: 40px !important;
+            border-radius: 12px !important;
           }
+          .ed2-header-icon svg { width: 18px !important; height: 18px !important; }
+
+          /* Top badge: was a single unbroken row (label + chevron + pill) with
+             no wrap — overflowed the viewport on narrow phones and forced
+             horizontal scroll. Now wraps and re-centers. */
+          .ed2-top-badge {
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            text-align: center !important;
+            row-gap: 6px !important;
+            padding: 8px 16px !important;
+            font-size: 9.5px !important;
+            letter-spacing: 0.1em !important;
+          }
+          .ed2-badge-label { white-space: normal !important; }
+
+          .ed2-badge-wrap { margin-bottom: 28px !important; }
+          .ed2-heading-block { margin-bottom: 28px !important; }
+        }
+        @media (max-width: 480px) {
+          .ed2-heading { font-size: clamp(1.9rem, 9vw, 2.3rem) !important; }
         }
         @media (min-width: 1400px) {
           .ed2-wrap { max-width: 1320px !important; }

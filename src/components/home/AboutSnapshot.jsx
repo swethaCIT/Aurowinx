@@ -90,7 +90,8 @@ function ChipVisual({ shouldReduceMotion }) {
         {[65,80,95,110,125,140].map(y => (
           <line key={`ih${y}`} x1="50" y1={y} x2="150" y2={y} stroke="white" strokeWidth="0.5" opacity="0.3" />
         ))}
-        <motion.circle r="3" fill="#22d3ee"
+        <motion.circle r="3" fill="#22d3ee" cx={50} cy={50}
+          initial={{ cx: 50, cy: 50 }}
           animate={shouldReduceMotion ? { cx: 50, cy: 50 } : { cx: [50,150,150,50,50], cy: [50,50,150,150,50] }}
           transition={{ duration: 4, repeat: Infinity, ease: "linear" }} />
       </svg>
@@ -482,7 +483,7 @@ export default function AboutSnapshot() {
             to="/products#embedded-systems" />
           <DivisionCard triggered={isInView} delay={0.54} number="3" color="#ea580c" colorEnd="#db2777"
             title="Power Electronics & Products"
-            desc="EV Chargers · BLDC Controllers · Solar Inverters · Power Electronics · Embedded Products · Custom R&D"
+            desc="EV Chargers · BLDC Controllers · Solar Inverters · Power Electronics"
             tags={["Energy Efficient", "Smart Power", "Sustainable", "Future Ready"]}
             to="/products" />
         </div>

@@ -78,21 +78,10 @@ function MagButton({ children, primary, href }) {
    PILL TAGS — product verticals
 ═══════════════════════════════════════════════ */
 const PILLS = [
-  "EV Charging Solutions",
-  "BLDC Fan Solutions",
-  "Solar Inverter Systems",
+  "Power Electronics & Product Engineering",
   "Embedded Systems",
-  "IoT & Automation",
-];
-
-/* ═══════════════════════════════════════════════
-   STAT STRIP DATA
-═══════════════════════════════════════════════ */
-const STATS = [
-  { value: "3+",    label: "Product Verticals"     },
-  { value: "100%",  label: "In-House Engineering"  },
-  { value: "E2E",   label: "Concept to Production" },
-  { value: "IN",    label: "Made in India"          },
+  "Industrial IoT & Automation",
+  "Engineering Services & R&D",
 ];
 
 /* ═══════════════════════════════════════════════
@@ -112,7 +101,6 @@ export default function ProductHero() {
         alignItems: "center",
         justifyContent: "center",
         fontFamily: FONT,
-        paddingBottom: 110,
       }}
     >
 
@@ -280,8 +268,8 @@ export default function ProductHero() {
           }}
         >
           AUROWINX builds intelligent power electronics products for sustainable
-          mobility, energy efficiency, and renewable ecosystems — from EV charging
-          infrastructure to BLDC motor drives and solar inverter systems.
+          mobility, energy efficiency, and renewable ecosystems — spanning power
+          electronics, embedded systems, industrial IoT, and full-cycle engineering services.
         </motion.p>
 
         {/* ── PILL TAGS ── */}
@@ -366,7 +354,7 @@ export default function ProductHero() {
           <Activity style={{ width: 13, height: 13, color: "#4ade80" }} />
           <span className="prod-hero-trust-line">Engineering the Energy Transition</span>
           <span className="prod-hero-trust-full">
-            Engineering the Energy Transition — EV Charging · BLDC Fans · Solar Inverters
+            Engineering the Energy Transition — Power Electronics · Embedded Systems · Industrial IoT · R&D
           </span>
         </motion.p>
       </div>
@@ -402,62 +390,6 @@ export default function ProductHero() {
       </motion.div>
 
       {/* ══════════════════════════════════════
-          BOTTOM STAT STRIP — desktop grid
-      ══════════════════════════════════════ */}
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.70 }}
-        className="prod-hero-stats prod-hero-stats-grid"
-        style={{
-          position: "absolute",
-          bottom: 0, left: 0, right: 0,
-          zIndex: 3,
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          background: "rgba(0,0,0,0.48)",
-          backdropFilter: "blur(20px)",
-          borderTop: "1px solid rgba(255,255,255,0.07)",
-        }}
-      >
-        {STATS.map((s, i) => (
-          <motion.div
-            key={s.label}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.78 + i * 0.08 }}
-            className="prod-hero-stat-item"
-            style={{
-              padding: "22px 16px",
-              textAlign: "center",
-              borderRight: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none",
-            }}
-          >
-            <p style={{
-              margin: 0,
-              fontSize: "clamp(1.4rem, 2.5vw, 1.9rem)",
-              fontWeight: 900,
-              color: "#fff",
-              letterSpacing: "-0.04em",
-              fontFamily: FONT,
-            }}>
-              {s.value}
-            </p>
-            <p style={{
-              margin: "4px 0 0",
-              fontSize: 11,
-              color: "rgba(148,163,184,0.50)",
-              fontWeight: 600,
-              letterSpacing: "0.07em",
-              textTransform: "uppercase",
-            }}>
-              {s.label}
-            </p>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      {/* ══════════════════════════════════════
           RESPONSIVE STYLES
       ══════════════════════════════════════ */}
       <style>{`
@@ -475,15 +407,8 @@ export default function ProductHero() {
           }
           .prod-hero-trust-line { display: inline; }
           .prod-hero-trust-full { display: none; }
-          .prod-hero-pills [data-pill-index="3"],
-          .prod-hero-pills [data-pill-index="4"] {
+          .prod-hero-pills [data-pill-index="3"] {
             display: none;
-          }
-          .prod-hero-stats-grid {
-            display: none !important;
-          }
-          .prod-hero-stats-scroll {
-            display: flex !important;
           }
         }
 
@@ -493,65 +418,6 @@ export default function ProductHero() {
           }
         }
       `}</style>
-
-      {/* ── MOBILE: horizontal swipe stat strip ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.70 }}
-        className="prod-hero-stats prod-hero-stats-scroll"
-        style={{
-          display: "none",
-          position: "relative",
-          zIndex: 3,
-          marginTop: 32,
-          width: "100%",
-          overflowX: "auto",
-          scrollSnapType: "x mandatory",
-          WebkitOverflowScrolling: "touch",
-          scrollbarWidth: "none",
-          gap: 10,
-          padding: "0 16px 4px",
-        }}
-      >
-        {STATS.map((s) => (
-          <div
-            key={s.label}
-            className="prod-hero-stat-item"
-            style={{
-              flex: "0 0 72%",
-              scrollSnapAlign: "start",
-              padding: "18px 16px",
-              textAlign: "center",
-              background: "rgba(0,0,0,0.48)",
-              backdropFilter: "blur(20px)",
-              borderRadius: 14,
-              border: "1px solid rgba(255,255,255,0.07)",
-            }}
-          >
-            <p style={{
-              margin: 0,
-              fontSize: "clamp(1.4rem, 2.5vw, 1.9rem)",
-              fontWeight: 900,
-              color: "#fff",
-              letterSpacing: "-0.04em",
-              fontFamily: FONT,
-            }}>
-              {s.value}
-            </p>
-            <p style={{
-              margin: "4px 0 0",
-              fontSize: 11,
-              color: "rgba(148,163,184,0.50)",
-              fontWeight: 600,
-              letterSpacing: "0.07em",
-              textTransform: "uppercase",
-            }}>
-              {s.label}
-            </p>
-          </div>
-        ))}
-      </motion.div>
 
     </section>
   );

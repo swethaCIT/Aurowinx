@@ -16,7 +16,7 @@ const STAGES = [
     img: "https://images.unsplash.com/photo-1758873269035-aae0e1fd3422?w=800&q=80",
     desc: "Define system architecture, micro-architecture specs, PPA targets and design partitioning strategy before a single line of RTL is written.",
     points: ["System architecture definition", "Micro-architecture spec", "PPA target setting", "Design partitioning & planning"],
-    stat: { label: "Planning Accuracy", value: "98%" },
+    tools: ["Synopsys Platform Architect", "MATLAB / Simulink", "ARM Cycle Models"],
   },
   {
     num: "02", tag: "RTL Design",
@@ -25,7 +25,7 @@ const STAGES = [
     img: "https://images.unsplash.com/photo-1754039984985-ef607d80113a?w=800&q=80",
     desc: "SystemVerilog RTL design with lint, CDC analysis and rigorous peer reviews ensuring synthesizability and zero functional ambiguity.",
     points: ["SystemVerilog RTL coding", "Lint & CDC analysis", "Design review & sign-off", "IP integration"],
-    stat: { label: "Code Quality", value: "Zero Lint" },
+    tools: ["Synopsys SpyGlass", "Cadence JasperGold", "Siemens Questa"],
   },
   {
     num: "03", tag: "Verification",
@@ -34,7 +34,7 @@ const STAGES = [
     img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
     desc: "UVM testbench, constrained-random simulation, formal property checking and 99%+ functional coverage closure — no escapes.",
     points: ["UVM testbench development", "Constrained random simulation", "Formal verification (FPV)", "99%+ coverage closure"],
-    stat: { label: "Functional Coverage", value: "99%+" },
+    tools: ["Synopsys VCS", "Cadence Xcelium", "Siemens Questa"],
   },
   {
     num: "04", tag: "Synthesis",
@@ -43,7 +43,7 @@ const STAGES = [
     img: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?w=800&q=80",
     desc: "RTL-to-netlist synthesis with technology mapping, timing constraints, DFT hooks and area/power optimization for target nodes.",
     points: ["Technology mapping", "Timing constraint definition", "DFT scan insertion", "Netlist optimization"],
-    stat: { label: "Timing Closure", value: "100%" },
+    tools: ["Synopsys DC", "Cadence Genus", "Synopsys Fusion Compiler"],
   },
   {
     num: "05", tag: "DFT",
@@ -52,7 +52,7 @@ const STAGES = [
     img: "https://images.unsplash.com/photo-1748000970909-845f4aa144d2?w=800&q=80",
     desc: "Full DFT — scan stitching, MBIST, ATPG pattern generation and ATE-ready delivery targeting 95%+ fault coverage.",
     points: ["Scan insertion & stitching", "MBIST & hard repair", "ATPG pattern generation", "ATE handoff ready"],
-    stat: { label: "Fault Coverage", value: "95%+" },
+    tools: ["Mentor TetraMAX", "Cadence Modus", "Synopsys DFTMAX"],
   },
   {
     num: "06", tag: "Physical Design",
@@ -61,7 +61,7 @@ const STAGES = [
     img: "https://images.unsplash.com/photo-1587845323226-bad89242c735?w=800&q=80",
     desc: "Full PNR from floorplanning through detailed routing — timing closure, SI/PI and DRC-clean layout across 5nm to 180nm nodes.",
     points: ["Floorplan & power planning", "Placement & CTS", "Routing & ECO closure", "SI/PI analysis"],
-    stat: { label: "DRC Clean", value: "100%" },
+    tools: ["Cadence Innovus", "Synopsys IC Compiler II", "Synopsys StarRC"],
   },
   {
     num: "07", tag: "Sign-Off",
@@ -70,7 +70,7 @@ const STAGES = [
     img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
     desc: "STA, IR-drop, EM, DRC/LVS and LEC — comprehensive sign-off ensuring first-pass GDSII tape-out with zero surprises.",
     points: ["MCMM STA sign-off", "DRC / LVS / LEC", "IR-drop & EM analysis", "GDSII tape-out"],
-    stat: { label: "First-Pass Rate", value: "95%+" },
+    tools: ["Synopsys PrimeTime", "Cadence Pegasus", "Synopsys Calibre"],
   },
   {
     num: "08", tag: "Silicon",
@@ -79,7 +79,7 @@ const STAGES = [
     img: "https://images.unsplash.com/photo-1650530415027-dc9199f473ec?w=800&q=80",
     desc: "Post-silicon bring-up, debug, characterization and ATE correlation — from first power-on to volume production ramp.",
     points: ["Silicon bring-up & debug", "ATE correlation", "Characterization & margins", "Production ramp support"],
-    stat: { label: "Silicon Success", value: "99%+" },
+    tools: ["Advantest ATE", "Keysight Bench Tools", "NI LabVIEW"],
   },
 ];
 
@@ -259,15 +259,19 @@ export default function SDProcessFlow() {
                 <p style={{ margin: "0 0 10px", fontSize: "clamp(1.3rem, 2.5vw, 1.7rem)", fontWeight: 900, color: "#fff", letterSpacing: "-0.03em", fontFamily: FONT, lineHeight: 1.2 }}>
                   {stage.title}
                 </p>
-                {/* Stat pill */}
-                <div style={{
-                  display: "inline-flex", alignItems: "center", gap: 10,
-                  padding: "8px 16px", borderRadius: 50,
-                  background: "rgba(255,255,255,0.12)", backdropFilter: "blur(12px)",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                }}>
-                  <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>{stage.stat.label}</span>
-                  <span style={{ fontSize: 14, color: "#fff", fontWeight: 900, fontFamily: FONT }}>{stage.stat.value}</span>
+                {/* Tools used for this flow */}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {stage.tools.map((t) => (
+                    <span key={t} style={{
+                      padding: "6px 14px", borderRadius: 50,
+                      background: "rgba(255,255,255,0.12)", backdropFilter: "blur(12px)",
+                      border: "1px solid rgba(255,255,255,0.2)",
+                      fontSize: 11, color: "#fff", fontWeight: 700,
+                      fontFamily: FONT, whiteSpace: "nowrap",
+                    }}>
+                      {t}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>

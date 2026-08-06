@@ -170,7 +170,6 @@ function FlipCard({ item }) {
           display: "flex", flexDirection: "column",
           justifyContent: "space-between",
           overflow: "hidden",
-          position: "absolute", inset: 0,
         }}>
           {/* Top accent */}
           <div style={{

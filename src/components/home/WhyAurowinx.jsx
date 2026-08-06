@@ -86,46 +86,9 @@ const STRENGTHS = [
   },
 ];
 
-const INDUSTRIES = [
-  { label: "Automotive",   color: "#2563eb", icon: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-      <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v9a2 2 0 0 1-2 2h-2"/>
-      <circle cx="9" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
-    </svg>
-  )},
-  { label: "Networking",   color: "#0891b2", icon: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-      <rect x="2" y="2" width="6" height="6" rx="1"/><rect x="16" y="2" width="6" height="6" rx="1"/>
-      <rect x="9" y="16" width="6" height="6" rx="1"/>
-      <path d="M5 8v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/><line x1="12" y1="14" x2="12" y2="16"/>
-    </svg>
-  )},
-  { label: "Consumer",     color: "#7c3aed", icon: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-      <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
-    </svg>
-  )},
-  { label: "Industrial",   color: "#ea580c", icon: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-      <path d="M2 20h20M6 20V10l6-6 6 6v10M10 20v-5h4v5"/>
-    </svg>
-  )},
-  { label: "AI / ML",      color: "#059669", icon: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-      <path d="M12 2a9 9 0 1 0 9 9"/><path d="M12 8v4l3 3"/>
-      <circle cx="19" cy="5" r="3" fill="currentColor" fillOpacity="0.2"/>
-    </svg>
-  )},
-  { label: "IoT",          color: "#db2777", icon: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-      <path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/>
-      <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/>
-    </svg>
-  )},
-];
 
 const TOOLS_ROW1 = ["Synopsys VCS","Cadence Xcelium","Siemens Questa","Ansys RedHawk","Mentor TetraMAX","Cadence Modus","Synopsys DC","Cadence Innovus","Synopsys PrimeTime","Cadence Pegasus","Synopsys Calibre","KLA IC Validator"];
-const TOOLS_ROW2 = ["Altium Designer","KiCAD","MATLAB","Simulink","LTspice","FreeRTOS","Zephyr RTOS","ESP-IDF","STM32CubeIDE","Proteus","SolidWorks PCB","Allegro PCB"];
+const TOOLS_ROW2 = ["Altium Designer","MATLAB","Simulink","LTspice","FreeRTOS","STM32CubeIDE","Proteus","DSP","TMS320F","Microchip"];
 
 /* ══════════════════════════════════════════════════════════════════════════
    HOOKS
@@ -417,96 +380,6 @@ function TabletStrengthGrid({ triggered }) {
         );
       })}
     </div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════════════════════
-   INDUSTRY PILL
-══════════════════════════════════════════════════════════════════════════ */
-function IndustryPill({ item, index, triggered, dark = true }) {
-  const [hov, setHov] = useState(false);
-  return (
-    <motion.div
-      className="flex min-w-0 items-center gap-3 rounded-2xl px-4 py-3 transition-all duration-300"
-      style={{
-        background: hov
-          ? `linear-gradient(135deg, ${item.color}25, ${item.color}10)`
-          : dark ? "rgba(30,41,59,0.65)" : "rgba(255,255,255,0.85)",
-        border: `1px solid ${hov ? item.color + "50" : dark ? "rgba(255,255,255,0.08)" : "rgba(148,163,184,0.15)"}`,
-        backdropFilter: "blur(16px)",
-        boxShadow: hov ? `0 8px 30px ${item.color}25` : dark ? "inset 0 1px 1px rgba(255,255,255,0.05)" : "0 2px 12px rgba(15,23,42,0.04)",
-      }}
-      initial={{ opacity: 0, scale: 0.88 }}
-      animate={triggered ? { opacity: 1, scale: 1 } : {}}
-      transition={{ duration: 0.5, delay: 0.55 + index * 0.07, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -4, scale: 1.04 }}
-      onHoverStart={() => setHov(true)}
-      onHoverEnd={() => setHov(false)}
-    >
-      <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 transition-all duration-300"
-        style={{
-          background: hov ? `${item.color}35` : dark ? "rgba(15,23,42,0.8)" : item.color + "12",
-          color: hov ? item.color : dark ? "#94a3b8" : item.color,
-          boxShadow: hov ? `0 0 15px ${item.color}40` : "none"
-        }}>
-        {item.icon}
-      </div>
-      <span className="font-bold transition-all duration-300"
-        style={{ fontSize: "13px", color: hov ? (dark ? "#ffffff" : item.color) : dark ? "#cbd5e1" : "#475569" }}>
-        {item.label}
-      </span>
-    </motion.div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════════════════════
-   MOBILE INDUSTRY — Horizontal scroll strip
-══════════════════════════════════════════════════════════════════════════ */
-function MobileIndustryStrip({ triggered }) {
-  return (
-    <motion.div
-      className="mb-10"
-      initial={{ opacity: 0, y: 16 }}
-      animate={triggered ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, delay: 0.4 }}
-    >
-      <div className="flex items-center gap-3 mb-4">
-        <span className="font-bold uppercase tracking-[0.18em] text-slate-400" style={{ fontSize: "10px" }}>
-          Industry Domains
-        </span>
-        <div className="h-px flex-1" style={{ background: "linear-gradient(90deg,rgba(37,99,235,0.2),transparent)" }} />
-      </div>
-      {/* Scrollable row — fade edges */}
-      <div className="relative">
-        <div className="absolute left-0 top-0 bottom-0 w-6 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to right,#f8fafc,transparent)" }} />
-        <div className="absolute right-0 top-0 bottom-0 w-6 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to left,#f8fafc,transparent)" }} />
-        <div className="flex gap-2 overflow-x-auto pb-2 px-1"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}>
-          {INDUSTRIES.map((item, i) => (
-            <motion.div
-              key={item.label}
-              className="flex items-center gap-2 rounded-2xl px-4 py-2.5 flex-shrink-0"
-              style={{
-                background: `linear-gradient(135deg,${item.color}18,${item.color}08)`,
-                border: `1.5px solid ${item.color}30`,
-                color: item.color,
-              }}
-              initial={{ opacity: 0, x: 20 }}
-              animate={triggered ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.4, delay: 0.45 + i * 0.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div style={{ color: item.color }}>{item.icon}</div>
-              <span className="font-bold" style={{ fontSize: "12.5px", color: item.color }}>
-                {item.label}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </motion.div>
   );
 }
 
@@ -811,27 +684,6 @@ export default function WhyAurowinx() {
             {STRENGTHS.map((s, i) => (
               <StrengthCard key={s.num} s={s} index={i} triggered={isInView} />
             ))}
-          </div>
-        )}
-
-        {/* ── INDUSTRY DOMAINS — responsive variants ── */}
-        {isMobile && <MobileIndustryStrip triggered={isInView} />}
-
-        {!isMobile && (
-          <div className="mb-10 sm:mb-12 lg:mb-16">
-            <motion.div className="flex items-center gap-4 mb-5"
-              initial={{ opacity:0 }} animate={isInView?{opacity:1}:{}}
-              transition={{ duration:0.6, delay:0.45 }}>
-              <span className="font-bold uppercase tracking-[0.18em] text-slate-400" style={{ fontSize:"10px" }}>
-                Industry Domains
-              </span>
-              <div className="h-px flex-1" style={{ background:"linear-gradient(90deg,rgba(37,99,235,0.15),transparent)" }} />
-            </motion.div>
-            <div className={`grid gap-3 ${isTablet ? "grid-cols-3" : "grid-cols-6"}`}>
-              {INDUSTRIES.map((item, i) => (
-                <IndustryPill key={item.label} item={item} index={i} triggered={isInView} dark={false} />
-              ))}
-            </div>
           </div>
         )}
 

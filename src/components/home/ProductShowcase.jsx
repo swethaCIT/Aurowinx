@@ -5,7 +5,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 
 /* ══════════════════════════════════════════════════════════════
    DATA
@@ -22,7 +22,6 @@ const PRODUCTS = [
     soft: "rgba(22,163,74,.08)",
     border: "rgba(22,163,74,.22)",
     text: "#15803d",
-    stat: { v: "22kW", l: "Max Output" },
     img: "https://images.unsplash.com/photo-1703860271509-b50f5679f2a0?w=800&q=85&fit=crop",
     feats: [
   { icon: "⚡", label: "AC & DC Charger Development" },
@@ -30,12 +29,7 @@ const PRODUCTS = [
   { icon: "📡", label: "OCPP Communication" },
   { icon: "🛡", label: "Safety & Diagnostics" },
 ],
-badges: ["High Efficiency", "Smart Connectivity", "Scalable"],
-    chips: [
-      { t: "AC 22kW", x: "10%", y: "28%", delay: 0 },
-      { t: "DC 60kW", x: "55%", y: "22%", delay: 0.6 },
-      { t: "OCPP 2.0", x: "52%", y: "60%", delay: 1.2 },
-    ],
+badges: ["Advanced Power Conversion", "Smart Connectivity", "Safety Protection"],
   },
   {
     id: "bldc",
@@ -48,20 +42,14 @@ badges: ["High Efficiency", "Smart Connectivity", "Scalable"],
     soft: "rgba(37,99,235,.08)",
     border: "rgba(37,99,235,.22)",
     text: "#1d4ed8",
-    stat: { v: "98%", l: "Efficiency" },
-    img: "https://images.pexels.com/photos/34194564/pexels-photo-34194564.jpeg?w=800&q=85&fit=crop",
+    img: "/images/BLDC.jpg",
     feats: [
-  { icon: "🔄", label: "Sensor & Sensorless Control" },
+  { icon: "🔄", label: "Sensorless FOC Control" },
   { icon: "⚡", label: "High Efficiency BLDC Drive" },
   { icon: "📡", label: "IoT Enabled Monitoring" },
   { icon: "🛡", label: "Compact Silent Design" },
 ],
-badges: ["Energy Efficient", "IoT Control", "Long Life"],
-    chips: [
-      { t: "Sensorless", x: "8%", y: "25%", delay: 0 },
-      { t: "IoT Ready",  x: "54%", y: "20%", delay: 0.7 },
-      { t: "±0.1% RPM", x: "52%", y: "62%", delay: 1.4 },
-    ],
+badges: ["Precise Speed Control", "Silent Operation", "Energy Savings"],
   },
   {
     id: "solar",
@@ -74,27 +62,15 @@ badges: ["Energy Efficient", "IoT Control", "Long Life"],
     soft: "rgba(234,88,12,.08)",
     border: "rgba(234,88,12,.22)",
     text: "#c2410c",
-    stat: { v: "99.5%", l: "Uptime" },
-    img: "https://images.pexels.com/photos/37929911/pexels-photo-37929911.jpeg?w=800&q=85&fit=crop",
+    img: "/images/SolarInvertor.jpg",
     feats: [
   { icon: "🔌", label: "Grid-Tied & Off-Grid" },
   { icon: "📈", label: "MPPT Based Control" },
   { icon: "📊", label: "Real-time Monitoring" },
   { icon: "🛡", label: "Robust & Future Ready" },
 ],
-badges: ["Maximum Energy", "Smart Monitoring", "Sustainable"],
-    chips: [
-      { t: "MPPT",      x: "8%",  y: "26%", delay: 0 },
-      { t: "Grid-Tied", x: "54%", y: "20%", delay: 0.8 },
-      { t: "98% η",     x: "52%", y: "62%", delay: 1.6 },
-    ],
+badges: ["Maximum Energy Harvest", "Smart Monitoring", "Uninterrupted Power"],
   },
-];
-
-const STATS = [
-  { v: "AC+DC",  l: "Charger Types",   color: "#16a34a" },
-  { v: "3",      l: "Product Lines",   color: "#8b5cf6" },
-  { v: "IoT",    l: "Ready",           color: "#2563eb" },
 ];
 
 /* ══════════════════════════════════════════════════════════════
@@ -107,7 +83,7 @@ function ParticleCanvas() {
     const cv = canvasRef.current;
     if (!cv) return;
     const ctx = cv.getContext("2d");
-    let animId;
+    let animId = null;
     let pts = [];
     const COLS = [
       "rgba(22,163,74,",
@@ -178,8 +154,21 @@ function ParticleCanvas() {
     resize();
     draw();
     window.addEventListener("resize", resize);
+
+    // Pause while scrolled off-screen — otherwise this keeps redrawing 70
+    // points and their pairwise connections every frame long after the user
+    // has scrolled past the section, adding to scroll-time main-thread load.
+    let visible = true;
+    const io = new IntersectionObserver(([entry]) => {
+      const nowVisible = entry.isIntersecting;
+      if (nowVisible && !visible) { visible = true; if (animId === null) draw(); }
+      else if (!nowVisible && visible) { visible = false; if (animId !== null) { cancelAnimationFrame(animId); animId = null; } }
+    }, { threshold: 0 });
+    io.observe(cv);
+
     return () => {
-      cancelAnimationFrame(animId);
+      if (animId !== null) cancelAnimationFrame(animId);
+      io.disconnect();
       window.removeEventListener("resize", resize);
     };
   }, []);
@@ -278,16 +267,6 @@ function ProductCard({ p, index, inView }) {
           }}
         >
           {p.num}
-        </div>
-
-        {/* stat badge */}
-        <div style={{ position: "absolute", bottom: 14, right: 14, zIndex: 10, textAlign: "right" }}>
-          <div style={{ fontSize: "1.5rem", fontWeight: 900, color: "#fff", lineHeight: 1, letterSpacing: "-0.04em", textShadow: "0 2px 8px rgba(0,0,0,.3)" }}>
-            {p.stat.v}
-          </div>
-          <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,.8)", letterSpacing: ".1em", textTransform: "uppercase" }}>
-            {p.stat.l}
-          </div>
         </div>
 
         {/* title on photo */}
@@ -513,18 +492,8 @@ export default function ProductShowcase() {
         @keyframes gridPan { from { background-position: 0 0; } to { background-position: 64px 64px; } }
         @keyframes blink    { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
         @keyframes gradShift{ 0%{background-position:0%} 100%{background-position:200%} }
-        .product-stats-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        @media (min-width: 768px) {
-          .product-stats-row { display: flex; }
-          .product-stats-row > div { flex: 1; border-bottom: none !important; }
-          .product-stats-row > div:not(:last-child) { border-right: 1px solid #f1f5f9; }
-        }
         @media (min-width: 1280px) {
           .product-showcase-inner { max-width: 90rem; }
-        }
-        @media (min-width: 768px) {
-          .product-cta-banner { flex-direction: row; align-items: center; }
-          .product-cta-banner a { width: auto; }
         }
       `}</style>
 
@@ -582,64 +551,9 @@ export default function ProductShowcase() {
           </h2>
 
           <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.75, maxWidth: 520 }}>
-            From EV charging infrastructure to BLDC motor control and solar energy systems —
-            precision-engineered, certified, and production-ready.
+            From EV charging infrastructure to BLDC motor control, solar energy systems,
+            and battery management — precision-engineered, end-to-end power electronics.
           </p>
-        </motion.div>
-
-        {/* ── STATS ROW ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 35, scale: 0.98 }}
-          animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-          className="product-stats-row"
-          style={{
-            marginBottom: "clamp(2rem, 5vw, 3.75rem)",
-            background: "#fff",
-            borderRadius: 20,
-            border: "1px solid #e2e8f0",
-            overflow: "hidden",
-            boxShadow: "0 10px 40px -10px rgba(0,0,0,.08)",
-            position: "relative",
-          }}
-        >
-          {/* subtle animated shimmer on stats bar */}
-          <motion.div
-            animate={{ x: ["-100%", "200%"] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "linear", repeatDelay: 5 }}
-            style={{
-              position: "absolute", top: 0, left: 0, bottom: 0, width: "30%",
-              background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent)",
-              zIndex: 5, pointerEvents: "none",
-              transform: "skewX(-15deg)"
-            }}
-          />
-          {STATS.map((s, i) => (
-            <div
-              key={s.l}
-              style={{
-                padding: "clamp(0.85rem, 3vw, 1.25rem) clamp(0.75rem, 2.5vw, 1.5rem)",
-                textAlign: "center",
-                borderRight: i % 2 === 0 && i < STATS.length - 1 ? "1px solid #f1f5f9" : "none",
-                borderBottom: i < STATS.length - 2 ? "1px solid #f1f5f9" : "none",
-                position: "relative",
-                minWidth: 0,
-              }}
-            >
-              <div
-                style={{
-                  position: "absolute", top: 0, left: 0, right: 0, height: 3,
-                  background: s.color,
-                }}
-              />
-              <div style={{ fontSize: "clamp(1.35rem, 5vw, 2rem)", fontWeight: 900, letterSpacing: "-.04em", lineHeight: 1, color: s.color }}>
-                {s.v}
-              </div>
-              <div style={{ fontSize: "clamp(9px, 2.4vw, 11px)", fontWeight: 600, color: "#94a3b8", letterSpacing: ".06em", textTransform: "uppercase", marginTop: 4 }}>
-                {s.l}
-              </div>
-            </div>
-          ))}
         </motion.div>
 
         {/* ── PRODUCT CARDS: mobile/tablet carousel, desktop grid ── */}
@@ -662,82 +576,6 @@ export default function ProductShowcase() {
             <ProductCard key={p.id} p={p} index={i} inView={inView} />
           ))}
         </div>
-
-        {/* ── BOTTOM BANNER ── */}
-        <motion.div
-          className="product-cta-banner"
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 1.1 }}
-          style={{
-            borderRadius: 24,
-            background: "linear-gradient(135deg,#0f172a 0%,#1e293b 100%)",
-            padding: "clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 4vw, 3rem)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            gap: 20,
-            position: "relative",
-            overflow: "hidden",
-            border: "1px solid rgba(255,255,255,.06)",
-          }}
-        >
-          {/* glow layers */}
-          <div
-            style={{
-              position: "absolute", inset: 0, pointerEvents: "none",
-              background:
-                "radial-gradient(ellipse at 0% 50%,rgba(22,163,74,.15),transparent 50%), radial-gradient(ellipse at 100% 50%,rgba(37,99,235,.12),transparent 50%)",
-            }}
-          />
-          <div
-            style={{
-              position: "absolute", inset: 0, pointerEvents: "none",
-              backgroundImage:
-                "linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px)",
-              backgroundSize: "40px 40px",
-            }}
-          />
-
-          <div style={{ position: "relative", zIndex: 2 }}>
-            <h3 style={{ fontSize: "clamp(1.1rem, 3.5vw, 1.4rem)", fontWeight: 800, color: "#fff", letterSpacing: "-.03em", marginBottom: 6 }}>
-              Need a custom power electronics product?
-            </h3>
-            <p style={{ fontSize: 13.5, color: "rgba(255,255,255,.45)" }}>
-              We handle design, firmware, certification, and production — end-to-end.
-            </p>
-          </div>
-
-          <motion.a
-            href="/contact"
-            whileHover={{ scale: 1.06, boxShadow: "0 0 48px rgba(22,163,74,.5)" }}
-            style={{
-              position: "relative", zIndex: 2,
-              width: "100%",
-              flexShrink: 0,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 10,
-              padding: "14px 24px",
-              borderRadius: 100,
-              fontSize: "clamp(12px, 3vw, 14px)",
-              fontWeight: 700,
-              color: "#fff",
-              textDecoration: "none",
-              background: "linear-gradient(135deg,#16a34a,#2563eb)",
-              boxShadow: "0 0 32px rgba(22,163,74,.35)",
-              fontFamily: "Outfit, sans-serif",
-              letterSpacing: ".02em",
-            }}
-          >
-            Start a Custom Project
-            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </motion.a>
-        </motion.div>
 
       </div>
 

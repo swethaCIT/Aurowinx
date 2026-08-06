@@ -216,13 +216,13 @@ export default function SDFAQ() {
           className="sd-faq-cats"
           style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginBottom: 32 }}
         >
-          {CATEGORIES.map((cat, i) => (
+          {CATEGORIES.map((cat) => (
             <motion.button
               key={cat}
               onClick={() => { setActiveCat(cat); setOpenId(null); }}
               whileHover={{ y: -2 }}
               style={{
-                padding: "7px 18px", borderRadius: 50, border: "none",
+                padding: "7px 18px", borderRadius: 50,
                 background: activeCat === cat ? C.primary : "#fff",
                 color: activeCat === cat ? "#fff" : C.textSecondary,
                 fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: FONT,

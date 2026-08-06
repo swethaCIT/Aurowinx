@@ -294,8 +294,8 @@ function BillingCard({ b }) {
 }
 
 /* ── MODEL CARD (shared) ── */
-function ModelCard({ model, delay = 0, compact = false }) {
-  const ArrowDivider = () => (
+function ArrowDivider() {
+  return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
       <div style={{ flex: 1, height: 1, background: "#e0e7ff" }} />
       <div style={{
@@ -311,7 +311,9 @@ function ModelCard({ model, delay = 0, compact = false }) {
       <div style={{ flex: 1, height: 1, background: "#e0e7ff" }} />
     </div>
   );
+}
 
+function ModelCard({ model, delay = 0, compact = false }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 32 }}

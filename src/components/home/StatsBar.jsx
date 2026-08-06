@@ -44,9 +44,10 @@ const STATS = [
 const CAPS = [
   "ASIC Design","FPGA Development","SoC Architecture","RTL Design",
   "DFT & ATPG","UVM Verification","Physical Design","GDSII Sign-off",
-  "Embedded Firmware","IoT Automation",
-  "(UPCOMING)","EV Charging Systems","BLDC Motor Control","Solar Inverters",
-  "Power Electronics","End-to-End Product Engineering",
+  "Embedded Firmware","Industrial IoT & Automation",
+  "EV Charging Systems","BLDC Motor Control","Solar Inverters",
+  "Power Electronics",
+  "End-to-End Product Engineering","Engineering Services & R&D",
 ];
 const MARQUEE_ITEMS = [...CAPS, ...CAPS];
 

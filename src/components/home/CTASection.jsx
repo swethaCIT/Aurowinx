@@ -3,7 +3,7 @@
 
 import { useRef, useEffect, useState, useCallback } from "react";
 import {
-  motion, useInView, useScroll, useTransform,
+  motion, useInView,
   useMotionValue, useSpring,
 } from "framer-motion";
 import * as THREE from "three";
@@ -227,13 +227,13 @@ function ChipScene() {
     window.addEventListener("mousemove", onMove);
 
     // ── Block pulse animation ──
-    let raf, lastPulse = 0;
+    let raf = null, lastPulse = 0, visible = true;
     const timer = new THREE.Timer();
     timer.connect(document);
-    
+
     const animate = () => {
       raf = requestAnimationFrame(animate);
-      
+
       timer.update();
       const t = timer.getElapsed();
 
@@ -282,6 +282,18 @@ function ChipScene() {
     };
     animate();
 
+    // Pause the render loop while this hero canvas is scrolled off-screen —
+    // it's a full WebGL scene with bond-wire lines, a BGA ball grid, and
+    // orbiting particles rendered on every frame; left running unconditionally
+    // it competes with the page's other 3D sections for the main thread even
+    // when nobody can see it, which shows up as scroll stutter elsewhere.
+    const io = new IntersectionObserver(([entry]) => {
+      const nowVisible = entry.isIntersecting;
+      if (nowVisible && !visible) { visible = true; if (raf === null) animate(); }
+      else if (!nowVisible && visible) { visible = false; if (raf !== null) { cancelAnimationFrame(raf); raf = null; } }
+    }, { threshold: 0 });
+    io.observe(el);
+
     const onResize = () => {
       if (!el) return;
       const w = el.clientWidth, h = el.clientHeight;
@@ -292,7 +304,8 @@ function ChipScene() {
     window.addEventListener("resize", onResize);
 
     return () => {
-      cancelAnimationFrame(raf);
+      if (raf !== null) cancelAnimationFrame(raf);
+      io.disconnect();
       timer.dispose();
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("resize", onResize);
@@ -350,75 +363,6 @@ function GlitchText({ children, style }) {
           transform: "translateX(3px)", opacity: 0.7 }}>{children}</span>
       </>}
     </span>
-  );
-}
-
-/* ════════════════════════════════════════════════════════
-   COUNT UP
-════════════════════════════════════════════════════════ */
-function CountUp({ to, suffix = "", inView }) {
-  const [v, setV] = useState(0);
-  useEffect(() => {
-    if (!inView) return;
-    let n = 0;
-    const step = Math.ceil(to / 55);
-    const id = setInterval(() => {
-      n += step;
-      if (n >= to) { setV(to); clearInterval(id); } else setV(n);
-    }, 22);
-    return () => clearInterval(id);
-  }, [inView, to]);
-  return <>{v}{suffix}</>;
-}
-
-/* ════════════════════════════════════════════════════════
-   HOLO CARD
-════════════════════════════════════════════════════════ */
-const IMAGES = [
-  { src: "https://images.unsplash.com/photo-1756083895945-a37995995b2a?w=800&q=85", alt: "Silicon chip close-up",       label: "ASIC Design",   span: "wide" },
-  { src: "https://images.unsplash.com/photo-1543727166-222902a0c7d2?w=800&q=85",    alt: "Semiconductor wafer",         label: "Silicon Fab"             },
-  { src: "https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?w=800&q=85", alt: "PCB electronics engineering", label: "PCB & Firmware"          },
-  { src: "https://images.unsplash.com/photo-1677092590812-78e7db4900d2?w=800&q=85", alt: "IoT connected devices",       label: "IoT & Embedded"          },
-];
-
-function HoloCard({ src, alt, label, delay, inView }) {
-  const [tilt,  setTilt]  = useState({ x: 0, y: 0 });
-  const [shine, setShine] = useState({ x: 50, y: 50 });
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 36, scale: 0.93 }}
-      animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
-      transition={{ duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] }}
-      onMouseMove={e => {
-        const r  = e.currentTarget.getBoundingClientRect();
-        const px = (e.clientX - r.left) / r.width;
-        const py = (e.clientY - r.top)  / r.height;
-        setTilt({ x: (py - 0.5) * 16, y: (px - 0.5) * -16 });
-        setShine({ x: px * 100, y: py * 100 });
-      }}
-      onMouseLeave={() => setTilt({ x: 0, y: 0 })}
-      style={{ perspective: 800, height: "100%", cursor: "pointer" }}
-    >
-      <motion.div
-        animate={{ rotateX: tilt.x, rotateY: tilt.y }}
-        transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        style={{ borderRadius: 14, overflow: "hidden", position: "relative", height: "100%",
-          boxShadow: "0 16px 48px rgba(15,23,42,0.18), 0 0 0 1px rgba(59,130,246,0.12)" }}
-      >
-        <img src={src} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-        <div style={{ position: "absolute", inset: 0,
-          background: `radial-gradient(circle at ${shine.x}% ${shine.y}%, rgba(139,92,246,0.22) 0%, rgba(6,182,212,0.12) 40%, transparent 70%)`,
-          pointerEvents: "none" }} />
-        <div style={{ position: "absolute", inset: 0,
-          background: "linear-gradient(to top, rgba(10,18,42,0.82) 0%, rgba(10,18,42,0.1) 55%, transparent 100%)" }} />
-        <div style={{ position: "absolute", bottom: 12, left: 12, display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#06b6d4",
-            boxShadow: "0 0 8px #06b6d4", display: "inline-block" }} />
-          <span style={{ color: "#fff", fontSize: 10, fontWeight: 700,
-            letterSpacing: "0.14em", textTransform: "uppercase" }}>{label}</span>
-        </div>
-      </motion.div>
-    </motion.div>
   );
 }
 
@@ -485,22 +429,15 @@ function GlassContactCard({ card, delay, inView }) {
 /* ════════════════════════════════════════════════════════
    DATA
 ════════════════════════════════════════════════════════ */
-const STATS = [
-  { num: 120, suffix: "+",  label: "Projects"  },
-  { num: 18,  suffix: "",   label: "Countries" },
-  { num: 99,  suffix: "%",  label: "On-Time"   },
-  { num: 8,   suffix: "yr", label: "Expertise" },
-];
-
 const FOOTER_SERVICES = [
   { label: "ASIC Design", href: "/products" },
   { label: "VLSI & RTL", href: "/solutions/semiconductor-design" },
-  { label: "Embedded Firmware", href: "/products" },
-  { label: "IoT Systems", href: "/products" },
-  { label: "Power Electronics", href: "/products" },
-  { label: "PCB Design", href: "/products" },
+  { label: "Embedded Firmware", href: "/products#embedded-systems" },
+  { label: "Industrial IoT & Automation", href: "/products#iot-automation" },
+  { label: "Power Electronics", href: "/products#electronics-dev" },
+  { label: "PCB Design", href: "/products#engineering-services" },
   { label: "FPGA Development", href: "/products" },
-  { label: "Product Engineering", href: "/products" },
+  { label: "Engineering Services & R&D", href: "/products#engineering-services" },
 ];
 const FOOTER_COMPANY = [
   { label: "About Us", href: "/company" },
@@ -537,10 +474,7 @@ const CSS = `
     gap: clamp(1.75rem, 4vw, 3.5rem); align-items: center; min-height: unset;
   }
   .canvas-wrap  { position: relative; height: clamp(220px, 45vw, 480px); min-height: 220px; }
-  .stats-row    { display: flex; gap: clamp(0.875rem, 3vw, 1.75rem); flex-wrap: wrap; }
   .contact-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-  .img-grid     { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; height: auto; }
-  .img-grid > * { min-height: 100px; height: clamp(100px, 22vw, 150px); }
   .btn-row      { display: flex; gap: 12px; flex-wrap: wrap; }
   .btn-row a { max-width: 100%; }
 
@@ -551,7 +485,6 @@ const CSS = `
 
   .sec-pad { padding: clamp(3rem, 8vw, 5.5rem) clamp(1rem, 4vw, 3rem) clamp(2.75rem, 6vw, 4.5rem); }
   .sec-pad-compact { padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 4vw, 3rem) clamp(1.75rem, 4vw, 2.5rem); }
-  .img-pad { padding: 0 clamp(1rem, 4vw, 3rem) clamp(2.75rem, 6vw, 4.5rem); }
   .con-pad { padding: 0 clamp(1rem, 4vw, 3rem) clamp(2.75rem, 6vw, 4.5rem); }
   .con-pad-compact { padding: 0 clamp(1rem, 4vw, 3rem) clamp(2rem, 4vw, 3rem); }
 
@@ -585,7 +518,6 @@ const CSS = `
 
   @media (min-width: 480px) {
     .btn-row { gap: 14px; }
-    .img-grid > * { min-height: 120px; }
   }
 
   @media (min-width: 640px) {
@@ -606,8 +538,6 @@ const CSS = `
   @media (min-width: 1100px) {
     .hero-grid    { grid-template-columns: 1fr 1fr; min-height: 520px; }
     .canvas-wrap  { height: 480px; }
-    .img-grid     { grid-template-columns: 1.5fr 1fr 1fr 1fr; height: 256px; }
-    .img-grid > * { height: 100%; min-height: unset; }
     .contact-grid { grid-template-columns: repeat(3, 1fr); }
     .footer-top   { grid-template-columns: 1.8fr 1fr 1fr 1.3fr; gap: 48px; padding: 64px 48px 48px; }
     .footer-bottom { padding: 20px 48px 28px; }
@@ -668,8 +598,6 @@ const CSS = `
 export default function CTASection({ compact = false }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const parallaxY = useTransform(scrollYProgress, [0, 1], ["-4%", "4%"]);
 
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterStatus, setNewsletterStatus] = useState("idle"); // idle | submitting | success | error
@@ -786,23 +714,6 @@ export default function CTASection({ compact = false }) {
                 }}>✉ info@aurowinx.com</MagneticBtn>
               </motion.div>
 
-              <motion.div className="stats-row"
-                initial={{ opacity: 0, y: 18 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.65, delay: 0.48 }}
-                style={{ marginTop: 44, paddingTop: 26, borderTop: "1px solid #e2e8f0" }}>
-                {STATS.map(s => (
-                  <div key={s.label}>
-                    <p style={{ fontSize: 27, fontWeight: 800, color: "#0a0f2c",
-                      margin: "0 0 2px", letterSpacing: "-0.04em", lineHeight: 1 }}>
-                      <CountUp to={s.num} suffix={s.suffix} inView={inView} />
-                    </p>
-                    <p style={{ fontSize: 10, color: "#94a3b8", fontWeight: 700,
-                      textTransform: "uppercase", letterSpacing: "0.14em", margin: 0 }}>
-                      {s.label}
-                    </p>
-                  </div>
-                ))}
-              </motion.div>
             </motion.div>
 
             {/* RIGHT — chip canvas */}
@@ -821,7 +732,7 @@ export default function CTASection({ compact = false }) {
               >
                 <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
                   className="hud-card hud-bottom">
-                  <p className="hud-card-label" style={{ color: "#0891b2" }}>System Online</p>
+                  <p className="hud-card-label" style={{ color: "#0891b2" }}>Core Active</p>
                   <p className="hud-card-value" style={{ color: "#0f172a" }}>AurowinX Core v2.4</p>
                 </motion.div>
                 <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
@@ -834,24 +745,6 @@ export default function CTASection({ compact = false }) {
 
           </div>
         </div>
-
-        {/* ════ IMAGE MOSAIC ════ */}
-        {!compact && (
-        <motion.div style={{ y: parallaxY }}>
-          <div style={{ maxWidth: 1280, margin: "0 auto" }} className="cta-inner img-pad">
-            <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.28 }}
-              style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
-              <div style={{ flex: 1, height: "0.5px", background: "#e2e8f0" }} />
-              <span style={{ color: "#94a3b8", fontSize: 10, fontWeight: 700,
-                letterSpacing: "0.2em", textTransform: "uppercase" }}>Our Engineering Domains</span>
-              <div style={{ flex: 1, height: "0.5px", background: "#e2e8f0" }} />
-            </motion.div>
-            <div className="img-grid">
-              {IMAGES.map((img, i) => <HoloCard key={img.label} {...img} delay={0.32 + i * 0.08} inView={inView} />)}
-            </div>
-          </div>
-        </motion.div>
-        )}
 
         {/* ════ CONTACT STRIP ════ */}
         <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 2 }} className={`cta-inner ${compact ? "con-pad-compact" : "con-pad"}`}>

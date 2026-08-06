@@ -74,6 +74,7 @@ const PILLS = [
   "ASIC Design",
   "FPGA Development",
   "SoC Architecture",
+  "Design Verification",
   "DFT & ATPG",
   "Physical Design",
 ];
@@ -95,7 +96,6 @@ export default function SDHero() {
         alignItems: "center",
         justifyContent: "center",
         fontFamily: FONT,
-        paddingBottom: 110, // space for stat strip
       }}
     >
 
@@ -254,7 +254,7 @@ export default function SDHero() {
           }}
         >
           "Silicon-proven teams delivering end-to-end ASIC, FPGA, and SoC design — 
-          from architecture and RTL through DFT, physical design, and GDSII tape-out."
+          from architecture and RTL through DFT, Design verification, physical design, and GDSII tape-out."
         </motion.p>
 
         {/* ── PILL TAGS ── */}
@@ -268,7 +268,7 @@ export default function SDHero() {
             flexWrap: "wrap",
             gap: 8,
             justifyContent: "center",
-            marginBottom: 40,
+            margin: "0 auto 40px",
           }}
         >
           {PILLS.map((p, i) => (
@@ -290,6 +290,8 @@ export default function SDHero() {
                 display: "flex",
                 alignItems: "center",
                 gap: 6,
+                whiteSpace: "nowrap",
+                flexShrink: 0,
               }}
             >
               <CheckCircle2 style={{ width: 11, height: 11, color: "#38bdf8" }} />
@@ -372,70 +374,22 @@ export default function SDHero() {
         }} />
       </motion.div>
 
-      {/* ══════════════════════════════════════
-          BOTTOM STAT STRIP  — pinned to bottom
-      ══════════════════════════════════════ */}
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.70 }}
-        className="sol-hero-stats sol-hero-stats-grid"
-        style={{
-          position: "absolute",
-          bottom: 0, left: 0, right: 0,
-          zIndex: 3,
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          background: "rgba(0,0,0,0.48)",
-          backdropFilter: "blur(20px)",
-          borderTop: "1px solid rgba(255,255,255,0.07)",
-        }}
-      >
-        {[
-  { value: "5nm",  label: "Lowest Tech Node"   },
-  { value: "E2E",  label: "Spec to GDSII"      },
-  { value: "4",    label: "Foundry Partners"    },
-  { value: "150+", label: "Team Engineers"      },
-].map((s, i) => (
-          <motion.div
-            key={s.label}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.78 + i * 0.08 }}
-            className="sol-hero-stat-item"
-            style={{
-              padding: "22px 16px",
-              textAlign: "center",
-              borderRight: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none",
-            }}
-          >
-            <p style={{
-              margin: 0,
-              fontSize: "clamp(1.4rem, 2.5vw, 1.9rem)",
-              fontWeight: 900,
-              color: "#fff",
-              letterSpacing: "-0.04em",
-              fontFamily: FONT,
-            }}>
-              {s.value}
-            </p>
-            <p style={{
-              margin: "4px 0 0",
-              fontSize: 11,
-              color: "rgba(148,163,184,0.50)",
-              fontWeight: 600,
-              letterSpacing: "0.07em",
-              textTransform: "uppercase",
-            }}>
-              {s.label}
-            </p>
-          </motion.div>
-        ))}
-      </motion.div>
-
       <style>{`
         .sol-hero-trust-line { display: none; }
         .sol-hero-trust-full { display: inline; }
+
+        /* Desktop: all 6 pills visible — keep them on a single line instead
+           of letting flex-wrap break unevenly (e.g. 5 then 1 stranded). */
+        @media (min-width: 961px) {
+          .sol-hero-pills {
+            flex-wrap: nowrap;
+            width: max-content;
+          }
+          .sol-hero-pills > span {
+            white-space: nowrap;
+            flex-shrink: 0;
+          }
+        }
 
         @media (max-width: 960px) {
           .sol-hero-section {
@@ -448,15 +402,9 @@ export default function SDHero() {
           }
           .sol-hero-trust-line { display: inline; }
           .sol-hero-trust-full { display: none; }
-          .sol-hero-pills [data-pill-index="3"],
-          .sol-hero-pills [data-pill-index="4"] {
+          .sol-hero-pills [data-pill-index="4"],
+          .sol-hero-pills [data-pill-index="5"] {
             display: none;
-          }
-          .sol-hero-stats-grid {
-            display: none !important;
-          }
-          .sol-hero-stats-scroll {
-            display: flex !important;
           }
         }
         @media (max-width: 480px) {
@@ -465,70 +413,6 @@ export default function SDHero() {
           }
         }
       `}</style>
-
-      {/* Mobile: horizontal swipe stat strip */}
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.70 }}
-        className="sol-hero-stats sol-hero-stats-scroll"
-        style={{
-          display: "none",
-          position: "relative",
-          zIndex: 3,
-          marginTop: 32,
-          width: "100%",
-          overflowX: "auto",
-          scrollSnapType: "x mandatory",
-          WebkitOverflowScrolling: "touch",
-          scrollbarWidth: "none",
-          gap: 10,
-          padding: "0 16px 4px",
-        }}
-      >
-        {[
-          { value: "200+", label: "Tape-outs Delivered"  },
-          { value: "5nm",  label: "Lowest Tech Node"      },
-          { value: "150+", label: "Team Engineers"        },
-          { value: "E2E",  label: "Full Ownership"        },
-        ].map((s) => (
-          <div
-            key={s.label}
-            className="sol-hero-stat-item"
-            style={{
-              flex: "0 0 72%",
-              scrollSnapAlign: "start",
-              padding: "18px 16px",
-              textAlign: "center",
-              background: "rgba(0,0,0,0.48)",
-              backdropFilter: "blur(20px)",
-              borderRadius: 14,
-              border: "1px solid rgba(255,255,255,0.07)",
-            }}
-          >
-            <p style={{
-              margin: 0,
-              fontSize: "clamp(1.4rem, 2.5vw, 1.9rem)",
-              fontWeight: 900,
-              color: "#fff",
-              letterSpacing: "-0.04em",
-              fontFamily: FONT,
-            }}>
-              {s.value}
-            </p>
-            <p style={{
-              margin: "4px 0 0",
-              fontSize: 11,
-              color: "rgba(148,163,184,0.50)",
-              fontWeight: 600,
-              letterSpacing: "0.07em",
-              textTransform: "uppercase",
-            }}>
-              {s.label}
-            </p>
-          </div>
-        ))}
-      </motion.div>
     </section>
   );
 }

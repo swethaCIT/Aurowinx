@@ -6,14 +6,6 @@ import { motion } from "framer-motion";
 import * as THREE from "three";
 import { C, FONT, EASE } from "././theme";
 
-// ─── Stats rendered as monospace data table ─────────────────────────────────
-const STATS = [
-  { value: "50+",  label: "Tape-outs delivered"     },
-  { value: "10+",  label: "Years of VLSI expertise"  },
-  { value: "5nm",  label: "→ 65nm node coverage"     },
-  { value: "1 Day", label: "Typical response time"     },
-];
-
 // ─── Three.js PCB trace network ─────────────────────────────────────────────
 function usePCBCanvas(canvasRef) {
   useEffect(() => {
@@ -339,80 +331,6 @@ export default function ContactHero() {
           border-radius: 4px;
         }
 
-        /* Stat overlay — bottom-left of the canvas panel */
-        .ch2-stats-overlay {
-          position: absolute;
-          bottom: 24px; left: 24px;
-          background: rgba(8,12,20,0.82);
-          backdrop-filter: blur(14px);
-          border: 1px solid rgba(99,102,241,0.22);
-          border-radius: 8px;
-          padding: 18px 22px;
-          min-width: 240px;
-        }
-
-        /* Top accent rule */
-        .ch2-stats-overlay::before {
-          content: '';
-          position: absolute; top: 0; left: 16px; right: 16px; height: 1px;
-          background: linear-gradient(90deg, transparent, #4f46e5, #7c3aed, transparent);
-        }
-
-        .ch2-stats-label {
-          font-family: 'DM Mono', 'JetBrains Mono', 'Courier New', monospace;
-          font-size: 10px; font-weight: 500;
-          letter-spacing: 0.14em; text-transform: uppercase;
-          color: #475569;
-          margin-bottom: 14px;
-        }
-
-        .ch2-stats-table {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 14px 24px;
-        }
-
-        .ch2-stat-item {}
-
-        .ch2-stat-val {
-          font-family: 'Clash Display', 'Sora', monospace;
-          font-size: 22px; font-weight: 700;
-          color: #e2e8f0;
-          line-height: 1;
-          letter-spacing: -0.03em;
-          margin-bottom: 3px;
-        }
-        .ch2-stat-val span {
-          background: linear-gradient(135deg, #818cf8, #c4b5fd);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .ch2-stat-desc {
-          font-family: 'DM Sans', system-ui, sans-serif;
-          font-size: 10.5px;
-          color: #475569;
-          line-height: 1.4;
-        }
-
-        /* Online indicator */
-        .ch2-status {
-          display: flex; align-items: center; gap: 8px;
-          margin-top: 14px;
-          padding-top: 12px;
-          border-top: 1px solid rgba(99,102,241,0.12);
-          font-family: 'DM Sans', system-ui, sans-serif;
-          font-size: 11.5px;
-          color: #475569;
-        }
-        .ch2-status-dot {
-          width: 7px; height: 7px; border-radius: 50%;
-          background: #22c55e;
-          box-shadow: 0 0 6px rgba(34,197,94,0.5);
-          flex-shrink: 0;
-        }
-
         /* ── Divider bottom ────────────────────────────────────── */
         .ch2-bottom-rule {
           position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
@@ -441,20 +359,9 @@ export default function ContactHero() {
           }
           .ch2-inner { padding: 36px 24px 48px; }
           .ch2-canvas { height: 300px; }
-          .ch2-stats-overlay {
-            left: 16px; bottom: 16px;
-            padding: 14px 16px;
-            min-width: 0; right: 16px;
-          }
-          .ch2-stats-table {
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px 12px;
-          }
-          .ch2-stat-val { font-size: 18px; }
         }
 
         @media (max-width: 480px) {
-          .ch2-stats-table { grid-template-columns: 1fr 1fr; }
           .ch2-cta-row { flex-direction: column; align-items: flex-start; }
         }
       `}</style>
@@ -525,23 +432,6 @@ export default function ContactHero() {
             transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
           >
             <canvas className="ch2-canvas" ref={canvasRef} />
-
-            {/* Stats overlay panel */}
-            <div className="ch2-stats-overlay">
-              <div className="ch2-stats-label">Engineering Footprint</div>
-              <div className="ch2-stats-table">
-                {STATS.map(({ value, label }) => (
-                  <div key={label} className="ch2-stat-item">
-                    <div className="ch2-stat-val"><span>{value}</span></div>
-                    <div className="ch2-stat-desc">{label}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="ch2-status">
-                <span className="ch2-status-dot" />
-                Team available — typically responds within 1 business day
-              </div>
-            </div>
           </motion.div>
 
         </div>

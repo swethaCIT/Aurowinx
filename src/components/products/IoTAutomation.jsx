@@ -1,6 +1,6 @@
 // src/components/products/IoTAutomation.jsx
 // ─────────────────────────────────────────────────
-// Section : IoT & Automation — Coming Soon teaser
+// Section : Industrial IoT & Automation
 // Theme   : theme.js light — white / indigo / violet
 // Visual  : Animated SVG network graph — nodes + pulse lines
 // Requires: framer-motion, lucide-react
@@ -8,8 +8,8 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useInView, useAnimationFrame } from "framer-motion";
 import {
-  Wifi, Cpu, Radio, Shield, BarChart2,
-  Zap, ChevronRight, GitBranch, Globe, Activity,
+  Wifi, Cpu, Radio, BarChart2,
+  Zap, GitBranch, Globe, Activity,
 } from "lucide-react";
 
 /* ── THEME (theme.js) ── */
@@ -59,20 +59,20 @@ const EDGES = [
 
 /* ── FEATURES ── */
 const FEATURES = [
-  { icon: Globe,     label: "Edge AI Inference",     desc: "On-device ML pipelines"       },
-  { icon: Shield,    label: "Zero-Trust Security",   desc: "Device-level auth & encrypt"  },
-  { icon: Activity,  label: "Sensor Fusion",         desc: "Multi-sensor data aggregation" },
-  { icon: Zap,       label: "OTA Updates",           desc: "Secure over-the-air firmware" },
-  { icon: BarChart2, label: "Real-time Analytics",   desc: "Edge & cloud dashboards"      },
-  { icon: GitBranch, label: "Industrial Scale",      desc: "10K+ device fleet support"    },
+  { icon: Cpu,       label: "Edge Computing",         desc: "Real-time processing at the device level, reducing latency and bandwidth usage" },
+  { icon: Activity,  label: "Smart Sensors",          desc: "Embedded processing for accurate data acquisition, monitoring & diagnostics" },
+  { icon: Globe,     label: "Cloud Connectivity",     desc: "Secure integration for remote monitoring, analytics & firmware updates" },
+  { icon: BarChart2, label: "Predictive Maintenance", desc: "AI-driven condition monitoring to detect failures early, minimizing downtime" },
+  { icon: GitBranch, label: "Industrial Automation",  desc: "Intelligent automation integrating control systems & industrial communication" },
+  { icon: Wifi,      label: "Industrial Connectivity",desc: "Smart monitoring and data acquisition across connected industrial systems" },
 ];
 
 /* ── STATS ── */
 const STATS = [
-  { value: "10K+",  label: "Devices / Fleet"   },
-  { value: "< 2ms", label: "Edge Latency"       },
-  { value: "99.9%", label: "Uptime Target"      },
-  { value: "E2E",   label: "Security Layer"     },
+  { value: "Edge",  label: "Computing"          },
+  { value: "Cloud", label: "Connectivity"       },
+  { value: "AI",    label: "Predictive Maint."  },
+  { value: "E2E",   label: "Automation"         },
 ];
 
 /* ═══════════════════════════════════════════════
@@ -290,38 +290,6 @@ function NetworkGraph({ inView }) {
           );
         })}
       </svg>
-
-      {/* Coming Soon overlay badge */}
-      <motion.div
-        animate={{ opacity: [0.75, 1, 0.75] }}
-        transition={{ duration: 2.5, repeat: Infinity }}
-        style={{
-          position: "absolute",
-          bottom: 12, left: "50%", transform: "translateX(-50%)",
-          display: "inline-flex", alignItems: "center", gap: 6,
-          padding: "5px 16px", borderRadius: 50,
-          background: C.bgWhite,
-          border: `1px solid ${C.border}`,
-          boxShadow: C.shadowMd,
-          whiteSpace: "nowrap",
-        }}
-      >
-        <motion.span
-          animate={{ scale: [1, 1.7, 1], opacity: [1, 0.3, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          style={{
-            width: 6, height: 6, borderRadius: "50%",
-            background: C.primary, display: "inline-block",
-          }}
-        />
-        <span style={{
-          fontSize: 11, fontWeight: 700,
-          color: C.primary, letterSpacing: "0.14em",
-          textTransform: "uppercase", fontFamily: FONT,
-        }}>
-          Coming Soon
-        </span>
-      </motion.div>
     </div>
   );
 }
@@ -369,7 +337,7 @@ export default function IoTAutomation() {
           initial={{ opacity: 0, y: -10 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, ease: EASE }}
-          style={{ display: "flex", justifyContent: "center", marginBottom: 72 }}
+          style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 10, marginBottom: 72 }}
         >
           <span style={{
             display: "inline-flex", alignItems: "center", gap: 8,
@@ -382,15 +350,18 @@ export default function IoTAutomation() {
             boxShadow: C.shadowSm,
           }}>
             <Wifi style={{ width: 12, height: 12 }} />
-            IoT & Automation
-            <ChevronRight style={{ width: 11, height: 11, opacity: 0.5 }} />
-            <span style={{
-              padding: "2px 11px", borderRadius: 50,
-              background: C.gradPrimary,
-              color: "#fff", fontSize: 10, letterSpacing: "0.1em",
-            }}>
-              Coming Soon
-            </span>
+            Industrial IoT & Automation
+          </span>
+          <span style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "7px 20px", borderRadius: 50,
+            border: "1px solid #fcd34d",
+            background: "#fef3c7",
+            color: "#b45309",
+            fontSize: 11, fontWeight: 700,
+            letterSpacing: "0.18em", textTransform: "uppercase",
+          }}>
+            Upcoming — Under Construction
           </span>
         </motion.div>
 
@@ -399,7 +370,7 @@ export default function IoTAutomation() {
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: 72,
-          alignItems: "center",
+          alignItems: "start",
         }}>
 
           {/* ── LEFT: TEXT ── */}
@@ -466,9 +437,9 @@ export default function IoTAutomation() {
                 maxWidth: 460,
               }}
             >
-              Edge AI inference pipelines, sensor fusion, OTA update
-              infrastructure and zero-trust device security — built for
-              intelligent industrial-scale IoT ecosystems by AUROWINX.
+              Edge computing, industrial connectivity, smart monitoring, data
+              acquisition, and intelligent automation solutions — built for
+              reliable, real-time industrial-scale IoT ecosystems by AUROWINX.
             </motion.p>
 
             {/* Features grid */}
@@ -481,7 +452,6 @@ export default function IoTAutomation() {
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
                 gap: 10,
-                marginBottom: 44,
               }}
             >
               {FEATURES.map((f, i) => (
@@ -529,8 +499,71 @@ export default function IoTAutomation() {
                 </motion.div>
               ))}
             </motion.div>
+          </div>
 
-            {/* Stat strip */}
+          {/* ── RIGHT: NETWORK GRAPH + STATS ── */}
+          <div>
+            <motion.div
+              className="iot-graph-wrap"
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={inView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.9, delay: 0.20, ease: EASE }}
+              style={{
+                position: "relative",
+                borderRadius: 28,
+                border: `1px solid ${C.borderLight}`,
+                background: C.bgLight,
+                boxShadow: C.shadowLg,
+                padding: "28px",
+                overflow: "hidden",
+              }}
+            >
+              {/* Faint radial inside card */}
+              <div style={{
+                position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
+                background:
+                  "radial-gradient(circle at 50% 50%," +
+                  " rgba(99,102,241,0.06) 0%, transparent 70%)",
+              }} />
+
+              <div style={{ position: "relative", zIndex: 1 }}>
+                {/* Card header */}
+                <div style={{
+                  display: "flex", alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 16,
+                }}>
+                  <span style={{
+                    fontSize: 11, fontWeight: 700,
+                    color: C.textMuted, letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                  }}>
+                    Network Topology
+                  </span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <motion.span
+                      animate={{ opacity: [1, 0.3, 1] }}
+                      transition={{ duration: 1.8, repeat: Infinity }}
+                      style={{
+                        width: 6, height: 6, borderRadius: "50%",
+                        background: "#d97706", display: "inline-block",
+                      }}
+                    />
+                    <span style={{
+                      fontSize: 10, fontWeight: 600,
+                      color: "#d97706", letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                    }}>
+                      Coming Soon
+                    </span>
+                  </div>
+                </div>
+
+                <NetworkGraph inView={inView} />
+              </div>
+            </motion.div>
+
+            {/* Stat strip — moved here from left column, balances height with right side */}
             <motion.div
               className="iot-stats"
               initial={{ opacity: 0, y: 12 }}
@@ -539,6 +572,7 @@ export default function IoTAutomation() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(4, 1fr)",
+                marginTop: 20,
                 borderRadius: 14,
                 overflow: "hidden",
                 border: `1px solid ${C.borderLight}`,
@@ -574,67 +608,6 @@ export default function IoTAutomation() {
               ))}
             </motion.div>
           </div>
-
-          {/* ── RIGHT: NETWORK GRAPH ── */}
-          <motion.div
-            className="iot-graph-wrap"
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={inView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.9, delay: 0.20, ease: EASE }}
-            style={{
-              position: "relative",
-              borderRadius: 28,
-              border: `1px solid ${C.borderLight}`,
-              background: C.bgLight,
-              boxShadow: C.shadowLg,
-              padding: "28px",
-              overflow: "hidden",
-            }}
-          >
-            {/* Faint radial inside card */}
-            <div style={{
-              position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
-              background:
-                "radial-gradient(circle at 50% 50%," +
-                " rgba(99,102,241,0.06) 0%, transparent 70%)",
-            }} />
-
-            <div style={{ position: "relative", zIndex: 1 }}>
-              {/* Card header */}
-              <div style={{
-                display: "flex", alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 16,
-              }}>
-                <span style={{
-                  fontSize: 11, fontWeight: 700,
-                  color: C.textMuted, letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                }}>
-                  Network Topology
-                </span>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <motion.span
-                    animate={{ opacity: [1, 0.3, 1] }}
-                    transition={{ duration: 1.8, repeat: Infinity }}
-                    style={{
-                      width: 6, height: 6, borderRadius: "50%",
-                      background: "#16a34a", display: "inline-block",
-                    }}
-                  />
-                  <span style={{
-                    fontSize: 10, fontWeight: 600,
-                    color: "#16a34a", letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                  }}>
-                    Simulated Live
-                  </span>
-                </div>
-              </div>
-
-              <NetworkGraph inView={inView} />
-            </div>
-          </motion.div>
         </div>
       </div>
 
@@ -650,6 +623,9 @@ export default function IoTAutomation() {
             margin: 0 auto;
           }
           .iot-stats {
+            max-width: 480px;
+            margin-left: auto !important;
+            margin-right: auto !important;
             grid-template-columns: repeat(2, 1fr) !important;
           }
           .iot-stats > div:nth-child(2) {

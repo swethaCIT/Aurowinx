@@ -2,7 +2,6 @@
 import { lazy, Suspense } from "react";
 import HeroSection from "../components/home/HeroSection";
 
-const StatsBar = lazy(() => import("../components/home/StatsBar"));
 const AboutSnapshot = lazy(() => import("../components/home/AboutSnapshot"));
 const SolutionsSection = lazy(() => import("../components/home/SolutionsSection"));
 const ProductShowcase = lazy(() => import("../components/home/ProductShowcase"));
@@ -13,7 +12,6 @@ export default function HomePage() {
   return (
     <main className="w-full max-w-[100vw] overflow-x-clip">
       <HeroSection />
-      <Suspense fallback={<div style={{ minHeight: 180 }} />}><StatsBar /></Suspense>
       <Suspense fallback={<div style={{ minHeight: 220 }} />}><AboutSnapshot /></Suspense>
       <Suspense fallback={<div style={{ minHeight: 260 }} />}><SolutionsSection /></Suspense>
       <Suspense fallback={<div style={{ minHeight: 260 }} />}><ProductShowcase /></Suspense>

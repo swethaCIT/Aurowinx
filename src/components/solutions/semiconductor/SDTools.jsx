@@ -167,7 +167,7 @@ function CategoryCard({ cat, meta, count, active, onClick, inView, i }) {
       onClick={onClick}
       whileHover={{ y: -3 }}
       style={{
-        border: "none", cursor: "pointer", fontFamily: FONT,
+        cursor: "pointer", fontFamily: FONT,
         background: isActive ? meta.color : "#fff",
         borderRadius: 14, padding: "14px 16px",
         boxShadow: isActive ? `0 8px 24px ${meta.color}35` : C.shadowSm,

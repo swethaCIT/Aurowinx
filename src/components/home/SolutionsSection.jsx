@@ -23,7 +23,7 @@ const SOLUTIONS = [
     href: "/solutions/semiconductor-design",
     capabilities: [
       { title: "RTL Design",          sub: "Verilog · SystemVerilog · Low Power" },
-      { title: "Design Verification", sub: "UVM · Assertions · Coverage Closure" },
+      { title: "Design Verification", sub: "Architecting TESTBENCH using SV/UVM · Functional Coverage" },
       { title: "DFT & ATPG",          sub: "Scan · MBIST · JTAG · Boundary Scan" },
       { title: "Physical Design",     sub: "Floorplan · CTS · Routing · ECO" },
       { title: "GDSII Sign-off",      sub: "STA · IR-Drop · DRC · LVS" },

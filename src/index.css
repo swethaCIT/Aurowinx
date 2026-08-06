@@ -22,7 +22,11 @@ body,
   width: 100%;
   max-width: 100%;
   min-height: 100%;
-  scroll-behavior: smooth;
+  /* No `scroll-behavior: smooth` here on purpose: it re-interpolates every
+     wheel/trackpad tick instead of tracking input 1:1, and on a page this
+     animation-heavy that interpolation stalls whenever the main thread is
+     busy — which is exactly what reads as scrolling "sticking" mid-gesture.
+     Native scrolling has no such stall. */
 }
 
 body {
