@@ -88,7 +88,7 @@ const STRENGTHS = [
 
 
 const TOOLS_ROW1 = ["Synopsys VCS","Cadence Xcelium","Siemens Questa","Ansys RedHawk","Mentor TetraMAX","Cadence Modus","Synopsys DC","Cadence Innovus","Synopsys PrimeTime","Cadence Pegasus","Synopsys Calibre","KLA IC Validator"];
-const TOOLS_ROW2 = ["Altium Designer","MATLAB","Simulink","LTspice","FreeRTOS","STM32CubeIDE","Proteus","DSP","TMS320F","Microchip"];
+const TOOLS_ROW2 = ["Altium Designer","MATLAB","Simulink","LTspice","STM32CubeIDE","Proteus","DSP TMS320F","Microchip"];
 
 /* ══════════════════════════════════════════════════════════════════════════
    HOOKS
