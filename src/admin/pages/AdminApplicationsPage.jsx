@@ -1,12 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { ExternalLink, Users, AlertCircle } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 
 const STATUS_STYLES = {
-  new: "bg-blue-100 text-blue-700",
-  reviewed: "bg-amber-100 text-amber-700",
-  rejected: "bg-red-100 text-red-600",
-  hired: "bg-green-100 text-green-700",
+  new: "bg-blue-50 text-blue-700",
+  reviewed: "bg-amber-50 text-amber-700",
+  rejected: "bg-red-50 text-red-600",
+  hired: "bg-emerald-50 text-emerald-700",
 };
+
+function StatCard({ label, value, accent }) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">{label}</p>
+      <p className={`mt-1.5 text-2xl font-bold ${accent}`}>{value}</p>
+    </div>
+  );
+}
 
 export default function AdminApplicationsPage() {
   const [applications, setApplications] = useState([]);
@@ -27,6 +37,16 @@ export default function AdminApplicationsPage() {
     run();
   }, []);
 
+  const stats = useMemo(
+    () => ({
+      total: applications.length,
+      new: applications.filter((a) => (a.status || "new") === "new").length,
+      reviewed: applications.filter((a) => a.status === "reviewed").length,
+      hired: applications.filter((a) => a.status === "hired").length,
+    }),
+    [applications]
+  );
+
   const handleStatusChange = async (application, status) => {
     const { error: updateError } = await supabase
       .from("job_applications")
@@ -41,77 +61,95 @@ export default function AdminApplicationsPage() {
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-gray-900 mb-6">Applications</h2>
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-slate-900">Applications</h2>
+        <p className="mt-0.5 text-sm text-slate-500">Candidates who applied through the careers page.</p>
+      </div>
 
-      {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <StatCard label="Total" value={stats.total} accent="text-slate-900" />
+        <StatCard label="New" value={stats.new} accent="text-blue-600" />
+        <StatCard label="Reviewed" value={stats.reviewed} accent="text-amber-600" />
+        <StatCard label="Hired" value={stats.hired} accent="text-emerald-600" />
+      </div>
 
-      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+      {error && (
+        <div className="mb-4 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <AlertCircle size={15} className="shrink-0" />
+          {error}
+        </div>
+      )}
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
         <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-gray-50 text-left text-gray-500 text-xs uppercase tracking-wide">
-              <th className="px-5 py-3 font-medium">Applicant</th>
-              <th className="px-5 py-3 font-medium">Contact</th>
-              <th className="px-5 py-3 font-medium">Job</th>
-              <th className="px-5 py-3 font-medium">Resume</th>
-              <th className="px-5 py-3 font-medium">Applied</th>
-              <th className="px-5 py-3 font-medium">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={6} className="px-5 py-8 text-center text-gray-400">
-                  Loading applications...
-                </td>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-100 bg-slate-50/70 text-left text-xs font-semibold uppercase tracking-wide text-slate-400">
+                <th className="px-5 py-3">Applicant</th>
+                <th className="px-5 py-3">Contact</th>
+                <th className="px-5 py-3">Job</th>
+                <th className="px-5 py-3">Resume</th>
+                <th className="px-5 py-3">Applied</th>
+                <th className="px-5 py-3">Status</th>
               </tr>
-            ) : applications.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-5 py-8 text-center text-gray-400">
-                  No applications yet.
-                </td>
-              </tr>
-            ) : (
-              applications.map((application) => (
-                <tr key={application.id} className="border-t border-gray-100">
-                  <td className="px-5 py-3 font-medium text-gray-900">{application.full_name}</td>
-                  <td className="px-5 py-3 text-gray-600">
-                    <div>{application.email}</div>
-                    <div className="text-gray-400">{application.phone}</div>
-                  </td>
-                  <td className="px-5 py-3 text-gray-600">{application.jobs?.job_title || "-"}</td>
-                  <td className="px-5 py-3">
-                    <a
-                      href={application.resume_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-indigo-600 hover:underline"
-                    >
-                      View
-                    </a>
-                  </td>
-                  <td className="px-5 py-3 text-gray-500">
-                    {application.created_at ? new Date(application.created_at).toLocaleDateString() : "-"}
-                  </td>
-                  <td className="px-5 py-3">
-                    <select
-                      value={application.status || "new"}
-                      onChange={(e) => handleStatusChange(application, e.target.value)}
-                      className={`rounded-full text-xs font-semibold px-2.5 py-1 border-0 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                        STATUS_STYLES[application.status] || STATUS_STYLES.new
-                      }`}
-                    >
-                      <option value="new">New</option>
-                      <option value="reviewed">Reviewed</option>
-                      <option value="rejected">Rejected</option>
-                      <option value="hired">Hired</option>
-                    </select>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="px-5 py-14 text-center text-sm text-slate-400">
+                    Loading applications...
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : applications.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-5 py-14 text-center">
+                    <div className="flex flex-col items-center gap-2 text-slate-400">
+                      <Users size={28} strokeWidth={1.5} />
+                      <p className="text-sm">No applications yet.</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                applications.map((application) => (
+                  <tr key={application.id} className="border-t border-slate-100 transition-colors hover:bg-slate-50/60">
+                    <td className="px-5 py-3.5 font-semibold text-slate-900">{application.full_name}</td>
+                    <td className="px-5 py-3.5 text-slate-600">
+                      <div>{application.email}</div>
+                      <div className="text-slate-400">{application.phone}</div>
+                    </td>
+                    <td className="px-5 py-3.5 text-slate-600">{application.jobs?.job_title || "-"}</td>
+                    <td className="px-5 py-3.5">
+                      <a
+                        href={application.resume_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 font-semibold text-indigo-600 hover:underline"
+                      >
+                        View <ExternalLink size={12} />
+                      </a>
+                    </td>
+                    <td className="px-5 py-3.5 text-slate-500">
+                      {application.created_at ? new Date(application.created_at).toLocaleDateString() : "-"}
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <select
+                        value={application.status || "new"}
+                        onChange={(e) => handleStatusChange(application, e.target.value)}
+                        className={`rounded-full border-0 px-2.5 py-1 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                          STATUS_STYLES[application.status] || STATUS_STYLES.new
+                        }`}
+                      >
+                        <option value="new">New</option>
+                        <option value="reviewed">Reviewed</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="hired">Hired</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

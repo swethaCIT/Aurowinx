@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { X, Plus } from "lucide-react";
 
-// Simple "add/remove line" editor for text[] job fields
+// Simple "add/remove tag" editor for text[] job fields
 // (responsibilities, skills, preferred, tools).
 export default function ListEditor({ label, items, onChange }) {
   const [draft, setDraft] = useState("");
@@ -26,27 +26,27 @@ export default function ListEditor({ label, items, onChange }) {
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="mb-2 block text-sm font-semibold text-slate-700">{label}</label>
 
       {items.length > 0 && (
-        <ul className="mb-2 space-y-1">
+        <div className="mb-2.5 flex flex-wrap gap-1.5">
           {items.map((item, i) => (
-            <li
+            <span
               key={i}
-              className="flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700"
+              className="group flex items-center gap-1.5 rounded-full border border-indigo-100 bg-indigo-50 py-1.5 pl-3 pr-1.5 text-xs font-medium text-indigo-700"
             >
-              <span>{item}</span>
+              {item}
               <button
                 type="button"
                 onClick={() => removeItem(i)}
-                className="text-gray-400 hover:text-red-500"
+                className="flex h-4 w-4 items-center justify-center rounded-full text-indigo-400 transition-colors hover:bg-indigo-600 hover:text-white"
                 aria-label={`Remove ${item}`}
               >
-                <X size={14} />
+                <X size={11} strokeWidth={2.5} />
               </button>
-            </li>
+            </span>
           ))}
-        </ul>
+        </div>
       )}
 
       <div className="flex gap-2">
@@ -56,14 +56,14 @@ export default function ListEditor({ label, items, onChange }) {
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type and press Enter to add"
-          className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-colors focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
         />
         <button
           type="button"
           onClick={addItem}
-          className="flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100"
+          className="flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
         >
-          <Plus size={14} /> Add
+          <Plus size={14} strokeWidth={2.5} /> Add
         </button>
       </div>
     </div>
