@@ -53,6 +53,15 @@ Internal notification emails (new applications / new inquiries) are sent to `inf
 
 Both functions also restrict CORS to a small allowlist (`ALLOWED_ORIGINS` near the top of each `index.ts`) — add any additional production domain (e.g. a Vercel preview URL you rely on) there.
 
+## Admin panel
+
+The admin panel lives at `/admin` (`src/admin/`) and is used to manage job postings and triage applications.
+
+- There's no self-serve signup — create admin users in the Supabase dashboard under Authentication → Users, then sign in at `/admin/login` with that email/password.
+- Access is gated by Supabase Auth (`AdminAuthContext.jsx` / `ProtectedRoute.jsx`); any authenticated user can manage jobs and applications, so only create accounts for people who should have that access.
+- Routes: `/admin/jobs` (list), `/admin/jobs/new` and `/admin/jobs/:id/edit` (create/edit), `/admin/applications` (inbox with triage status: new / reviewed / rejected / hired).
+- Requires `supabase/admin_setup.sql` to have been run (see above) so RLS actually restricts writes to authenticated users.
+
 ## Deployment (Vercel)
 
 - Set the two `VITE_SUPABASE_*` environment variables in the Vercel project settings.
