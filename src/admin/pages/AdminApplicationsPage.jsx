@@ -46,6 +46,7 @@ export default function AdminApplicationsPage() {
       {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
 
       <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-gray-50 text-left text-gray-500 text-xs uppercase tracking-wide">
@@ -111,6 +112,7 @@ export default function AdminApplicationsPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

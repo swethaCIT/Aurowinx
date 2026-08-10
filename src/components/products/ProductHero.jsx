@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   Activity,
 } from "lucide-react";
+import BackgroundVideo from "../common/BackgroundVideo";
 
 /* ── THEME (inline) ── */
 const FONT = "'Inter', 'Sora', sans-serif";
@@ -105,11 +106,9 @@ export default function ProductHero() {
     >
 
       {/* ── VIDEO BACKGROUND ── */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
+      <BackgroundVideo
+        src="/videos/Company.mp4"
+        poster="/images/posters/Company.jpg"
         style={{
           position: "absolute",
           top: 0, left: 0,
@@ -117,9 +116,7 @@ export default function ProductHero() {
           objectFit: "cover",
           zIndex: 0,
         }}
-      >
-        <source src="/videos/Company.mp4" type="video/mp4" />
-      </video>
+      />
 
       {/* ── DARK OVERLAY ── */}
       <div style={{

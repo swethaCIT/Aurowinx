@@ -7,10 +7,10 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence, useMotionValue } from "framer-motion";
-import { MapPin, Clock, Briefcase, SlidersHorizontal, X, ArrowRight, ChevronDown, Filter, Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MapPin, Clock, Briefcase, SlidersHorizontal, X, ArrowRight, ChevronDown, Filter } from "lucide-react";
 import { supabase } from "../../lib/supabase";
-import { C, FONT, EASE } from "././theme";
+import { C, FONT } from "././theme";
 
 /* ─── Breakpoint hook ─── */
 function useBreakpoint() {
@@ -363,6 +363,7 @@ function MobileLayout({ jobs, loading, filters, setFilter, resetFilters, isFilte
       <div style={{
         position:"sticky", top:0, zIndex:50,
         background:"rgba(255,255,255,0.92)", backdropFilter:"blur(12px)",
+        transform:"translateZ(0)", willChange:"transform",
         borderBottom:`1px solid ${C.border}`,
         padding:"12px 16px",
         display:"flex", alignItems:"center", gap:10,

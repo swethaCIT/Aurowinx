@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ArrowRight, ChevronRight, CheckCircle2, Activity } from "lucide-react";
 import { C, FONT, EASE } from "./theme";
+import BackgroundVideo from "../../common/BackgroundVideo";
 
 /* ── Magnetic Button ── */
 function MagButton({ children, primary, href }) {
@@ -75,16 +76,15 @@ export default function HeroSection() {
     >
 
       {/* ── VIDEO BACKGROUND — z-index 0 ── */}
-      <video
-        autoPlay loop muted playsInline
+      <BackgroundVideo
+        src="/videos/PD.mp4"
+        poster="/images/posters/PD.jpg"
         style={{
           position: "absolute", top: 0, left: 0,
           width: "100%", height: "100%",
           objectFit: "cover", zIndex: 0,
         }}
-      >
-        <source src="/videos/PD.mp4" type="video/mp4" />
-      </video>
+      />
 
       {/* ── DARK OVERLAY — z-index 1 ── */}
       <div style={{
@@ -196,7 +196,10 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.38 }}
           className="sol-hero-pills"
-          style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginBottom: 40 }}
+          style={{
+            display: "flex", flexWrap: "nowrap", gap: 6, justifyContent: "center",
+            marginBottom: 40, marginLeft: -40, marginRight: -40,
+          }}
         >
           {pills.map((p, i) => (
             <motion.span
@@ -206,16 +209,16 @@ export default function HeroSection() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.42 + i * 0.07, ease: EASE }}
               style={{
-                padding: "6px 14px", borderRadius: 50,
+                padding: "6px 12px", borderRadius: 50, whiteSpace: "nowrap",
                 fontSize: 11, fontWeight: 600,
                 background: "rgba(255,255,255,0.07)",
                 color: "rgba(255,255,255,0.75)",
                 border: "1px solid rgba(255,255,255,0.15)",
                 backdropFilter: "blur(8px)",
-                display: "flex", alignItems: "center", gap: 6,
+                display: "flex", alignItems: "center", gap: 5,
               }}
             >
-              <CheckCircle2 style={{ width: 11, height: 11, color: "#818cf8" }} />
+              <CheckCircle2 style={{ width: 11, height: 11, color: "#818cf8", flexShrink: 0 }} />
               {p}
             </motion.span>
           ))}

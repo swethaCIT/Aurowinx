@@ -134,7 +134,7 @@ function BrandRow({ title, brands }) {
 export default function SolarFullSpecs({ product }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
-  const { color, gradA, gradB, colorSoft, colorBorder, colorDark } = product;
+  const { gradA, gradB, colorSoft, colorBorder, colorDark } = product;
 
   return (
     <motion.div

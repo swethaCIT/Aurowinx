@@ -133,7 +133,7 @@ function CategoryCard({ cat, ci, inView, compact = false }) {
       <div style={{
         position: "absolute", top: -30, right: -30,
         width: 90, height: 90, borderRadius: "50%",
-        background: `${color}12`, filter: "blur(22px)",
+        background: `${color}12`, filter: "blur(22px)", willChange: "transform",
         pointerEvents: "none", zIndex: 0,
       }} />
       <motion.div

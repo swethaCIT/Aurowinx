@@ -513,8 +513,8 @@ export default function TechNodes() {
       }} />
 
       {/* Glow orbs */}
-      <div style={{ position: "absolute", width: 500, height: 300, top: "-5%", right: "5%", background: "radial-gradient(ellipse, rgba(79,70,229,0.07) 0%, transparent 70%)", filter: "blur(60px)", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", width: 400, height: 250, bottom: "0%", left: "0%", background: "radial-gradient(ellipse, rgba(124,58,237,0.06) 0%, transparent 70%)", filter: "blur(60px)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", width: 500, height: 300, top: "-5%", right: "5%", background: "radial-gradient(ellipse, rgba(79,70,229,0.07) 0%, transparent 70%)", filter: "blur(60px)", willChange: "transform", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", width: 400, height: 250, bottom: "0%", left: "0%", background: "radial-gradient(ellipse, rgba(124,58,237,0.06) 0%, transparent 70%)", filter: "blur(60px)", willChange: "transform", pointerEvents: "none" }} />
 
       <div style={{ maxWidth: maxW, margin: "0 auto", padding: `0 ${horizPad}`, position: "relative", zIndex: 1 }}>
 

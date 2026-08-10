@@ -296,7 +296,7 @@ function CapRow({ cap, active, onClick, inView }) {
 // ─────────────────────────────────────────────
 // Right spotlight — detail view
 // ─────────────────────────────────────────────
-function Spotlight({ cap, inView }) {
+function Spotlight({ cap }) {
   const Icon = cap.icon;
 
   return (
@@ -702,7 +702,7 @@ export default function SDCapabilities() {
         width: 600, height: 400,
         top: "-5%", right: "-5%",
         background: `radial-gradient(ellipse, ${C.accentSoft} 0%, transparent 65%)`,
-        filter: "blur(80px)",
+        filter: "blur(80px)", willChange: "transform",
         pointerEvents: "none",
         opacity: 0.6,
       }} />
@@ -875,7 +875,7 @@ export default function SDCapabilities() {
             </motion.div>
 
             {/* RIGHT — spotlight */}
-            <Spotlight cap={CAPS[active]} inView={inView} />
+            <Spotlight cap={CAPS[active]} />
           </div>
         )}
 

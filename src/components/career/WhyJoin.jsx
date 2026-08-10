@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { C, FONT, EASE } from "././theme";
+import { C, FONT } from "././theme";
 import { ChevronDown } from "lucide-react";
 
 /* ─── Breakpoint hook ─── */
@@ -26,28 +26,24 @@ const FEATURES = [
     num:"01", label:"Silicon Mastery",
     heading:"End-to-end ownership\nof cutting-edge DFT & RTL",
     detail:"From spec to tape-out — every decision is yours. Sub-5nm physical design challenges that most engineers only read about.",
-    stat:"12+", statLabel:"tape-outs / year",
     accent:"#4f46e5",
   },
   {
     num:"02", label:"Deep Mentorship",
     heading:"Principal engineers who\nactively invest in you",
     detail:"Weekly 1:1s with engineers who shipped silicon to billions of devices. Your growth is a KPI, not an afterthought.",
-    stat:"94%", statLabel:"internal promotions",
     accent:"#7c3aed",
   },
   {
     num:"03", label:"Structured Growth",
     heading:"Certifications, talks\n& clear career ladders",
     detail:"EDA mastery programs, conference budgets, and published growth tracks so you always know what's next.",
-    stat:"3×", statLabel:"faster progression",
     accent:"#6366f1",
   },
   {
     num:"04", label:"Real-World Impact",
     heading:"Your silicon ships in\nconsumer & industrial products",
     detail:"ICs you verify and route end up in automotive controllers, flagship SoCs, and smart infrastructure worldwide.",
-    stat:"4B+", statLabel:"devices powered",
     accent:"#4f46e5",
   },
 ];
@@ -79,7 +75,7 @@ function Ticker() {
 }
 
 /* ─── MOBILE: Swipe Carousel + Accordion detail ─── */
-function MobileFeatures({ features, inView }) {
+function MobileFeatures({ features }) {
   const [active, setActive] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const startX = useRef(null);
@@ -165,22 +161,8 @@ function MobileFeatures({ features, inView }) {
 
             <h3 style={{
               fontFamily:FONT, fontWeight:700, fontSize:"1.15rem", color:"#0f172a",
-              lineHeight:1.25, letterSpacing:"-.3px", whiteSpace:"pre-line", margin:"0 0 10px",
+              lineHeight:1.25, letterSpacing:"-.3px", whiteSpace:"pre-line", margin:0,
             }}>{item.heading}</h3>
-
-            {/* Stat — always visible */}
-            <div style={{ display:"flex", alignItems:"baseline", gap:8 }}>
-              <span style={{
-                fontFamily:FONT, fontWeight:800, fontSize:"2rem", lineHeight:1,
-                letterSpacing:"-1.5px",
-                background:`linear-gradient(135deg,${item.accent},#7c3aed)`,
-                WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text",
-              }}>{item.stat}</span>
-              <span style={{
-                fontFamily:FONT, fontSize:".62rem", fontWeight:600, letterSpacing:"1.3px",
-                textTransform:"uppercase", color:"#94a3b8",
-              }}>{item.statLabel}</span>
-            </div>
           </div>
 
           {/* Accordion detail */}
@@ -255,7 +237,7 @@ function MobileFeatures({ features, inView }) {
               fontFamily:FONT, fontWeight:800, fontSize:"1rem", lineHeight:1,
               background:`linear-gradient(135deg,${f.accent},#7c3aed)`,
               WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text",
-            }}>{f.stat}</span>
+            }}>{f.num}</span>
             <span style={{
               fontFamily:FONT, fontSize:".55rem", fontWeight:600, letterSpacing:"1px",
               textTransform:"uppercase",
@@ -303,11 +285,6 @@ function TabletFeatures({ features, inView }) {
             >
               <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                 <span style={{
-                  fontFamily:FONT, fontWeight:800, fontSize:".58rem", letterSpacing:"2px",
-                  textTransform:"uppercase", color: isOn ? f.accent : "#94a3b8",
-                  transition:"color 0.22s",
-                }}>{f.num}</span>
-                <span style={{
                   fontFamily:FONT, fontWeight:600, fontSize:".6rem", letterSpacing:"1.2px",
                   textTransform:"uppercase", color: isOn ? f.accent : "#94a3b8",
                   transition:"color 0.22s",
@@ -323,7 +300,7 @@ function TabletFeatures({ features, inView }) {
                 backgroundClip: isOn ? "text" : "unset",
                 color: isOn ? undefined : "#cbd5e1",
                 transition:"all 0.22s",
-              }}>{f.stat}</div>
+              }}>{f.num}</div>
               {isOn && (
                 <motion.div
                   layoutId="tabletLine"
@@ -346,10 +323,8 @@ function TabletFeatures({ features, inView }) {
           transition={{ duration:0.28, ease:[0.22,1,0.36,1] }}
           style={{
             background:"#fff", padding:"28px 28px",
-            display:"grid", gridTemplateColumns:"1fr auto",
-            gap:24, alignItems:"center",
-            borderBottom:"1px solid #c7d2fe",
             position:"relative", overflow:"hidden",
+            borderBottom:"1px solid #c7d2fe",
           }}
         >
           {/* Ghost num */}
@@ -372,19 +347,6 @@ function TabletFeatures({ features, inView }) {
             }}>{item.heading}</h3>
             <p style={{ fontFamily:FONT, fontSize:".83rem", color:"#475569", lineHeight:1.72, margin:0, maxWidth:480 }}>{item.detail}</p>
           </div>
-
-          <div style={{ position:"relative", zIndex:1, textAlign:"right", flexShrink:0 }}>
-            <div style={{
-              fontFamily:FONT, fontWeight:800, fontSize:"clamp(2.2rem,4vw,3rem)",
-              lineHeight:1, letterSpacing:"-1.5px",
-              background:`linear-gradient(135deg,${item.accent},#7c3aed)`,
-              WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text",
-              marginBottom:4,
-            }}>{item.stat}</div>
-            <div style={{ fontFamily:FONT, fontSize:".62rem", fontWeight:600, letterSpacing:"1.2px", textTransform:"uppercase", color:"#94a3b8", maxWidth:110, marginLeft:"auto" }}>
-              {item.statLabel}
-            </div>
-          </div>
         </motion.div>
       </AnimatePresence>
     </div>
@@ -392,7 +354,7 @@ function TabletFeatures({ features, inView }) {
 }
 
 /* ─── DESKTOP: Original row layout, enhanced for TV ─── */
-function DesktopFeatureRow({ item, index, inView, isTV }) {
+function DesktopFeatureRow({ item, index, isTV }) {
   const ref = useRef(null);
   const rowInView = useInView(ref, { once:true, margin:"-30px" });
   const [hovered, setHovered] = useState(false);
@@ -461,21 +423,6 @@ function DesktopFeatureRow({ item, index, inView, isTV }) {
           color:index%2===0?"#f1f5f9":"#e8edf2",
           userSelect:"none", pointerEvents:"none",
         }}>{item.num}</span>
-        <div style={{ position:"relative", zIndex:1, textAlign:"right" }}>
-          <div style={{
-            fontFamily:FONT, fontWeight:800,
-            fontSize: isTV ? "3.8rem" : "clamp(2rem,4vw,3rem)",
-            lineHeight:1, letterSpacing:"-1.5px",
-            background:`linear-gradient(135deg,${item.accent},#7c3aed)`,
-            WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text",
-            marginBottom:4,
-          }}>{item.stat}</div>
-          <div style={{
-            fontFamily:FONT, fontSize: isTV ? ".75rem" : ".63rem", fontWeight:600,
-            letterSpacing:"1.3px", textTransform:"uppercase", color:"#94a3b8",
-            maxWidth:130, marginLeft:"auto", lineHeight:1.4,
-          }}>{item.statLabel}</div>
-        </div>
       </div>
     </motion.div>
   );
@@ -505,11 +452,6 @@ export default function WhyJoin() {
 
         <div style={{
           maxWidth: isTV ? 1520 : 1100, margin:"0 auto",
-          display:"flex",
-          flexDirection: isMobile ? "column" : "row",
-          gap: isMobile ? 20 : "clamp(20px,4vw,56px)",
-          alignItems: isMobile ? "flex-start" : "center",
-          justifyContent:"space-between",
           position:"relative", zIndex:1,
         }}>
           <div style={{ flex:1 }}>
@@ -537,21 +479,6 @@ export default function WhyJoin() {
               Silicon from first principles. Craft, depth, and work that ships at scale.
             </motion.p>
           </div>
-
-          <motion.div initial={{ opacity:0, x:16 }} animate={inView?{opacity:1,x:0}:{}} transition={{ duration:.5, delay:.22 }}
-            style={{ display:"flex", gap: isMobile ? 20 : 32, alignItems:"center", flexShrink:0 }}>
-            {[["150+","engineers"],["20+ yr","team expertise"]].map(([v,l],i) => (
-              <div key={l} style={{ textAlign:"right", ...(i===0?{paddingRight: isMobile?16:32, borderRight:"1px solid #c7d2fe"}:{}) }}>
-                <div style={{
-                  fontFamily:FONT, fontWeight:800,
-                  fontSize: isMobile ? "1.6rem" : isTV ? "2.6rem" : "clamp(1.6rem,2.5vw,2.1rem)",
-                  letterSpacing:-1, lineHeight:1,
-                  background:C.gradPrimary, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text",
-                }}>{v}</div>
-                <div style={{ fontFamily:FONT, fontSize:".65rem", fontWeight:600, letterSpacing:"1.5px", textTransform:"uppercase", color:"#94a3b8", marginTop:3 }}>{l}</div>
-              </div>
-            ))}
-          </motion.div>
         </div>
       </div>
 
@@ -559,10 +486,10 @@ export default function WhyJoin() {
 
       {/* ── Feature section ── */}
       <div style={{ borderTop:"1px solid #c7d2fe", maxWidth: isTV ? 1600 : "none", margin:"0 auto" }}>
-        {isMobile && <MobileFeatures features={FEATURES} inView={inView} />}
+        {isMobile && <MobileFeatures features={FEATURES} />}
         {isTablet && <TabletFeatures features={FEATURES} inView={inView} />}
         {isDesktop && FEATURES.map((item, i) => (
-          <DesktopFeatureRow key={item.num} item={item} index={i} inView={inView} isTV={isTV} />
+          <DesktopFeatureRow key={item.num} item={item} index={i} isTV={isTV} />
         ))}
       </div>
 

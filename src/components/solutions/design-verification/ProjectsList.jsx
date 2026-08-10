@@ -5,7 +5,7 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import { motion, useInView, AnimatePresence, useAnimation } from "framer-motion";
-import { ChevronRight, ChevronLeft, Cpu, GitBranch, Layers, Zap, Radio, Shield, ArrowRight } from "lucide-react";
+import { ChevronRight, ChevronLeft, Cpu, GitBranch, Layers, Zap, Radio, Shield } from "lucide-react";
 import { C, FONT, EASE } from "./theme";
 
 const CATEGORIES = ["All", "AMBA", "Protocol", "IP Core", "Processor", "Memory"];
@@ -105,21 +105,9 @@ function ProjectCard({ project, i, inView, alwaysVisible = false }) {
       </p>
 
       {/* Desc */}
-      <p style={{ fontSize: 12.5, color: C.textSecondary, lineHeight: 1.7, margin: "0 0 14px" }}>
+      <p style={{ fontSize: 12.5, color: C.textSecondary, lineHeight: 1.7, margin: 0 }}>
         {project.desc}
       </p>
-
-      {/* Footer */}
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <motion.div
-          animate={{ width: hovered ? 16 : 8 }}
-          style={{ height: 2, background: project.color, borderRadius: 1 }}
-        />
-        <span style={{ fontSize: 11, color: project.color, fontWeight: 700, letterSpacing: "0.06em" }}>
-          VIEW DETAILS
-        </span>
-        <ChevronRight style={{ width: 12, height: 12, color: project.color }} />
-      </div>
     </motion.div>
   );
 }
@@ -149,16 +137,25 @@ function Carousel({ items, inView, perView }) {
     return () => window.removeEventListener("resize", measure);
   }, [perView]);
 
-  /* clamp active when items list shrinks (filter change) */
-  useEffect(() => {
+  /* clamp active when items list shrinks (filter change) — derive during
+     render (React's documented pattern for adjusting state from a changed
+     prop) instead of syncing via an effect. */
+  const [prevItemsLen, setPrevItemsLen] = useState(items.length);
+  if (items.length !== prevItemsLen) {
+    setPrevItemsLen(items.length);
     const clamped = Math.min(active, Math.max(0, items.length - perView));
-    if (clamped !== active) {
-      setActive(clamped);
-      controls.start({
-        x: -(clamped * (cardW + GAP)),
-        transition: { type: "spring", stiffness: 320, damping: 36 },
-      });
-    }
+    if (clamped !== active) setActive(clamped);
+  }
+
+  /* Re-snap the track to the (possibly clamped) active card whenever the
+     filtered list changes — controls.start() is an imperative call into
+     Framer Motion, an external system, so it belongs in an effect. */
+  useEffect(() => {
+    controls.start({
+      x: -(active * (cardW + GAP)),
+      transition: { type: "spring", stiffness: 320, damping: 36 },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items.length]);
 
   const goTo = useCallback((idx) => {
@@ -349,42 +346,23 @@ export default function ProjectsList() {
           transition={{ duration: 0.5, ease: EASE }}
           style={{ marginBottom: 28 }}
         >
-          <div style={{
-            display: "flex",
-            alignItems: bp === "mobile" ? "flex-start" : "flex-end",
-            justifyContent: "space-between",
-            flexDirection: bp === "mobile" ? "column" : "row",
-            flexWrap: "wrap", gap: 16,
-          }}>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                <div style={{ height: 1, width: 32, background: `linear-gradient(90deg, transparent, ${C.primary})` }} />
-                <span style={{ color: C.primary, fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>
-                  Our Projects
-                </span>
-              </div>
-              <h2 style={{
-                fontSize: bp === "mobile" ? "clamp(1.6rem, 7vw, 2rem)" : "clamp(1.8rem, 3.5vw, 2.6rem)",
-                fontWeight: 900, color: C.textPrimary,
-                margin: "0 0 8px", letterSpacing: "-0.04em", fontFamily: FONT,
-              }}>
-                What We've Verified
-              </h2>
-              <p style={{ color: C.textSecondary, fontSize: bp === "mobile" ? 13 : 14, margin: 0, lineHeight: 1.7, maxWidth: 460 }}>
-                A cross-section of protocols, IPs and processors our team has taken to sign-off.
-              </p>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+              <div style={{ height: 1, width: 32, background: `linear-gradient(90deg, transparent, ${C.primary})` }} />
+              <span style={{ color: C.primary, fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>
+                Our Projects
+              </span>
             </div>
-
-            <motion.a
-              href="/products" whileHover={{ x: 4 }}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: 6,
-                color: C.primary, fontWeight: 700, fontSize: 13,
-                textDecoration: "none", flexShrink: 0,
-              }}
-            >
-              View All Projects <ArrowRight style={{ width: 15, height: 15 }} />
-            </motion.a>
+            <h2 style={{
+              fontSize: bp === "mobile" ? "clamp(1.6rem, 7vw, 2rem)" : "clamp(1.8rem, 3.5vw, 2.6rem)",
+              fontWeight: 900, color: C.textPrimary,
+              margin: "0 0 8px", letterSpacing: "-0.04em", fontFamily: FONT,
+            }}>
+              What We've Verified
+            </h2>
+            <p style={{ color: C.textSecondary, fontSize: bp === "mobile" ? 13 : 14, margin: 0, lineHeight: 1.7, maxWidth: 460 }}>
+              A cross-section of protocols, IPs and processors our team has taken to sign-off.
+            </p>
           </div>
         </motion.div>
 

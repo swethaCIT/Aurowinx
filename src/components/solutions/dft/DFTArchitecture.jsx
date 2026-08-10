@@ -228,10 +228,11 @@ function MobileTabletCarousel({ active, setActive, N }) {
   const [[page, dir], setPage] = useState([active, 0]);
   const touchStart = useRef(null);
 
-  // sync when parent changes active (pill click)
-  useEffect(() => {
+  // sync when parent changes active (pill click) — derived during render
+  // instead of synced via an effect.
+  if (page !== active) {
     setPage(([prev]) => [active, active > prev ? 1 : -1]);
-  }, [active]);
+  }
 
   const paginate = useCallback((newDir) => {
     const next = page + newDir;

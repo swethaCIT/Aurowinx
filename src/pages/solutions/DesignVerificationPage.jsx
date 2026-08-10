@@ -1,6 +1,7 @@
 // src/pages/solutions/DesignVerificationPage.jsx
 import { lazy, Suspense } from "react";
 import HeroSection from "../../components/solutions/design-verification/HeroSection";
+import { useSEO } from "../../hooks/useSEO";
 
 const VerifFlow = lazy(() => import("../../components/solutions/design-verification/VerifFlow"));
 const ProjectsList = lazy(() => import("../../components/solutions/design-verification/ProjectsList"));
@@ -9,6 +10,11 @@ const ToolsSection = lazy(() => import("../../components/solutions/design-verifi
 const WhoWeAre = lazy(() => import("../../components/solutions/design-verification/WhoWeAre"));
 const CTASection = lazy(() => import("../../components/home/CTASection"));
 export default function DesignVerificationPage() {
+  useSEO({
+    title: "Design Verification Services",
+    description: "Comprehensive pre-silicon validation using formal, simulation, and emulation — layered verification flows combining UVM, formal methods, and hardware emulation to eliminate functional risk.",
+    path: "/solutions/design-verification",
+  });
   return (
     <div style={{ fontFamily: "'Sora', system-ui, sans-serif" }}>
       <HeroSection />

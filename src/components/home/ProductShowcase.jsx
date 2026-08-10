@@ -476,7 +476,7 @@ export default function ProductShowcase() {
             key={i}
             style={{
               position: "absolute", borderRadius: "50%",
-              filter: "blur(80px)", opacity: 0.6,
+              filter: "blur(80px)", willChange: "transform", opacity: 0.6,
               width: o.w, height: o.w,
               top: o.top, bottom: o.bottom,
               left: o.left, right: o.right,

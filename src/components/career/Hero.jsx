@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ArrowRight, ChevronRight, Cpu, CircuitBoard, Layers, FlaskConical, Zap } from "lucide-react";
 import { C, FONT, EASE } from "././theme";
+import BackgroundVideo from "../common/BackgroundVideo";
 
 /* ─── Magnetic Button ─────────────────────────────────────────────────────── */
 function MagButton({ children, primary, onClick }) {
@@ -82,8 +83,9 @@ export default function Hero() {
     >
 
       {/* ── VIDEO BACKGROUND — z 0 ─────────────────────────────────────── */}
-      <video
-        autoPlay loop muted playsInline
+      <BackgroundVideo
+        src="/videos/Careers.mp4"
+        poster="/images/posters/Careers.jpg"
         style={{
           position: "absolute",
           top: 0, left: 0,
@@ -91,9 +93,7 @@ export default function Hero() {
           objectFit: "cover",
           zIndex: 0,
         }}
-      >
-        <source src="/videos/Careers.mp4" type="video/mp4" />
-      </video>
+      />
 
       {/* ── DARK OVERLAY — z 1 ────────────────────────────────────────── */}
       <div style={{

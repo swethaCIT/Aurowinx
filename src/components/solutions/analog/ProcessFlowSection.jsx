@@ -4,7 +4,7 @@
 // Mobile/Tablet: swipeable carousel for steps + accordion overview (no long scroll)
 // Single blue accent. Zero scroll-jank. Smooth Framer Motion transitions throughout.
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FileText, PenTool, FlaskConical,
@@ -502,8 +502,13 @@ function StepCarousel({ active, direction, onSwipe, isMobile }) {
 function OverviewAccordion({ active, onSelect }) {
   const [openIndex, setOpenIndex] = useState(active);
 
-  // Keep accordion in sync with active carousel step
-  useEffect(() => { setOpenIndex(active); }, [active]);
+  // Keep accordion in sync with active carousel step — derived during
+  // render instead of synced via an effect.
+  const [prevActiveForOpen, setPrevActiveForOpen] = useState(active);
+  if (active !== prevActiveForOpen) {
+    setPrevActiveForOpen(active);
+    setOpenIndex(active);
+  }
 
   const toggle = (i) => setOpenIndex((prev) => (prev === i ? -1 : i));
 

@@ -12,9 +12,8 @@ const REASONS = [
     title: "Zero-Escape Philosophy",
     color: "#4f46e5", bg: "#eef2ff",
     icon: <Shield style={{ width: 22, height: 22 }} />,
-    stat: { value: "99%+", label: "Bug Detection Rate" },
     desc: "We don't ship bugs to silicon. Every engagement follows a layered verification strategy — simulation, formal, emulation — ensuring zero functional escapes before tape-out.",
-    proof: ["Layered sim + formal + emulation", "SVA assertions on every block", "100% coverage before sign-off", "Independent verification review"],
+    proof: ["Layered sim + formal + emulation", "SVA assertions on every block", "Full coverage before sign-off", "Independent verification review"],
     img: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?w=700&q=80",
   },
   {
@@ -42,7 +41,6 @@ const REASONS = [
     title: "Speed Without Compromise",
     color: "#059669", bg: "#ecfdf5",
     icon: <Zap style={{ width: 22, height: 22 }} />,
-    stat: { value: "40%", label: "Faster Closure" },
     desc: "Automated regression, parallel simulation farms and reusable UVM IP libraries slash schedule time — without cutting corners on quality.",
     proof: ["24/7 simulation farms", "Reusable UVM component library", "Automated coverage closure", "Parallel formal + simulation"],
     img: "https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?w=700&q=80",
@@ -128,12 +126,14 @@ function ReasonTab({ reason, active, onClick, i, inView }) {
           }}>
             {reason.title}
           </p>
-          <p style={{
-            margin: "2px 0 0", fontSize: 11,
-            color: isActive ? reason.color : C.textMuted, fontWeight: 700,
-          }}>
-            {reason.stat.value} {reason.stat.label}
-          </p>
+          {reason.stat && (
+            <p style={{
+              margin: "2px 0 0", fontSize: 11,
+              color: isActive ? reason.color : C.textMuted, fontWeight: 700,
+            }}>
+              {reason.stat.value} {reason.stat.label}
+            </p>
+          )}
         </div>
         {isActive && (
           <ChevronRight style={{ width: 14, height: 14, color: reason.color, flexShrink: 0 }} />
@@ -221,20 +221,22 @@ function DetailView({ reason, compact }) {
             background: `linear-gradient(135deg, ${reason.color}60 0%, rgba(0,0,0,0.55) 100%)`,
           }} />
           {/* Stat overlay */}
-          <div style={{ position: "absolute", top: 20, right: 20 }}>
-            <div style={{
-              padding: "10px 18px", borderRadius: 14,
-              background: "rgba(255,255,255,0.12)", backdropFilter: "blur(16px)",
-              border: "1px solid rgba(255,255,255,0.25)", textAlign: "center",
-            }}>
-              <p style={{ margin: 0, fontSize: 24, fontWeight: 900, color: "#fff", fontFamily: FONT, letterSpacing: "-0.04em" }}>
-                {reason.stat.value}
-              </p>
-              <p style={{ margin: "2px 0 0", fontSize: 10, color: "rgba(255,255,255,0.75)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                {reason.stat.label}
-              </p>
+          {reason.stat && (
+            <div style={{ position: "absolute", top: 20, right: 20 }}>
+              <div style={{
+                padding: "10px 18px", borderRadius: 14,
+                background: "rgba(255,255,255,0.12)", backdropFilter: "blur(16px)",
+                border: "1px solid rgba(255,255,255,0.25)", textAlign: "center",
+              }}>
+                <p style={{ margin: 0, fontSize: 24, fontWeight: 900, color: "#fff", fontFamily: FONT, letterSpacing: "-0.04em" }}>
+                  {reason.stat.value}
+                </p>
+                <p style={{ margin: "2px 0 0", fontSize: 10, color: "rgba(255,255,255,0.75)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                  {reason.stat.label}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
           {/* Icon + title */}
           <div style={{ position: "absolute", bottom: 20, left: 24 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -289,7 +291,6 @@ function DetailView({ reason, compact }) {
               display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16,
             }}>
               {[
-                { val: "99%+", label: "Retention" },
                 { val: "0", label: "Escapes" },
                 { val: "15+", label: "Yrs, Lead Eng." },
               ].map(s => (
@@ -385,7 +386,7 @@ export default function SDWhySection() {
         backgroundImage: "radial-gradient(circle, rgba(79,70,229,0.06) 1px, transparent 1px)",
         backgroundSize: "28px 28px",
       }} />
-      <div style={{ position: "absolute", width: 600, height: 400, top: "-5%", right: "-5%", background: "radial-gradient(ellipse, rgba(79,70,229,0.08) 0%, transparent 70%)", filter: "blur(64px)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", width: 600, height: 400, top: "-5%", right: "-5%", background: "radial-gradient(ellipse, rgba(79,70,229,0.08) 0%, transparent 70%)", filter: "blur(64px)", willChange: "transform", pointerEvents: "none" }} />
 
       <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 1 }}>
 
@@ -436,7 +437,6 @@ export default function SDWhySection() {
 
             {/* Quick stats */}
             {[
-              { val: "99%+", label: "Client Retention",  color: "#4f46e5" },
               { val: "0",    label: "Silicon Escapes",   color: "#059669" },
               { val: "15+",  label: "Yrs, Lead Engineers", color: "#7c3aed" },
             ].map((s, i) => (

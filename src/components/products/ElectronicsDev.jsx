@@ -25,7 +25,7 @@ import { C, FONT, EASE, fadeUp } from "../products/theme";
 import {
   Zap, Wind, Sun, Cpu, Shield, Wifi,
   BarChart2, Activity, ChevronRight,
-  Settings, Radio, Leaf, TrendingUp, Eye, Power,
+  Settings, Radio, TrendingUp, Eye, Power,
   Layers,
 } from "lucide-react";
 import SolarFullSpecs from "./SolarFullspecs";

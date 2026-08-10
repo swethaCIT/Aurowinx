@@ -369,7 +369,7 @@ function MobileCarousel() {
             else if (info.offset.x > 50 && index > 0) setIndex(index - 1);
           }}
         >
-          {SOLUTIONS.map((sol, i) => (
+          {SOLUTIONS.map((sol) => (
             <div key={sol.id} style={{ width: `${100 / total}%`, flexShrink: 0 }}>
               {/* Image */}
               <div style={{ height: "clamp(180px, 45vw, 240px)", overflow: "hidden" }}>

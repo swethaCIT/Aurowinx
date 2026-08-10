@@ -3,7 +3,7 @@
 // Responsive: carousel on mobile/tablet | 3-col grid on laptop | 4-col on TV
 
 import { useRef, useState, useEffect, useCallback } from "react";
-import { motion, useInView, useMotionValue, useAnimation, AnimatePresence } from "framer-motion";
+import { motion, useInView, useAnimation } from "framer-motion";
 import { Target, Layers, Code2, Activity, BarChart3, Shield, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { C, FONT, EASE } from "./theme";
 
@@ -174,7 +174,6 @@ function Carousel({ inView, perView }) {
   const [active, setActive] = useState(0);
   const [dragging, setDragging] = useState(false);
   const controls = useAnimation();
-  const x = useMotionValue(0);
   const trackRef = useRef(null);
   const total = STEPS.length;
   const maxIndex = total - perView;
@@ -400,7 +399,7 @@ export default function VerifFlow() {
         position: "absolute", width: 600, height: 400,
         top: "-10%", left: "30%",
         background: "radial-gradient(ellipse, rgba(79,70,229,0.06) 0%, transparent 70%)",
-        filter: "blur(60px)", pointerEvents: "none",
+        filter: "blur(60px)", willChange: "transform", pointerEvents: "none",
       }} />
 
       <div style={{ maxWidth: bp === "tv" ? 1600 : 1280, margin: "0 auto", position: "relative", zIndex: 1 }}>

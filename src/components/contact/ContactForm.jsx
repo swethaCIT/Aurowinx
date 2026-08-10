@@ -1,12 +1,13 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useId } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "../../lib/supabase";
 import {
   User, Mail, Phone, Building2, Cpu, Layers,
   Briefcase, FileText, Upload, X, Send,
-  CheckCircle2, Clock, Shield,
+  CheckCircle2, Clock, Shield, AlertCircle,
   ChevronDown, ArrowRight,
 } from "lucide-react";
-import { C, FONT, EASE } from "././theme";
+import { EASE } from "././theme";
 
 // ─── Context Config ───────────────────────────────────────────────────────────
 const CONFIG = {
@@ -334,9 +335,13 @@ const BLANK = {
 export default function ContactForm({ context = "general", sourcePage = "", className = "" }) {
   const cfg = CONFIG[context] || CONFIG.general;
   const [form, setFormState] = useState({ ...BLANK });
+  const [honeypot, setHoneypot] = useState(""); // hidden anti-bot field
   const [errors, setErrors]  = useState({});
   const [submitting, setSub] = useState(false);
   const [submitted, setDone] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const uid = useId();
+  const honeypotId = `${uid}-website`;
 
   const set = (k, v) => {
     setFormState(p => ({ ...p, [k]: v }));
@@ -346,14 +351,72 @@ export default function ContactForm({ context = "general", sourcePage = "", clas
   const submit = async () => {
     const e = validate(form, context);
     if (Object.keys(e).length) { setErrors(e); return; }
-    setSub(true);
-    try {
-      await new Promise(r => setTimeout(r, 1400));
+
+    // Honeypot: real visitors never fill this hidden field. Pretend
+    // success without doing any work so bots don't learn they were caught.
+    if (honeypot.trim()) {
       setDone(true);
-    } finally { setSub(false); }
+      return;
+    }
+
+    setSub(true);
+    setSubmitError("");
+    try {
+      let resumeUrl = null;
+      if (form.resume) {
+        const ext = form.resume.name.split(".").pop();
+        const fileName = `${Date.now()}_${form.name.replace(/\s+/g, "_")}.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from("resumes").upload(fileName, form.resume, { contentType: form.resume.type });
+        if (uploadError) throw new Error("Resume upload failed: " + uploadError.message);
+        const { data: urlData } = supabase.storage.from("resumes").getPublicUrl(fileName);
+        resumeUrl = urlData.publicUrl;
+      }
+
+      const { data: inserted, error: dbError } = await supabase
+        .from("contact_inquiries")
+        .insert({
+          context,
+          source_page: sourcePage || null,
+          name: form.name,
+          email: form.email,
+          phone: form.phone || null,
+          company: form.company || null,
+          service_required: form.serviceRequired || null,
+          technology_node: form.technologyNode || null,
+          role_applying: form.roleApplying || null,
+          experience: form.experience || null,
+          resume_url: resumeUrl,
+          engagement_type: form.engagementType || null,
+          product_interest: form.productInterest || null,
+          request_type: form.requestType || null,
+          message: form.message,
+        })
+        .select("id")
+        .single();
+      if (dbError) throw new Error("Submission failed: " + dbError.message);
+
+      // The email function looks up the inquiry server-side by id — it
+      // never trusts raw form fields directly from the client.
+      const { error: fnError } = await supabase.functions.invoke("send-contact-email", {
+        body: { inquiryId: inserted.id },
+      });
+      // Don't block the success screen on the notification email — the
+      // inquiry is already safely stored either way.
+      if (fnError) console.error("send-contact-email failed:", fnError.message);
+
+      setDone(true);
+    } catch (err) {
+      setSubmitError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setSub(false);
+    }
   };
 
-  const reset = () => { setDone(false); setFormState({ ...BLANK }); setErrors({}); };
+  const reset = () => {
+    setDone(false); setFormState({ ...BLANK }); setErrors({});
+    setSubmitError(""); setHoneypot("");
+  };
 
   return (
     <>
@@ -560,6 +623,15 @@ export default function ContactForm({ context = "general", sourcePage = "", clas
         .cf3-err-msg {
           font-family: 'DM Sans', system-ui, sans-serif;
           font-size: 11.5px; color: #dc2626; margin: 2px 0 0 2px;
+        }
+
+        .cf3-submit-err {
+          display: flex; align-items: center; gap: 8px;
+          padding: 12px 16px; border-radius: 12px;
+          background: #fef2f2; border: 1px solid #fecaca;
+          color: #dc2626; font-size: 13px;
+          font-family: 'DM Sans', system-ui, sans-serif;
+          margin-bottom: 12px;
         }
 
         /* ── Floating input ──────────────────────────────────── */
@@ -849,11 +921,11 @@ export default function ContactForm({ context = "general", sourcePage = "", clas
               </div>
               <div className="cf3-contact-strip">
                 <span className="cf3-strip-lbl">Or reach us directly</span>
-                <a href="mailto:contact@aurowinx.com" className="cf3-clink">
-                  <Mail size={13} aria-hidden="true" />contact@aurowinx.com
+                <a href="mailto:info@aurowinx.com" className="cf3-clink">
+                  <Mail size={13} aria-hidden="true" />info@aurowinx.com
                 </a>
-                <a href="tel:+914412345678" className="cf3-clink">
-                  <Phone size={13} aria-hidden="true" />+91 44 XXXX XXXX
+                <a href="tel:+919840813010" className="cf3-clink">
+                  <Phone size={13} aria-hidden="true" />+91 98408 13010
                 </a>
               </div>
             </motion.aside>
@@ -869,7 +941,7 @@ export default function ContactForm({ context = "general", sourcePage = "", clas
             >
               <div className="cf3-rh">
                 <span className="cf3-eyebrow">{cfg.badge}</span>
-                <h1 id="cf3-title" className="cf3-rtitle">{cfg.heading}</h1>
+                <h2 id="cf3-title" className="cf3-rtitle">{cfg.heading}</h2>
                 <p className="cf3-rsub">{cfg.subheading}</p>
               </div>
 
@@ -877,6 +949,21 @@ export default function ContactForm({ context = "general", sourcePage = "", clas
                 <SuccessScreen context={context} onReset={reset} />
               ) : (
                 <div className="cf3-form">
+
+                  {/* Honeypot — hidden from sighted/mouse users and never
+                      announced to assistive tech, but visible to simple
+                      bots that fill in every field. */}
+                  <div aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, overflow: "hidden" }}>
+                    <label htmlFor={honeypotId}>Website</label>
+                    <input
+                      id={honeypotId}
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={honeypot}
+                      onChange={e => setHoneypot(e.target.value)}
+                    />
+                  </div>
 
                   {/* Personal Details */}
                   <motion.div className="cf3-sec"
@@ -1023,6 +1110,12 @@ export default function ContactForm({ context = "general", sourcePage = "", clas
                   <motion.div className="cf3-submit-row"
                     initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }} transition={{ duration: 0.4, ease: EASE, delay: 0.12 }}>
+                    {submitError && (
+                      <div className="cf3-submit-err" role="alert">
+                        <AlertCircle size={15} style={{ flexShrink: 0 }} />
+                        <span>{submitError}</span>
+                      </div>
+                    )}
                     <p className="cf3-submit-note">
                       Fields marked * are required.<br />
                       By submitting, you agree to be contacted about your enquiry.

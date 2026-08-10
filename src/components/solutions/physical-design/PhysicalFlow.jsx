@@ -98,14 +98,20 @@ function useViewport() {
   };
 }
 
-/* ── Floating background particles ── */
+/* ── Floating background particles ──
+   Positions are generated once at module load (not during render) since
+   React's purity rules disallow calling impure functions like Math.random
+   from within a component, even inside useMemo. The layout is purely
+   decorative and doesn't need to differ per mount. */
+const PARTICLE_POINTS = Array.from({ length: 20 }, () => ({
+  x: Math.random() * 100, y: Math.random() * 100,
+  size: Math.random() * 3 + 1,
+  dur: Math.random() * 8 + 6,
+  delay: Math.random() * 4,
+}));
+
 function Particles() {
-  const pts = Array.from({ length: 20 }, (_, i) => ({
-    x: Math.random() * 100, y: Math.random() * 100,
-    size: Math.random() * 3 + 1,
-    dur: Math.random() * 8 + 6,
-    delay: Math.random() * 4,
-  }));
+  const pts = PARTICLE_POINTS;
   return (
     <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
       {pts.map((p, i) => (
@@ -204,7 +210,7 @@ function Connector({ color, inView, delay }) {
 }
 
 /* ── Mobile / Tablet phase carousel card ── */
-function PhaseCard({ phase, active, onClick, i, isMobile }) {
+function PhaseCard({ phase, active, onClick, isMobile }) {
   return (
     <motion.button
       onClick={onClick}
@@ -412,7 +418,7 @@ function DetailPanel({ phase }) {
             flex: 1, minHeight: 300,
             boxShadow: `0 16px 48px ${phase.color}20`,
           }}>
-            <img src={phase.img} alt={phase.title}
+            <img src={phase.img} alt=""
               style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             <div style={{
               position: "absolute", inset: 0,
@@ -461,10 +467,14 @@ function DetailPanel({ phase }) {
 function CompactDetailPanel({ phase, isTablet }) {
   const [open, setOpen] = useState(isTablet); // open by default on tablet, closed on mobile
 
-  // Re-evaluate default open state per phase + breakpoint
-  useEffect(() => {
+  // Re-evaluate default open state per phase + breakpoint — derived during
+  // render instead of synced via an effect.
+  const openSig = `${phase.id}:${isTablet}`;
+  const [prevOpenSig, setPrevOpenSig] = useState(openSig);
+  if (openSig !== prevOpenSig) {
+    setPrevOpenSig(openSig);
     setOpen(isTablet);
-  }, [phase.id, isTablet]);
+  }
 
   return (
     <AnimatePresence mode="wait">
@@ -482,7 +492,7 @@ function CompactDetailPanel({ phase, isTablet }) {
           height: isTablet ? 220 : 180,
           boxShadow: `0 12px 36px ${phase.color}20`,
         }}>
-          <img src={phase.img} alt={phase.title}
+          <img src={phase.img} alt=""
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
           <div style={{
             position: "absolute", inset: 0,
@@ -558,7 +568,6 @@ export default function PhysicalFlow() {
 
   useEffect(() => {
     if (isCompact) scrollToIndex(active);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, isCompact]);
 
   // Detect active card from manual scroll/swipe
@@ -690,7 +699,6 @@ export default function PhysicalFlow() {
                     phase={phase}
                     active={active === i}
                     onClick={() => setActive(i)}
-                    i={i}
                     isMobile={isMobile}
                   />
                 ))}

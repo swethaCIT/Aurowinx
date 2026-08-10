@@ -82,7 +82,7 @@ function BgOrbs() {
             position: "absolute", width: o.size, height: o.size * 0.6,
             borderRadius: "50%", pointerEvents: "none",
             background: `radial-gradient(ellipse, ${o.color} 0%, transparent 70%)`,
-            filter: "blur(60px)",
+            filter: "blur(60px)", willChange: "transform",
             top: o.top, left: o.left, right: o.right, bottom: o.bottom,
           }}
           animate={{ scale: [1, 1.15, 1], opacity: [0.8, 1, 0.8] }}
@@ -324,7 +324,7 @@ const SLIDE_VARIANTS = {
   exit:   (d) => ({ opacity: 0, x: d > 0 ? -70 : 70, scale: 0.97 }),
 };
 
-function FlowCarousel({ inView, isMobile }) {
+function FlowCarousel({ isMobile }) {
   const [[page, dir], setPage] = useState([0, 0]);
   const N = STEPS.length;
   const touchStart = useRef(null);
@@ -554,7 +554,7 @@ export default function DFTFlow() {
         ══════════════════════════════════════ */}
         {isSmall && (
           <>
-            <FlowCarousel inView={inView} isMobile={isMobile} />
+            <FlowCarousel isMobile={isMobile} />
             <SignOffBadge inView={inView} compact />
           </>
         )}

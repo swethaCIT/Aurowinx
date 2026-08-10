@@ -271,14 +271,19 @@ export default function CapabilitiesSection() {
   const tabRef = useRef(null);
   const scrollTimeout = useRef(null);
 
-  // Default spec accordion state per breakpoint
-  useEffect(() => {
+  // Default spec accordion state per breakpoint — derived during render
+  // (React's documented pattern for adjusting state from changed props)
+  // instead of synced via an effect.
+  const specsSig = `${active}:${isTablet}:${isMobile}`;
+  const [prevSpecsSig, setPrevSpecsSig] = useState(specsSig);
+  if (specsSig !== prevSpecsSig) {
+    setPrevSpecsSig(specsSig);
     if (isTablet) {
       setSpecsOpen({ [active]: true });
     } else if (isMobile) {
       setSpecsOpen((prev) => (prev[active] ? prev : {}));
     }
-  }, [isTablet, isMobile, active]);
+  }
 
   const toggleSpecs = () => {
     setSpecsOpen((prev) => ({ ...prev, [active]: !prev[active] }));
@@ -296,7 +301,6 @@ export default function CapabilitiesSection() {
 
   useEffect(() => {
     if (isMobile) scrollTabIntoView(active);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, isMobile]);
 
   const handleTabScroll = () => {
@@ -420,6 +424,8 @@ export default function CapabilitiesSection() {
         top: 0,
         background: "rgba(255,255,255,0.92)",
         backdropFilter: "blur(16px)",
+        transform: "translateZ(0)",
+        willChange: "transform",
         zIndex: 10,
       }}>
         <style>{`.ip-tabs::-webkit-scrollbar { display: none; }`}</style>

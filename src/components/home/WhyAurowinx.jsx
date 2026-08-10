@@ -574,7 +574,7 @@ function WideStatBar({ triggered }) {
       animate={triggered ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: 0.05 }}
     >
-      {stats.map((s, i) => (
+      {stats.map((s) => (
         <div key={s.label} className="flex-1 rounded-2xl px-6 py-5 relative overflow-hidden"
           style={{ background: `linear-gradient(135deg,${s.color}12,${s.color}05)`, border: `1px solid ${s.color}25` }}>
           <div className="absolute top-0 left-0 right-0 h-[2px]"
@@ -617,7 +617,7 @@ export default function WhyAurowinx() {
         ].map((o,i)=>(
           <motion.div key={i} className="absolute rounded-full"
             style={{ width:o.w, height:o.h, top:o.top, left:o.left, right:o.right, bottom:o.bottom,
-              background:`radial-gradient(circle,${o.color},transparent 70%)`, filter:"blur(80px)" }}
+              background:`radial-gradient(circle,${o.color},transparent 70%)`, filter: "blur(80px)", willChange: "transform" }}
             animate={{ scale:[1,1.12,1] }}
             transition={{ duration:16+i*5, repeat:Infinity, ease:"easeInOut", delay:i*4 }} />
         ))}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import BackgroundVideo from "../common/BackgroundVideo";
 
 const slides = [
   {
@@ -52,16 +53,12 @@ export default function HeroSection() {
     <section className="relative min-h-[100dvh] h-[100svh] overflow-hidden bg-[#080f1e]">
 
       {/* VIDEO BACKGROUND - Rendered once for better performance */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
+      <BackgroundVideo
+        src={slides[0].video}
+        poster="/images/posters/hero-2.jpg"
         className="absolute inset-0 h-full w-full object-cover"
         style={{ opacity: 0.9 }}
-      >
-        <source src={slides[0].video} type="video/mp4" />
-      </video>
+      />
 
       {/* DARK OVERLAY */}
       <div className="absolute inset-0 bg-black/55" />

@@ -7,7 +7,7 @@
 //  • prefers-reduced-motion: disable SplitReveal and all motion, render statically
 //  • Shimmer sweep on Card now skips entirely if prefers-reduced-motion
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   motion,
@@ -35,7 +35,7 @@ function AnimatedBackground({ shouldReduceMotion }) {
             width: orb.w, height: orb.h,
             top: orb.top, left: orb.left, right: orb.right, bottom: orb.bottom,
             background: `radial-gradient(circle, ${orb.color}, transparent 70%)`,
-            filter: "blur(80px)",
+            filter: "blur(80px)", willChange: "transform",
           }}
           animate={shouldReduceMotion ? {} : { scale: [1, 1.12, 1], x: [0, 30, 0], y: [0, -20, 0] }}
           transition={{ duration: orb.dur, repeat: Infinity, ease: "easeInOut", delay: i * 4 }}
@@ -196,11 +196,11 @@ function IntroCard({ triggered }) {
       }}
     >
       <motion.div className="absolute -top-24 -left-24 w-80 h-80 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(59,130,246,0.25), transparent 70%)", filter: "blur(60px)" }}
+        style={{ background: "radial-gradient(circle, rgba(59,130,246,0.25), transparent 70%)", filter: "blur(60px)", willChange: "transform" }}
         animate={shouldReduceMotion ? {} : { scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
       <motion.div className="absolute bottom-0 right-0 w-72 h-72 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(168,85,247,0.2), transparent 70%)", filter: "blur(70px)" }}
+        style={{ background: "radial-gradient(circle, rgba(168,85,247,0.2), transparent 70%)", filter: "blur(70px)", willChange: "transform" }}
         animate={shouldReduceMotion ? {} : { scale: [1, 1.15, 1], opacity: [0.5, 0.9, 0.5] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }} />
 
@@ -307,7 +307,7 @@ function SmallCard({ title, text, icon, triggered, delay, accent }) {
         flex: 1,
       }}>
       <div className="absolute top-0 right-0 w-32 h-32 rounded-full pointer-events-none"
-        style={{ background: `radial-gradient(circle, ${accent}15, transparent 70%)`, filter: "blur(30px)" }} />
+        style={{ background: `radial-gradient(circle, ${accent}15, transparent 70%)`, filter: "blur(30px)", willChange: "transform" }} />
       <div className="relative z-10 p-6 h-full flex flex-col">
         <motion.div
           className="w-11 h-11 rounded-2xl flex items-center justify-center mb-5"

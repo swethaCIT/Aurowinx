@@ -8,7 +8,7 @@
 import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import {
-  ChevronDown, Cpu, Shield, Zap,
+  ChevronDown, Shield, Zap,
   GitMerge, Activity, Layers, FlaskConical,
 } from "lucide-react";
 import { C, EASE } from "./theme";
@@ -198,7 +198,7 @@ function ProjectPanel({ project, i, inView, isOpen, onToggle }) {
           className="dft-project-header-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "72px 1fr auto auto auto",
+            gridTemplateColumns: "72px 1fr auto",
             alignItems: "center",
             gap: 16,
             padding: "20px 0",
@@ -244,46 +244,6 @@ function ProjectPanel({ project, i, inView, isOpen, onToggle }) {
               {project.title}
             </p>
           </div>
-
-          {/* Coverage badge */}
-          <div style={{
-            textAlign: "center",
-            display: "flex", flexDirection: "column", gap: 2,
-            padding: "6px 14px",
-            background: isOpen ? project.color : C.bgAccent,
-            borderRadius: 8,
-            transition: "background 0.25s",
-          }}>
-            <span style={{
-              fontFamily: DISPLAY, fontSize: "1.05rem", fontWeight: 700,
-              letterSpacing: "-0.04em",
-              color: isOpen ? "#fff" : project.color,
-              transition: "color 0.25s", lineHeight: 1,
-            }}>
-              {project.coverage}
-            </span>
-            <span style={{
-              fontFamily: UI, fontSize: 8, fontWeight: 600,
-              letterSpacing: "0.12em", textTransform: "uppercase",
-              color: isOpen ? "rgba(255,255,255,0.7)" : C.textMuted,
-              transition: "color 0.25s",
-            }}>
-              Coverage
-            </span>
-          </div>
-
-          {/* Node chip */}
-          <span style={{
-            fontFamily: UI, fontSize: 10, fontWeight: 500,
-            padding: "4px 10px", borderRadius: 4,
-            border: `1px solid ${isOpen ? project.color : C.borderLight}`,
-            color: isOpen ? project.color : C.textSecondary,
-            background: isOpen ? project.accentBg : "transparent",
-            transition: "all 0.25s",
-            whiteSpace: "nowrap",
-          }}>
-            {project.node}
-          </span>
 
           {/* Chevron */}
           <motion.div
@@ -505,13 +465,13 @@ export default function ProjectsList() {
         position: "absolute", width: 480, height: 320,
         top: "-60px", left: "-80px",
         background: "radial-gradient(ellipse, rgba(79,70,229,0.07) 0%, transparent 70%)",
-        filter: "blur(60px)", pointerEvents: "none", zIndex: 0,
+        filter: "blur(60px)", willChange: "transform", pointerEvents: "none", zIndex: 0,
       }} />
       <div style={{
         position: "absolute", width: 360, height: 260,
         bottom: "8%", right: "-60px",
         background: "radial-gradient(ellipse, rgba(124,58,237,0.06) 0%, transparent 70%)",
-        filter: "blur(60px)", pointerEvents: "none", zIndex: 0,
+        filter: "blur(60px)", willChange: "transform", pointerEvents: "none", zIndex: 0,
       }} />
 
       <div style={{
@@ -552,50 +512,6 @@ export default function ProjectsList() {
                 Silicon-proven DFT implementations across nodes, methodologies, and automotive-grade standards.
               </p>
             </div>
-
-            {/* Stat cluster */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ delay: 0.3 }}
-              style={{
-                display: "flex", gap: 0,
-                border: `1px solid ${C.borderLight}`,
-                borderRadius: 12, overflow: "hidden",
-                boxShadow: C.shadowSm, background: C.bgWhite,
-              }}
-            >
-              {[
-                { val: "99.9%", label: "Peak Coverage" },
-                { val: "6+",    label: "Tapeouts" },
-                { val: "ASIL-D",label: "Automotive" },
-              ].map((s, i) => (
-                <div
-                  key={s.label}
-                  style={{
-                    padding: "16px 20px", textAlign: "center",
-                    borderRight: i < 2 ? `1px solid ${C.borderLight}` : "none",
-                  }}
-                >
-                  <p style={{
-                    fontFamily: DISPLAY, fontSize: "1.4rem", fontWeight: 700,
-                    letterSpacing: "-0.04em", margin: "0 0 4px",
-                    background: C.gradPrimary,
-                    WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }}>
-                    {s.val}
-                  </p>
-                  <p style={{
-                    fontFamily: UI, fontSize: 9, fontWeight: 600,
-                    letterSpacing: "0.14em", textTransform: "uppercase",
-                    color: C.textMuted, margin: 0,
-                  }}>
-                    {s.label}
-                  </p>
-                </div>
-              ))}
-            </motion.div>
           </motion.div>
 
           {/* Filter tabs */}
@@ -797,15 +713,6 @@ export default function ProjectsList() {
           .dft-project-header-grid > div:nth-child(2) {
             flex: 1 1 auto !important;
             min-width: 150px;
-          }
-          .dft-project-header-grid > div:nth-child(3) {
-            flex-direction: row !important;
-            padding: 4px 10px !important;
-            align-items: center !important;
-            gap: 6px !important;
-          }
-          .dft-project-header-grid > span:nth-child(4) {
-            padding: 4px 10px !important;
           }
           .dft-project-header-grid > div:last-child {
             margin-left: auto !important;

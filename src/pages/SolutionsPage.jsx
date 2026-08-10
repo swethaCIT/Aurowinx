@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useSEO } from "../hooks/useSEO";
 
 const solutions = [
   { name: "Semiconductor Design", path: "/solutions/semiconductor-design", blurb: "SoC, ASIC, and silicon engineering across advanced nodes." },
@@ -9,6 +10,11 @@ const solutions = [
 ];
 
 export default function SolutionsPage() {
+  useSEO({
+    title: "Solutions — Semiconductor Design Capabilities",
+    description: "Five engineering disciplines, one accountable team — semiconductor design, verification, DFT, physical design, and analog & IP solutions from architecture through tapeout.",
+    path: "/solutions",
+  });
   return (
     <main style={{ minHeight: "100vh", background: "linear-gradient(180deg,#07111f 0%,#0f172a 45%,#111827 100%)", color: "#eff6ff", padding: "48px 20px 72px" }}>
       <section style={{ maxWidth: 1100, margin: "0 auto" }}>

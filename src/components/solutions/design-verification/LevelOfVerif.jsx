@@ -92,7 +92,7 @@ function GlowCard({ glow, delay = 0, children, style = {} }) {
         position: "absolute", top: -40, right: -40,
         width: 120, height: 120, borderRadius: "50%",
         background: `${base}10`, pointerEvents: "none",
-        filter: "blur(28px)",
+        filter: "blur(28px)", willChange: "transform",
       }} />
       <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
     </motion.div>

@@ -165,7 +165,7 @@ export default function SDProcessFlow() {
         backgroundImage: `linear-gradient(rgba(79,70,229,0.03) 1px, transparent 1px),linear-gradient(90deg,rgba(79,70,229,0.03) 1px,transparent 1px)`,
         backgroundSize: "48px 48px",
       }} />
-      <div style={{ position: "absolute", width: 500, height: 350, top: "-10%", right: "-5%", background: "radial-gradient(ellipse,rgba(79,70,229,0.07) 0%,transparent 70%)", filter: "blur(60px)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", width: 500, height: 350, top: "-10%", right: "-5%", background: "radial-gradient(ellipse,rgba(79,70,229,0.07) 0%,transparent 70%)", filter: "blur(60px)", willChange: "transform", pointerEvents: "none" }} />
 
       <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 1 }}>
 

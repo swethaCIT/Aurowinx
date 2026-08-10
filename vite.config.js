@@ -15,7 +15,14 @@ export default defineConfig({
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
               return 'vendor-react';
             }
-            if (id.includes('framer-motion') || id.includes('three')) {
+            // three.js is only used by the 3D chip scene inside CTASection,
+            // which is itself lazy-loaded — keep it out of the much more
+            // widely-used framer-motion chunk so pages that never render
+            // that scene don't pay for it.
+            if (id.includes('three')) {
+              return 'vendor-three';
+            }
+            if (id.includes('framer-motion')) {
               return 'vendor-animation';
             }
             return 'vendor-other';

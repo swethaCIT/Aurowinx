@@ -19,6 +19,7 @@ export default function AdminRoutes() {
             <Route path="jobs/new" element={<AdminJobFormPage />} />
             <Route path="jobs/:id/edit" element={<AdminJobFormPage />} />
             <Route path="applications" element={<AdminApplicationsPage />} />
+            <Route path="*" element={<Navigate to="jobs" replace />} />
           </Route>
         </Route>
       </Routes>

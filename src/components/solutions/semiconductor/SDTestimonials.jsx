@@ -319,6 +319,7 @@ export default function SDTestimonials() {
         bottom: "-10%", left: "-6%",
         background: `radial-gradient(ellipse, ${C.accentSoft} 0%, transparent 65%)`,
         filter: "blur(80px)",
+        willChange: "transform",
         pointerEvents: "none",
         opacity: 0.55,
       }} />

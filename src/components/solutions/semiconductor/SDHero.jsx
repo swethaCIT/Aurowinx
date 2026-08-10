@@ -7,6 +7,7 @@
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ArrowRight, ChevronRight, CheckCircle2, Activity } from "lucide-react";
+import BackgroundVideo from "../../common/BackgroundVideo";
 
 /* ── THEME (inline — no external import needed) ── */
 const FONT = "'Inter', 'Sora', sans-serif";
@@ -100,11 +101,9 @@ export default function SDHero() {
     >
 
       {/* ── VIDEO BACKGROUND ── */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
+      <BackgroundVideo
+        src="/videos/hero-1.mp4"
+        poster="/images/posters/hero-1.jpg"
         style={{
           position: "absolute",
           top: 0, left: 0,
@@ -112,9 +111,7 @@ export default function SDHero() {
           objectFit: "cover",
           zIndex: 0,
         }}
-      >
-        <source src="/videos/hero-1.mp4" type="video/mp4" />
-      </video>
+      />
 
       {/* ── DARK OVERLAY ── */}
       <div style={{

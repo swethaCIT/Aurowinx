@@ -6,7 +6,6 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import {
   Shield, Zap, TrendingUp, BarChart3,
-  Award, Users, Clock, Target,
 } from "lucide-react";
 import { C, FONT, EASE } from "./theme";
 
@@ -417,7 +416,7 @@ export default function SDMetrics() {
         position: "absolute", width: 700, height: 500,
         top: "-15%", left: "-8%",
         background: `radial-gradient(ellipse, ${C.accentSoft} 0%, transparent 65%)`,
-        filter: "blur(80px)", pointerEvents: "none", opacity: 0.7,
+        filter: "blur(80px)", willChange: "transform", pointerEvents: "none", opacity: 0.7,
       }} />
 
       <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 1 }}>

@@ -4,7 +4,7 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import * as THREE from "three";
-import { C, FONT, EASE } from "././theme";
+import { EASE } from "././theme";
 
 // ─── Three.js PCB trace network ─────────────────────────────────────────────
 function usePCBCanvas(canvasRef) {
@@ -114,7 +114,8 @@ function usePCBCanvas(canvasRef) {
     }
 
     // ── Animate ──────────────────────────────────────────────────────────
-    let rafId;
+    let rafId = null;
+    let visible = true;
     let last = performance.now();
 
     function tick() {
@@ -143,6 +144,23 @@ function usePCBCanvas(canvasRef) {
 
     tick();
 
+    // Pause the render loop while this hero canvas is scrolled off-screen —
+    // otherwise it keeps rendering 14 traveling pulses every frame for as
+    // long as the Contact page is mounted, competing with scroll compositing
+    // long after the user has scrolled past it. Same pattern as ChipScene,
+    // AmbientCanvas and OrbitalCanvas.
+    const io = new IntersectionObserver(([entry]) => {
+      const nowVisible = entry.isIntersecting;
+      if (nowVisible && !visible) {
+        visible = true;
+        if (rafId === null) { last = performance.now(); tick(); } // reset dt so pulses don't jump on resume
+      } else if (!nowVisible && visible) {
+        visible = false;
+        if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+      }
+    }, { threshold: 0 });
+    io.observe(canvas);
+
     // ── Resize ────────────────────────────────────────────────────────────
     const ro = new ResizeObserver(() => {
       const w = canvas.clientWidth;
@@ -155,11 +173,12 @@ function usePCBCanvas(canvasRef) {
     ro.observe(canvas);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      io.disconnect();
       ro.disconnect();
       renderer.dispose();
     };
-  }, []);
+  }, [canvasRef]);
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────

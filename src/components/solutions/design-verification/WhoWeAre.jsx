@@ -1,10 +1,10 @@
 // WhoWeAre.jsx
-// AurowinX — Who We Are / Team section
-// Fully responsive: mobile carousel → tablet carousel → desktop 3-col → TV wide
+// AurowinX — Who We Are
+// Fully responsive: mobile → tablet → desktop → TV wide
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
-import { Users, Award, Briefcase, CheckCircle2, ChevronRight, ChevronLeft } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { CheckCircle2, ChevronRight } from "lucide-react";
 import { C, FONT, EASE } from "./theme";
 
 /* ─── breakpoints (px) ────────────────────────────────────────────── */
@@ -36,252 +36,12 @@ function useBreakpoint() {
 }
 
 /* ─── data ─────────────────────────────────────────────────────────── */
-const TEAM_ROLES = [
-  {
-    title: "Principal DV Manager",
-    exp: "15+ years of experience",
-    color: "#4f46e5",
-    bg: "#eef2ff",
-    icon: <Award style={{ width: 20, height: 20 }} />,
-    points: [
-      "Leads and governs the verification lifecycle through a rigorously structured review methodology",
-      "Strategic evaluation of verification plans",
-      "Architectural assessment of testbenches",
-      "Systematic validation of functional coverage metrics",
-      "Formal inspection of testcases and assertion-based checkers",
-      "Supervision of code coverage closure in alignment with design intent",
-    ],
-  },
-  {
-    title: "Execution DV Manager",
-    exp: "10+ years of experience",
-    color: "#7c3aed",
-    bg: "#f5f3ff",
-    icon: <Briefcase style={{ width: 20, height: 20 }} />,
-    points: [
-      "Responsible for tactical project execution and engineering throughput",
-      "Ensures milestone adherence across all project phases",
-      "Resource alignment and team utilization planning",
-      "Continuous process refinement and quality control",
-    ],
-  },
-  {
-    title: "Engineering Team",
-    exp: "5+ skilled DV specialists",
-    color: "#0891b2",
-    bg: "#ecfeff",
-    icon: <Users style={{ width: 20, height: 20 }} />,
-    points: [
-      "Execute implementation of UVM-based environments, assertions and stimulus generators",
-      "Maintain ownership of verification component development",
-      "Debug cycles and waveform analysis ownership",
-      "Regression execution and failure triage",
-    ],
-  },
-];
-
 const ABOUT_POINTS = [
   "Engineers fluent in UVM — the backbone of every testbench we build",
   "Formal property checking alongside constrained-random simulation",
   "Coverage-driven closure — functional, code, and toggle",
   "Proven across ASIC, FPGA and SoC verification programs",
 ];
-
-/* ─── RoleCard ──────────────────────────────────────────────────────── */
-function RoleCard({ role, i, inView, compact = false }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, delay: compact ? 0 : i * 0.1, ease: EASE }}
-      whileHover={{ y: -5, boxShadow: `0 16px 40px ${role.color}22` }}
-      style={{
-        background: "#fff",
-        borderRadius: 18,
-        padding: compact ? "20px 18px" : "22px 20px",
-        border: `1px solid ${C.borderLight}`,
-        boxShadow: C.shadowMd,
-        position: "relative",
-        overflow: "hidden",
-        cursor: "default",
-        height: "100%",
-        transition: "box-shadow 0.25s",
-      }}
-    >
-      {/* Top color bar */}
-      <motion.div
-        initial={{ scaleX: 0 }}
-        animate={inView ? { scaleX: 1 } : {}}
-        transition={{ duration: 0.6, delay: compact ? 0.15 : 0.3 + i * 0.1, ease: EASE }}
-        style={{
-          position: "absolute", top: 0, left: 0, right: 0, height: 3,
-          background: `linear-gradient(90deg, ${role.color}, ${role.color}55)`,
-          transformOrigin: "left",
-        }}
-      />
-
-      {/* Icon + title row */}
-      <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 16 }}>
-        <div style={{
-          width: 44, height: 44, borderRadius: 12, flexShrink: 0,
-          background: role.bg, color: role.color,
-          border: `1px solid ${role.color}25`,
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }}>
-          {role.icon}
-        </div>
-        <div>
-          <p style={{ margin: 0, fontWeight: 800, fontSize: 15, color: C.textPrimary, fontFamily: FONT, letterSpacing: "-0.02em" }}>
-            {role.title}
-          </p>
-          <span style={{
-            display: "inline-block", marginTop: 4,
-            padding: "2px 10px", borderRadius: 50,
-            background: role.bg, color: role.color,
-            fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase",
-            border: `1px solid ${role.color}20`,
-          }}>
-            {role.exp}
-          </span>
-        </div>
-      </div>
-
-      {/* Points */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {role.points.map((pt, j) => (
-          <motion.div
-            key={pt}
-            initial={{ opacity: 0, x: -10 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.35, delay: compact ? 0.1 + j * 0.04 : 0.25 + i * 0.1 + j * 0.05, ease: EASE }}
-            style={{ display: "flex", alignItems: "flex-start", gap: 8 }}
-          >
-            <ChevronRight style={{ width: 13, height: 13, color: role.color, flexShrink: 0, marginTop: 2 }} />
-            <span style={{ fontSize: 12.5, color: C.textSecondary, lineHeight: 1.65 }}>{pt}</span>
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─── Carousel (mobile + tablet) ───────────────────────────────────── */
-const SLIDE_VARIANTS = {
-  enter: (dir) => ({ opacity: 0, x: dir > 0 ? 60 : -60, scale: 0.97 }),
-  center: { opacity: 1, x: 0, scale: 1 },
-  exit: (dir) => ({ opacity: 0, x: dir > 0 ? -60 : 60, scale: 0.97 }),
-};
-
-function RoleCarousel({ inView }) {
-  const [[page, dir], setPage] = useState([0, 0]);
-  const total = TEAM_ROLES.length;
-
-  const paginate = (newDir) => {
-    setPage(([p]) => [(p + newDir + total) % total, newDir]);
-  };
-
-  const role = TEAM_ROLES[page];
-
-  /* touch/swipe */
-  const touchStart = useRef(null);
-  const onTouchStart = (e) => { touchStart.current = e.touches[0].clientX; };
-  const onTouchEnd = (e) => {
-    if (touchStart.current === null) return;
-    const delta = touchStart.current - e.changedTouches[0].clientX;
-    if (Math.abs(delta) > 40) paginate(delta > 0 ? 1 : -1);
-    touchStart.current = null;
-  };
-
-  return (
-    <div style={{ position: "relative" }}>
-      {/* Slide container */}
-      <div
-        style={{ position: "relative", overflow: "hidden", minHeight: 320, touchAction: "pan-y" }}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
-      >
-        <AnimatePresence initial={false} custom={dir} mode="wait">
-          <motion.div
-            key={page}
-            custom={dir}
-            variants={SLIDE_VARIANTS}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.38, ease: [0.32, 0.72, 0, 1] }}
-            style={{ width: "100%" }}
-          >
-            <RoleCard role={role} i={page} inView={inView} compact />
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* Nav row */}
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "center",
-        gap: 16, marginTop: 20,
-      }}>
-        {/* Prev */}
-        <motion.button
-          onClick={() => paginate(-1)}
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.93 }}
-          style={{
-            width: 38, height: 38, borderRadius: "50%", border: `1.5px solid ${C.borderLight}`,
-            background: "#fff", color: C.textPrimary, cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            boxShadow: C.shadowSm,
-          }}
-        >
-          <ChevronLeft style={{ width: 16, height: 16 }} />
-        </motion.button>
-
-        {/* Dots */}
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          {TEAM_ROLES.map((r, i) => (
-            <motion.button
-              key={i}
-              onClick={() => setPage([i, i > page ? 1 : -1])}
-              animate={{
-                width: i === page ? 22 : 7,
-                background: i === page ? r.color : "#cbd5e1",
-              }}
-              transition={{ duration: 0.3, ease: EASE }}
-              style={{
-                height: 7, borderRadius: 50, border: "none",
-                cursor: "pointer", padding: 0,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Next */}
-        <motion.button
-          onClick={() => paginate(1)}
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.93 }}
-          style={{
-            width: 38, height: 38, borderRadius: "50%", border: `1.5px solid ${C.borderLight}`,
-            background: "#fff", color: C.textPrimary, cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            boxShadow: C.shadowSm,
-          }}
-        >
-          <ChevronRight style={{ width: 16, height: 16 }} />
-        </motion.button>
-      </div>
-
-      {/* Counter */}
-      <p style={{
-        textAlign: "center", marginTop: 10,
-        fontSize: 11, color: C.textMuted, fontWeight: 600,
-        letterSpacing: "0.1em", textTransform: "uppercase",
-      }}>
-        {page + 1} / {total}
-      </p>
-    </div>
-  );
-}
 
 /* ─── Main section ──────────────────────────────────────────────────── */
 export default function WhoWeAre() {
@@ -311,11 +71,6 @@ export default function WhoWeAre() {
   /* Stats count columns */
   const statsColumns = bp === "mobile" ? "repeat(3, 1fr)" : "repeat(3, 1fr)";
 
-  /* Card grid for desktop / TV */
-  const cardGrid = isTV
-    ? { gridTemplateColumns: "repeat(3, 1fr)", gap: 28 }
-    : { gridTemplateColumns: "repeat(3, 1fr)", gap: 18 };
-
   return (
     <section
       ref={ref}
@@ -335,7 +90,7 @@ export default function WhoWeAre() {
       <div style={{ maxWidth: isTV ? 1600 : 1280, margin: "0 auto", position: "relative", zIndex: 1 }}>
 
         {/* ── Intro block ── */}
-        <div style={{ display: "grid", ...introGrid, marginBottom: isSmall ? 32 : 44, alignItems: "center" }}>
+        <div style={{ display: "grid", ...introGrid, alignItems: "center" }}>
 
           {/* Left — heading */}
           <motion.div
@@ -402,15 +157,15 @@ export default function WhoWeAre() {
               ))}
             </div>
 
-            {/* Mini stats */}
+            {/* Capability highlights */}
             <div style={{ display: "grid", gridTemplateColumns: statsColumns, gap: bp === "mobile" ? 8 : 12 }}>
               {[
-                { val: "50+",  label: "DV Engineers", color: "#4f46e5" },
-                { val: "15+",  label: "Team Experience", color: "#7c3aed" },
-                { val: "180+", label: "Projects Done", color: "#0891b2" },
+                { title: "UVM-Based",         desc: "Testbenches built to methodology standard", color: "#4f46e5" },
+                { title: "Formal + Sim",      desc: "Property checking with constrained-random", color: "#7c3aed" },
+                { title: "Multi-Domain",      desc: "ASIC, FPGA & SoC verification", color: "#0891b2" },
               ].map((s, i) => (
                 <motion.div
-                  key={s.label}
+                  key={s.title}
                   initial={{ opacity: 0, y: 12 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.4 + i * 0.08, ease: EASE }}
@@ -421,56 +176,13 @@ export default function WhoWeAre() {
                     boxShadow: C.shadowSm,
                   }}
                 >
-                  <p style={{ margin: 0, fontSize: bp === "mobile" ? "1.25rem" : "1.5rem", fontWeight: 900, color: s.color, letterSpacing: "-0.04em", fontFamily: FONT }}>{s.val}</p>
-                  <p style={{ margin: "3px 0 0", fontSize: bp === "mobile" ? 10 : 11, color: C.textMuted, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{s.label}</p>
+                  <p style={{ margin: 0, fontSize: bp === "mobile" ? 12 : 13, fontWeight: 800, color: s.color, letterSpacing: "-0.01em", fontFamily: FONT }}>{s.title}</p>
+                  <p style={{ margin: "4px 0 0", fontSize: bp === "mobile" ? 9.5 : 10.5, color: C.textMuted, fontWeight: 600, lineHeight: 1.4 }}>{s.desc}</p>
                 </motion.div>
               ))}
             </div>
           </motion.div>
         </div>
-
-        {/* ── Divider ── */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={inView ? { scaleX: 1 } : {}}
-          transition={{ duration: 1, delay: 0.3, ease: EASE }}
-          style={{
-            height: 1,
-            background: `linear-gradient(90deg, transparent, ${C.border}, transparent)`,
-            marginBottom: isSmall ? 28 : 36,
-            transformOrigin: "left",
-          }}
-        />
-
-        {/* ── Team label ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.45, delay: 0.35, ease: EASE }}
-          style={{ textAlign: "center", marginBottom: isSmall ? 20 : 28 }}
-        >
-          <h3 style={{
-            fontSize: bp === "mobile" ? "1.2rem" : bp === "tablet" ? "1.5rem" : isTV ? "2.2rem" : "clamp(1.3rem, 2.5vw, 1.8rem)",
-            fontWeight: 900, color: C.textPrimary, margin: 0,
-            letterSpacing: "-0.03em", fontFamily: FONT,
-          }}>
-            Our Team Structure
-          </h3>
-          <p style={{ color: C.textSecondary, fontSize: bp === "mobile" ? 12.5 : 13, margin: "6px 0 0" }}>
-            Three tiers of review, from verification-plan sign-off to final coverage closure.
-          </p>
-        </motion.div>
-
-        {/* ── Cards: carousel on mobile/tablet, grid on desktop/TV ── */}
-        {isSmall ? (
-          <RoleCarousel inView={inView} />
-        ) : (
-          <div style={{ display: "grid", ...cardGrid }}>
-            {TEAM_ROLES.map((role, i) => (
-              <RoleCard key={role.title} role={role} i={i} inView={inView} />
-            ))}
-          </div>
-        )}
 
       </div>
     </section>

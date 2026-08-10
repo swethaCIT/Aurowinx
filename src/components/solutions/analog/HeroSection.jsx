@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ArrowRight, ChevronRight, CheckCircle2, Activity } from "lucide-react";
 import { C, FONT, EASE } from "./theme";
+import BackgroundVideo from "../../common/BackgroundVideo";
 
 /* ── Magnetic Button ── */
 function MagButton({ children, primary, href }) {
@@ -75,16 +76,15 @@ export default function HeroSection() {
     >
 
       {/* ── VIDEO BACKGROUND — z-index 0 ── */}
-      <video
-        autoPlay loop muted playsInline
+      <BackgroundVideo
+        src="/videos/Analog.mp4"
+        poster="/images/posters/Analog.jpg"
         style={{
           position: "absolute", top: 0, left: 0,
           width: "100%", height: "100%",
           objectFit: "cover", zIndex: 0,
         }}
-      >
-        <source src="/videos/Analog.mp4" type="video/mp4" />
-      </video>
+      />
 
       {/* ── DARK OVERLAY — z-index 1 ── */}
       <div style={{

@@ -1,9 +1,11 @@
 // src/components/contact/ContactModal.jsx
-import { useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useId, useRef } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { X, ArrowUpRight } from "lucide-react";
 import { C, FONT, EASE } from "././theme";
 import ContactForm from "./ContactForm";
+import { useFocusTrap } from "../../hooks/useFocusTrap";
 
 // ─── Context label map for modal header ──────────────────────────────────────
 const CONTEXT_META = {
@@ -24,16 +26,15 @@ const CONTEXT_META = {
 //   />
 
 export default function ContactModal({ isOpen, onClose, context = "general", sourcePage = "" }) {
-  const overlayRef = useRef(null);
   const meta = CONTEXT_META[context] || CONTEXT_META.general;
+  const reduceMotion = useReducedMotion();
+  const uid = useId();
+  const titleId = `${uid}-title`;
 
-  // Close on Escape
-  useEffect(() => {
-    if (!isOpen) return;
-    const handler = (e) => { if (e.key === "Escape") onClose(); };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [isOpen, onClose]);
+  // Traps focus, moves it into the drawer on open, restores it on close,
+  // and closes on Escape.
+  const drawerRef = useFocusTrap(isOpen, onClose);
+  const overlayRef = useRef(null);
 
   // Lock body scroll when open
   useEffect(() => {
@@ -229,18 +230,24 @@ export default function ContactModal({ isOpen, onClose, context = "general", sou
 
             {/* Drawer */}
             <motion.div
+              ref={drawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={titleId}
+              tabIndex={-1}
               className="cm-drawer"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ duration: 0.38, ease: EASE }}
+              initial={reduceMotion ? { opacity: 0 } : { x: "100%" }}
+              animate={reduceMotion ? { opacity: 1 } : { x: 0 }}
+              exit={reduceMotion ? { opacity: 0 } : { x: "100%" }}
+              transition={{ duration: reduceMotion ? 0.15 : 0.38, ease: EASE }}
+              style={{ outline: "none" }}
             >
               {/* Header */}
               <div className="cm-head">
                 <div className="cm-head-top">
                   <div>
                     <span className="cm-head-label">AurowinX Technologies</span>
-                    <h2 className="cm-head-title">{meta.label}</h2>
+                    <h2 id={titleId} className="cm-head-title">{meta.label}</h2>
                     <p className="cm-head-sub">{meta.sub}</p>
                   </div>
                   <button className="cm-close" onClick={onClose} aria-label="Close">
@@ -267,9 +274,9 @@ export default function ContactModal({ isOpen, onClose, context = "general", sou
                 <p className="cm-foot-note">
                   Prefer a full page?
                 </p>
-                <a href="/contact" className="cm-foot-link" onClick={onClose}>
+                <Link to="/contact" className="cm-foot-link" onClick={onClose}>
                   Open Contact Page <ArrowUpRight size={13} />
-                </a>
+                </Link>
               </div>
             </motion.div>
 

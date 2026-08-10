@@ -6,8 +6,9 @@ import {
   CheckCircle2, Wrench, Star, ChevronRight
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
-import { C, FONT, EASE } from "../components/career/theme";
+import { C, FONT } from "../components/career/theme";
 import ApplicationModal from "../components/career/ApplicationModal";
+import { useSEO } from "../hooks/useSEO";
 
 const EASE_OUT = [0.22, 1, 0.36, 1];
 
@@ -66,6 +67,14 @@ export default function JobDetailPage() {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+
+  useSEO({
+    title: job ? `${job.job_title} — Careers` : "Job Opening",
+    description: job
+      ? `${job.job_title} at AurowinX Technologies. ${job.location ? `Location: ${job.location}. ` : ""}Apply now.`
+      : "View this open role at AurowinX Technologies and apply online.",
+    path: `/careers/${slug}`,
+  });
 
   useEffect(() => {
     const fetch = async () => {

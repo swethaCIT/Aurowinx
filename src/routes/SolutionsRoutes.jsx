@@ -9,6 +9,7 @@ const DesignVerificationPage  = lazy(() => import("../pages/solutions/DesignVeri
 const DFTEngineeringPage      = lazy(() => import("../pages/solutions/DFTEngineeringPage"));
 const PhysicalDesignPage      = lazy(() => import("../pages/solutions/PhysicalPage"));
 const AnalogIPPage            = lazy(() => import("../pages/solutions/AnalogIPPage"));
+const NotFoundPage            = lazy(() => import("../pages/NotFoundPage"));
 
 export default function SolutionsRoutes() {
   return (
@@ -19,6 +20,7 @@ export default function SolutionsRoutes() {
         <Route path="dft-engineering"      element={<DFTEngineeringPage />} />
         <Route path="physical-design"      element={<PhysicalDesignPage />} />
         <Route path="analog-ip"            element={<AnalogIPPage />} />
+        <Route path="*"                    element={<NotFoundPage />} />
       </Routes>
     </Suspense>
   );

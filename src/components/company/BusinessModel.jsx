@@ -4,9 +4,9 @@
 // Laptop/TV: original grid layout with premium enhancements
 
 import { useRef, useState, useEffect, useCallback } from "react";
-import { motion, useInView, useAnimation, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, ChevronDown, Check, X } from "lucide-react";
-import { C, FONT, EASE } from "././theme";
+import { motion, useInView, useAnimation } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { FONT, EASE } from "././theme";
 
 /* ── useBreakpoint ── */
 function useBreakpoint() {
@@ -58,53 +58,6 @@ const billingModels = [
     ),
     color: "#2563eb", bg: "rgba(37,99,235,0.06)", border: "rgba(37,99,235,0.14)", best: "Long-Term Programs",
   },
-];
-
-const clientModel = {
-  label: "Client-Led Model",
-  subtitle: "You drive, we execute",
-  tagColor: "#4f46e5",
-  gradient: "linear-gradient(135deg, #4f46e5 0%, #2563eb 100%)",
-  from: {
-    title: "From Client",
-    items: ["Tools", "Server", "Flows & Scripts", "Design Data"],
-    color: "#4f46e5", bg: "rgba(79,70,229,0.06)", border: "rgba(79,70,229,0.14)",
-  },
-  from2: {
-    title: "From Aurowinx",
-    items: ["Engineering Resources (NRE)", "Project Management"],
-    color: "#0891b2", bg: "rgba(8,145,178,0.06)", border: "rgba(8,145,178,0.14)",
-  },
-  output: "Project Delivery",
-  note: "Remote-Login (Aurowinx Office)",
-};
-
-const aurowinxModel = {
-  label: "Aurowinx-Led Model",
-  subtitle: "We own it end-to-end",
-  tagColor: "#0891b2",
-  gradient: "linear-gradient(135deg, #2563eb 0%, #0891b2 100%)",
-  from: {
-    title: "From Client",
-    items: ["Spec & Design Data"],
-    color: "#4f46e5", bg: "rgba(79,70,229,0.06)", border: "rgba(79,70,229,0.14)",
-  },
-  from2: {
-    title: "From Aurowinx",
-    items: ["Engineering Resources (NRE)", "Tools & Server (NRE + Infra)", "Flow & Scripts", "Project Management", "Risk Management"],
-    color: "#0891b2", bg: "rgba(8,145,178,0.06)", border: "rgba(8,145,178,0.14)",
-  },
-  output: "Project Delivery",
-  note: "Aurowinx Office",
-};
-
-const tableRows = [
-  { item: "Engineering Resources", client: true,  aurowinx: true  },
-  { item: "Project Management",    client: false, aurowinx: true  },
-  { item: "Tools & Server",        client: true,  aurowinx: true  },
-  { item: "Flows & Scripts",       client: true,  aurowinx: true  },
-  { item: "Risk Management",       client: false, aurowinx: true  },
-  { item: "Infrastructure Setup",  client: false, aurowinx: true  },
 ];
 
 /* ══════════════════════════════════════════
@@ -293,307 +246,6 @@ function BillingCard({ b }) {
   );
 }
 
-/* ── MODEL CARD (shared) ── */
-function ArrowDivider() {
-  return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-      <div style={{ flex: 1, height: 1, background: "#e0e7ff" }} />
-      <div style={{
-        width: 28, height: 28, borderRadius: "50%",
-        background: "linear-gradient(135deg, #4f46e5, #0891b2)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        boxShadow: "0 4px 12px rgba(79,70,229,0.2)",
-      }}>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19" /><polyline points="19 12 12 19 5 12" />
-        </svg>
-      </div>
-      <div style={{ flex: 1, height: 1, background: "#e0e7ff" }} />
-    </div>
-  );
-}
-
-function ModelCard({ model, delay = 0, compact = false }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.65, delay, ease: EASE }}
-      style={{
-        background: "white", borderRadius: 22, overflow: "hidden",
-        border: "1px solid #e0e7ff",
-        boxShadow: "0 4px 24px rgba(15,23,42,0.07)",
-        display: "flex", flexDirection: "column",
-        height: "100%", boxSizing: "border-box",
-      }}
-    >
-      {/* Header */}
-      <div style={{
-        background: model.gradient,
-        padding: compact ? "20px 24px 18px" : "28px 32px 24px",
-        position: "relative", overflow: "hidden",
-      }}>
-        <div style={{
-          position: "absolute", top: -40, right: -40,
-          width: 180, height: 180, borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 65%)",
-          pointerEvents: "none",
-        }} />
-        <span style={{
-          display: "inline-block", fontSize: 10, fontWeight: 700,
-          letterSpacing: "0.2em", textTransform: "uppercase",
-          color: "rgba(255,255,255,0.75)", background: "rgba(255,255,255,0.12)",
-          border: "1px solid rgba(255,255,255,0.2)",
-          borderRadius: 9999, padding: "4px 14px", marginBottom: 10,
-          backdropFilter: "blur(8px)",
-        }}>
-          {model.label}
-        </span>
-        <h3 style={{
-          fontSize: compact ? 17 : 20, fontWeight: 700, color: "white",
-          margin: 0, letterSpacing: "-0.025em",
-        }}>
-          {model.subtitle}
-        </h3>
-      </div>
-
-      {/* Body */}
-      <div style={{ padding: compact ? "20px 24px" : "28px 32px", display: "flex", flexDirection: "column", gap: 16, flex: 1 }}>
-        {/* From client */}
-        <div style={{
-          borderRadius: 12, padding: "14px 16px",
-          background: model.from.bg, border: `1px solid ${model.from.border}`,
-        }}>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: model.from.color, marginBottom: 10 }}>
-            {model.from.title}
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {model.from.items.map((item, i) => (
-              <span key={i} style={{
-                fontSize: 12, fontWeight: 600, color: "#475569",
-                background: "white", border: "1px solid #e2e8f0",
-                borderRadius: 7, padding: "4px 10px",
-              }}>{item}</span>
-            ))}
-          </div>
-        </div>
-
-        <ArrowDivider />
-
-        {/* From Aurowinx */}
-        <div style={{
-          borderRadius: 12, padding: "14px 16px",
-          background: model.from2.bg, border: `1px solid ${model.from2.border}`,
-        }}>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: model.from2.color, marginBottom: 10 }}>
-            {model.from2.title}
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {model.from2.items.map((item, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <div style={{ width: 5, height: 5, borderRadius: "50%", background: model.from2.color, flexShrink: 0 }} />
-                <span style={{ fontSize: 13, color: "#475569", fontWeight: 500 }}>{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <ArrowDivider />
-
-        {/* Output */}
-        <motion.div
-          whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-          style={{
-            borderRadius: 12, padding: "16px",
-            background: "linear-gradient(135deg, #4f46e5, #0891b2)",
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-            boxShadow: "0 6px 20px rgba(79,70,229,0.2)", cursor: "default",
-          }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-          <span style={{ fontSize: 14, fontWeight: 700, color: "white", letterSpacing: "-0.01em" }}>
-            {model.output}
-          </span>
-        </motion.div>
-
-        <div style={{ textAlign: "center", fontSize: 11, color: "#94a3b8", fontWeight: 600, letterSpacing: "0.08em" }}>
-          {model.note}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ── ACCORDION COMPARISON TABLE (mobile/tablet) ── */
-function AccordionTable({ inView }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: 0.2, ease: EASE }}
-      style={{
-        background: "#f8fafc", borderRadius: 20,
-        border: "1px solid #e0e7ff", overflow: "hidden",
-      }}
-    >
-      {/* Toggle header */}
-      <button
-        onClick={() => setOpen(o => !o)}
-        style={{
-          width: "100%", border: "none", cursor: "pointer",
-          background: "linear-gradient(135deg, #4f46e5, #0891b2)",
-          padding: "16px 20px",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-        }}
-      >
-        <span style={{ fontSize: 13, fontWeight: 700, color: "#fff", letterSpacing: "0.06em" }}>
-          Compare Both Models
-        </span>
-        <motion.div
-          animate={{ rotate: open ? 180 : 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 26 }}
-        >
-          <ChevronDown style={{ width: 18, height: 18, color: "rgba(255,255,255,0.85)" }} />
-        </motion.div>
-      </button>
-
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            key="table"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.38, ease: EASE }}
-            style={{ overflow: "hidden" }}
-          >
-            {/* Column headers */}
-            <div style={{
-              display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr",
-              padding: "10px 16px",
-              background: "rgba(79,70,229,0.06)",
-              borderBottom: "1px solid #e0e7ff",
-            }}>
-              {["Included", "Client-Led", "Aurowinx-Led"].map((h, i) => (
-                <div key={i} style={{
-                  fontSize: 10, fontWeight: 700, letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: i === 0 ? "#475569" : i === 1 ? "#4f46e5" : "#0891b2",
-                  textAlign: i === 0 ? "left" : "center",
-                }}>
-                  {h}
-                </div>
-              ))}
-            </div>
-
-            {tableRows.map((row, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.04, ease: EASE }}
-                style={{
-                  display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr",
-                  padding: "12px 16px",
-                  borderBottom: i < tableRows.length - 1 ? "1px solid #e0e7ff" : "none",
-                  background: i % 2 === 0 ? "white" : "#f8fafc",
-                  alignItems: "center",
-                }}
-              >
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: "#1e293b" }}>{row.item}</span>
-                {[row.client, row.aurowinx].map((val, vi) => (
-                  <div key={vi} style={{ textAlign: "center" }}>
-                    <div style={{
-                      width: 22, height: 22, borderRadius: "50%",
-                      background: val
-                        ? (vi === 0 ? "rgba(79,70,229,0.1)" : "rgba(8,145,178,0.1)")
-                        : "rgba(148,163,184,0.1)",
-                      display: "inline-flex", alignItems: "center", justifyContent: "center",
-                    }}>
-                      {val
-                        ? <Check style={{ width: 11, height: 11, color: vi === 0 ? "#4f46e5" : "#0891b2" }} />
-                        : <X style={{ width: 10, height: 10, color: "#cbd5e1" }} />
-                      }
-                    </div>
-                  </div>
-                ))}
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
-/* ── DESKTOP COMPARISON TABLE ── */
-function DesktopTable({ inView }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay: 0.28, ease: EASE }}
-      style={{
-        background: "#f8fafc", borderRadius: 20,
-        border: "1px solid #e0e7ff", overflow: "hidden",
-      }}
-    >
-      <div style={{
-        display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr",
-        background: "linear-gradient(135deg, #4f46e5, #0891b2)",
-        padding: "16px 28px",
-      }}>
-        {["What's Included", "Client-Led", "Aurowinx-Led"].map((h, i) => (
-          <div key={i} style={{
-            fontSize: 11, fontWeight: 700, letterSpacing: "0.16em",
-            textTransform: "uppercase", color: "rgba(255,255,255,0.85)",
-            textAlign: i === 0 ? "left" : "center",
-          }}>
-            {h}
-          </div>
-        ))}
-      </div>
-      {tableRows.map((row, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.4, delay: i * 0.06 }}
-          style={{
-            display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr",
-            padding: "14px 28px",
-            borderBottom: i < tableRows.length - 1 ? "1px solid #e0e7ff" : "none",
-            background: i % 2 === 0 ? "white" : "#f8fafc",
-            alignItems: "center",
-          }}
-        >
-          <span style={{ fontSize: 13.5, fontWeight: 600, color: "#1e293b" }}>{row.item}</span>
-          {[row.client, row.aurowinx].map((val, vi) => (
-            <div key={vi} style={{ textAlign: "center" }}>
-              <div style={{
-                width: 22, height: 22, borderRadius: "50%",
-                background: val
-                  ? (vi === 0 ? "rgba(79,70,229,0.1)" : "rgba(8,145,178,0.1)")
-                  : "rgba(148,163,184,0.1)",
-                display: "inline-flex", alignItems: "center", justifyContent: "center",
-              }}>
-                {val
-                  ? <Check style={{ width: 12, height: 12, color: vi === 0 ? "#4f46e5" : "#0891b2" }} />
-                  : <X style={{ width: 10, height: 10, color: "#cbd5e1" }} />
-                }
-              </div>
-            </div>
-          ))}
-        </motion.div>
-      ))}
-    </motion.div>
-  );
-}
-
 /* ══════════════════════════════════════════
    MAIN EXPORT
 ══════════════════════════════════════════ */
@@ -698,46 +350,21 @@ export default function BusinessModel() {
             MOBILE / TABLET
         ══════════════════════ */}
         {isCarousel && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-
-            {/* Billing models carousel */}
-            <div>
-              <p style={{
-                fontSize: 11, fontWeight: 700, letterSpacing: "0.18em",
-                textTransform: "uppercase", color: "#4f46e5",
-                marginBottom: 14, textAlign: "center",
-              }}>
-                Billing Models
-              </p>
-              <Carousel
-                items={billingModels}
-                renderItem={(b) => <BillingCard b={b} />}
-                perView={perView}
-                gap={14}
-                inView={inView}
-              />
-            </div>
-
-            {/* Model cards carousel */}
-            <div>
-              <p style={{
-                fontSize: 11, fontWeight: 700, letterSpacing: "0.18em",
-                textTransform: "uppercase", color: "#0891b2",
-                marginBottom: 14, textAlign: "center",
-              }}>
-                Engagement Models
-              </p>
-              <Carousel
-                items={[clientModel, aurowinxModel]}
-                renderItem={(model, i) => <ModelCard model={model} delay={0} compact />}
-                perView={1}
-                gap={14}
-                inView={inView}
-              />
-            </div>
-
-            {/* Accordion comparison */}
-            <AccordionTable inView={inView} />
+          <div>
+            <p style={{
+              fontSize: 11, fontWeight: 700, letterSpacing: "0.18em",
+              textTransform: "uppercase", color: "#4f46e5",
+              marginBottom: 14, textAlign: "center",
+            }}>
+              Billing Models
+            </p>
+            <Carousel
+              items={billingModels}
+              renderItem={(b) => <BillingCard b={b} />}
+              perView={perView}
+              gap={14}
+              inView={inView}
+            />
           </div>
         )}
 
@@ -750,7 +377,7 @@ export default function BusinessModel() {
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
-              style={{ display: "flex", justifyContent: "center", gap: 16, marginBottom: 64, flexWrap: "wrap" }}
+              style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}
             >
               {billingModels.map((b, i) => (
                 <motion.div
@@ -793,15 +420,6 @@ export default function BusinessModel() {
                 </motion.div>
               ))}
             </motion.div>
-
-            {/* Two model cards */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginBottom: 56 }}>
-              <ModelCard model={clientModel} delay={0.1} />
-              <ModelCard model={aurowinxModel} delay={0.2} />
-            </div>
-
-            {/* Comparison table */}
-            <DesktopTable inView={inView} />
           </>
         )}
 

@@ -747,10 +747,13 @@ export default function ProjectsTools() {
   const filtered =
     active === "All" ? PROJECTS : PROJECTS.filter((p) => p.cat === active);
 
-  // Reset carousel position when filter changes
-  useEffect(() => {
+  // Reset carousel position when filter changes — derived during render
+  // instead of synced via an effect.
+  const [prevActiveFilter, setPrevActiveFilter] = useState(active);
+  if (active !== prevActiveFilter) {
+    setPrevActiveFilter(active);
     setProjIndex(0);
-  }, [active]);
+  }
 
   const carouselRef = useRef(null);
   const scrollTimeout = useRef(null);
@@ -766,7 +769,6 @@ export default function ProjectsTools() {
 
   useEffect(() => {
     if (isCompact) scrollToIndex(projIndex);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projIndex, isCompact, active]);
 
   const handleScroll = () => {
@@ -818,13 +820,13 @@ export default function ProjectsTools() {
         position: "absolute", width: 520, height: 300,
         top: "-40px", right: "-60px",
         background: "radial-gradient(ellipse, rgba(79,70,229,0.07) 0%, transparent 70%)",
-        filter: "blur(70px)", pointerEvents: "none", zIndex: 0,
+        filter: "blur(70px)", willChange: "transform", pointerEvents: "none", zIndex: 0,
       }} />
       <div style={{
         position: "absolute", width: 380, height: 240,
         bottom: "5%", left: "-80px",
         background: "radial-gradient(ellipse, rgba(124,58,237,0.06) 0%, transparent 70%)",
-        filter: "blur(70px)", pointerEvents: "none", zIndex: 0,
+        filter: "blur(70px)", willChange: "transform", pointerEvents: "none", zIndex: 0,
       }} />
 
       {/* ════════════════════════════════

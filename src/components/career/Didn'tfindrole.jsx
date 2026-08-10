@@ -1,6 +1,6 @@
 // components/career/Didn'tfindrole.jsx
 // Gradient CTA strip — "Didn't find your role?"
-// mailto: careers@aurowinx.com
+// mailto: info@aurowinx.com
 
 import { motion } from "framer-motion";
 import { Mail, ArrowRight, Send } from "lucide-react";
@@ -138,7 +138,7 @@ export default function DidntFindRole() {
           >
             {/* Primary — mailto */}
             <motion.a
-              href="mailto:careers@aurowinx.com"
+              href="mailto:info@aurowinx.com"
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.97 }}
               style={{
@@ -165,7 +165,7 @@ export default function DidntFindRole() {
 
             {/* Secondary — ghost */}
             <motion.a
-              href="mailto:careers@aurowinx.com?subject=General Enquiry — AurowinX Careers"
+              href="mailto:info@aurowinx.com?subject=General Enquiry — AurowinX Careers"
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.97 }}
               style={{
@@ -199,14 +199,14 @@ export default function DidntFindRole() {
           >
             or write to us directly at{" "}
             <a
-              href="mailto:careers@aurowinx.com"
+              href="mailto:info@aurowinx.com"
               style={{
                 color: "rgba(255,255,255,0.70)",
                 textDecoration: "underline",
                 textUnderlineOffset: 3,
               }}
             >
-              careers@aurowinx.com
+              info@aurowinx.com
             </a>
           </motion.p>
 

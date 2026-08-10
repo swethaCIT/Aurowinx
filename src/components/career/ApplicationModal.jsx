@@ -1,20 +1,22 @@
-import { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useId } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, Upload, CheckCircle2, AlertCircle, Loader2, FileText } from "lucide-react";
 import { supabase } from "../../lib/supabase";
+import { useFocusTrap } from "../../hooks/useFocusTrap";
 import { C, FONT } from "./theme";
 
 const EASE_OUT = [0.22, 1, 0.36, 1];
 
 /* ── Floating Label Input ── */
-function FloatingField({ label, type = "text", placeholder, value, onChange, onBlurValidate, error }) {
+function FloatingField({ id, label, type = "text", placeholder, value, onChange, onBlurValidate, error }) {
   const [focused, setFocused] = useState(false);
   const active = focused || value.length > 0;
+  const errorId = `${id}-error`;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
       <div style={{ position: "relative" }}>
-        <label style={{
+        <label htmlFor={id} style={{
           position: "absolute",
           left: 14,
           top: active ? 8 : "50%",
@@ -33,12 +35,17 @@ function FloatingField({ label, type = "text", placeholder, value, onChange, onB
         </label>
 
         <input
+          id={id}
           type={type}
           value={value}
           onChange={e => onChange(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => { setFocused(false); onBlurValidate?.(); }}
           placeholder={focused ? placeholder : ""}
+          required
+          aria-required="true"
+          aria-invalid={!!error}
+          aria-describedby={error ? errorId : undefined}
           style={{
             width: "100%",
             padding: active ? "22px 14px 8px" : "15px 14px",
@@ -60,6 +67,8 @@ function FloatingField({ label, type = "text", placeholder, value, onChange, onB
       <AnimatePresence>
         {error && (
           <motion.span
+            id={errorId}
+            role="alert"
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
@@ -82,12 +91,20 @@ function FloatingField({ label, type = "text", placeholder, value, onChange, onB
 /* ── Main Modal ── */
 export default function ApplicationModal({ job, onClose }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
+  const [honeypot, setHoneypot] = useState(""); // hidden anti-bot field
   const [errors, setErrors] = useState({});
   const [resume, setResume] = useState(null);
   const [resumeError, setResumeError] = useState("");
   const [status, setStatus] = useState("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const fileRef = useRef();
+  const dialogRef = useFocusTrap(true, onClose);
+  const reduceMotion = useReducedMotion();
+  const uid = useId();
+  const titleId = `${uid}-title`;
+  const nameId = `${uid}-name`;
+  const emailId = `${uid}-email`;
+  const phoneId = `${uid}-phone`;
 
   const setField = (key, val) => {
     setForm(p => ({ ...p, [key]: val }));
@@ -130,6 +147,14 @@ export default function ApplicationModal({ job, onClose }) {
 
   const handleSubmit = async () => {
     if (!validate()) return;
+
+    // Honeypot: real visitors never fill this hidden field. Pretend success
+    // without doing any work so bots don't learn they were caught.
+    if (honeypot.trim()) {
+      setStatus("success");
+      return;
+    }
+
     setStatus("uploading");
     try {
       const ext = resume.name.split(".").pop();
@@ -142,17 +167,20 @@ export default function ApplicationModal({ job, onClose }) {
       const { data: urlData } = supabase.storage.from("resumes").getPublicUrl(fileName);
       const resumeUrl = urlData.publicUrl;
 
-      const { error: dbError } = await supabase.from("job_applications").insert({
-        job_id: job.id, full_name: form.name,
-        email: form.email, phone: form.phone, resume_url: resumeUrl,
-      });
+      const { data: inserted, error: dbError } = await supabase
+        .from("job_applications")
+        .insert({
+          job_id: job.id, full_name: form.name,
+          email: form.email, phone: form.phone, resume_url: resumeUrl,
+        })
+        .select("id")
+        .single();
       if (dbError) throw new Error("DB insert failed: " + dbError.message);
 
+      // The email function looks up the application server-side by id —
+      // it no longer trusts raw applicant fields from the client.
       const { error: fnError } = await supabase.functions.invoke("send-application-email", {
-        body: {
-          applicantName: form.name, applicantEmail: form.email,
-          applicantPhone: form.phone, jobTitle: job.job_title, resumeUrl,
-        },
+        body: { applicationId: inserted.id },
       });
       if (fnError) throw new Error("Email send failed: " + fnError.message);
 
@@ -182,10 +210,15 @@ export default function ApplicationModal({ job, onClose }) {
       >
         <motion.div
           key="modal"
-          initial={{ opacity: 0, scale: 0.94, y: 28 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.94, y: 28 }}
-          transition={{ duration: 0.4, ease: EASE_OUT }}
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          tabIndex={-1}
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: 28 }}
+          animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: 28 }}
+          transition={{ duration: reduceMotion ? 0.15 : 0.4, ease: EASE_OUT }}
           onClick={e => e.stopPropagation()}
           style={{
             background: "#fff",
@@ -195,6 +228,7 @@ export default function ApplicationModal({ job, onClose }) {
             overflowY: "auto",
             boxShadow: "0 32px 100px rgba(79,70,229,0.18), 0 8px 32px rgba(0,0,0,0.12)",
             fontFamily: FONT,
+            outline: "none",
           }}
         >
           {/* ── Success ── */}
@@ -268,7 +302,7 @@ export default function ApplicationModal({ job, onClose }) {
                   }}>
                     {job.domain}
                   </span>
-                  <h2 style={{
+                  <h2 id={titleId} style={{
                     fontSize: 18, fontWeight: 800,
                     color: C.textPrimary, margin: 0,
                     lineHeight: 1.3, letterSpacing: "-0.02em",
@@ -278,7 +312,9 @@ export default function ApplicationModal({ job, onClose }) {
                   </h2>
                 </div>
                 <button
+                  type="button"
                   onClick={onClose}
+                  aria-label="Close application form"
                   style={{
                     background: "#f3f4f6", border: "none", borderRadius: 10,
                     width: 34, height: 34, flexShrink: 0,
@@ -298,7 +334,23 @@ export default function ApplicationModal({ job, onClose }) {
               {/* ── Form ── */}
               <div style={{ padding: "24px 28px 28px", display: "flex", flexDirection: "column", gap: 16 }}>
 
+                {/* Honeypot — hidden from sighted/mouse users and never
+                    announced to assistive tech, but visible to simple bots
+                    that fill in every field. */}
+                <div aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, overflow: "hidden" }}>
+                  <label htmlFor={`${uid}-company`}>Company</label>
+                  <input
+                    id={`${uid}-company`}
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={e => setHoneypot(e.target.value)}
+                  />
+                </div>
+
                 <FloatingField
+                  id={nameId}
                   label="Full Name *"
                   placeholder="Enter your full name"
                   value={form.name}
@@ -307,6 +359,7 @@ export default function ApplicationModal({ job, onClose }) {
                   error={errors.name}
                 />
                 <FloatingField
+                  id={emailId}
                   label="Email Address *"
                   type="email"
                   placeholder="Enter your company email address"
@@ -316,6 +369,7 @@ export default function ApplicationModal({ job, onClose }) {
                   error={errors.email}
                 />
                 <FloatingField
+                  id={phoneId}
                   label="Phone Number *"
                   type="tel"
                   placeholder="Enter your phone number"
@@ -337,6 +391,12 @@ export default function ApplicationModal({ job, onClose }) {
                   <input ref={fileRef} type="file" accept=".pdf,.doc,.docx" onChange={handleFile} style={{ display: "none" }} />
                   <motion.div
                     onClick={() => fileRef.current.click()}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={resume ? `Resume attached: ${resume.name}. Activate to change.` : "Upload resume or CV, PDF or Word, max 5MB"}
+                    onKeyDown={e => {
+                      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileRef.current.click(); }
+                    }}
                     whileHover={{ borderColor: C.primary }}
                     style={{
                       border: `2px dashed ${resumeError ? "#ef4444" : resume ? C.primary : "#d1d5db"}`,

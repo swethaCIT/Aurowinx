@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   ChevronDown, Menu, X, ArrowRight,
   Cpu, Microscope, Activity, Microchip, Layers,
-  Wrench, Fingerprint, Zap, Lightbulb, FlaskConical
+  Wrench, Lightbulb, FlaskConical
 } from 'lucide-react';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
@@ -104,36 +105,6 @@ const products = [
     body: 'Complete electronic hardware design, from concept to production, including analog, digital, mixed-signal, and power electronics.',
   },
   {
-    icon: Zap,
-    name: 'Embedded Systems',
-    path: '/products#embedded-systems',
-    description: 'Firmware, RTOS, and communication protocol solutions for real-time control.',
-    color: 'text-yellow-400',
-    bg: 'bg-yellow-500/10',
-    accent: '#facc15',
-    glowA: 'rgba(250,204,21,0.45)',
-    glowB: 'rgba(234,179,8,0.25)',
-    tag: 'Firmware / RTOS',
-    headline: 'Bare Metal.',
-    sub: 'Real-Time.',
-    body: 'Embedded firmware, RTOS, BSP, device drivers, communication protocols, and real-time control software.',
-  },
-  {
-    icon: Fingerprint,
-    name: 'Industrial IoT & Automation',
-    path: '/products#iot-automation',
-    description: 'Edge computing, industrial connectivity, and intelligent automation solutions.',
-    color: 'text-cyan-400',
-    bg: 'bg-cyan-500/10',
-    accent: '#22d3ee',
-    glowA: 'rgba(34,211,238,0.45)',
-    glowB: 'rgba(6,182,212,0.25)',
-    tag: 'Edge / IoT',
-    headline: 'Connected.',
-    sub: 'Autonomous.',
-    body: 'Edge computing, industrial connectivity, smart monitoring, data acquisition, and intelligent automation solutions.',
-  },
-  {
     icon: Lightbulb,
     name: 'Power Electronics & Product Engineering',
     path: '/products#electronics-dev',
@@ -218,27 +189,29 @@ const ChipVisual = ({ item }) => {
 
 const NodeVisual = ({ item }) => {
   const accent = item?.accent ?? '#38bdf8';
+  const size = 56;
+  const half = size / 2;
   return (
-    <div className="flex items-center justify-center mt-6">
-      <div className="relative" style={{ width: 110, height: 110 }}>
+    <div className="flex items-center justify-center mt-2">
+      <div className="relative" style={{ width: size, height: size }}>
         <div className="absolute inset-0 rounded-full border animate-[spin_12s_linear_infinite]" style={{ borderColor: accent + '25' }} />
-        <div className="absolute inset-4 rounded-full border animate-[spin_8s_linear_infinite_reverse]" style={{ borderColor: accent + '35' }} />
-        <div className="absolute inset-6 rounded-full blur-xl opacity-50" style={{ background: item?.glowA }} />
+        <div className="absolute inset-3 rounded-full border animate-[spin_8s_linear_infinite_reverse]" style={{ borderColor: accent + '35' }} />
+        <div className="absolute inset-4 rounded-full blur-xl opacity-50" style={{ background: item?.glowA }} />
         <div
-          className="absolute inset-8 rounded-full border flex items-center justify-center"
+          className="absolute inset-5 rounded-full border flex items-center justify-center"
           style={{ background: 'linear-gradient(135deg,#0d1117,#161b22)', borderColor: accent + '66', boxShadow: `0 0 20px ${accent}44` }}
         >
-          <item.icon className="w-5 h-5" style={{ color: accent }} strokeWidth={1.5} />
+          <item.icon className="w-4 h-4" style={{ color: accent }} strokeWidth={1.5} />
         </div>
         {[0, 90, 180, 270].map((deg, i) => {
           const rad = (deg * Math.PI) / 180;
-          const r = 42;
-          const cx = 55 + r * Math.cos(rad) - 6;
-          const cy = 55 + r * Math.sin(rad) - 6;
+          const r = half * 0.76;
+          const cx = half + r * Math.cos(rad) - 5;
+          const cy = half + r * Math.sin(rad) - 5;
           return (
             <div
               key={i}
-              className="absolute w-3 h-3 rounded-full border"
+              className="absolute w-2.5 h-2.5 rounded-full border"
               style={{ left: cx, top: cy, background: '#0d1117', borderColor: accent, boxShadow: `0 0 7px ${accent}` }}
             />
           );
@@ -255,7 +228,7 @@ const RightPanel = ({ item, type }) => {
   const Visual = type === 'solutions' ? ChipVisual : NodeVisual;
 
   return (
-    <div className="relative flex w-56 shrink-0 flex-col overflow-hidden border-l border-blue-900/10 bg-[#f0f8ff]/80 p-5 lg:w-72 lg:p-7">
+    <div className="relative flex w-56 shrink-0 flex-col overflow-hidden border-l border-blue-900/10 bg-[#f0f8ff]/80 p-5 lg:w-72 lg:p-5">
       {/* Grid bg */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -291,7 +264,7 @@ const RightPanel = ({ item, type }) => {
               {item?.sub}
             </h3>
             {/* Body */}
-            <p className="text-[12.5px] leading-relaxed" style={{ color: 'rgba(15,23,42,0.6)' }}>
+            <p style={{ fontSize: 12.5, lineHeight: 1.5, color: 'rgba(15,23,42,0.6)', margin: 0 }}>
               {item?.body}
             </p>
             <Visual item={item} />
@@ -304,17 +277,20 @@ const RightPanel = ({ item, type }) => {
 
 // ─── MEGA MENU ────────────────────────────────────────────────────────────────
 
-const MegaMenu = ({ isOpen, items, type, onMouseEnter, onMouseLeave, onItemClick }) => {
+const MegaMenu = ({ isOpen, items, type, onMouseEnter, onMouseLeave, onItemClick, reduceMotion }) => {
   const [hoveredItem, setHoveredItem] = useState(items[0]);
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0, y: 8, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 6, scale: 0.98 }}
-          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          id={`${type}-menu`}
+          role="menu"
+          aria-label={type === 'solutions' ? 'Solutions' : 'Products'}
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.98 }}
+          animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 6, scale: 0.98 }}
+          transition={{ duration: reduceMotion ? 0.1 : 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="absolute left-0 right-0 top-full w-full z-40 overflow-hidden"
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
@@ -322,6 +298,7 @@ const MegaMenu = ({ isOpen, items, type, onMouseEnter, onMouseLeave, onItemClick
             background: 'rgba(244, 248, 252, 0.95)',
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
+            willChange: 'transform',
             borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
             boxShadow: '0 32px 80px -16px rgba(0,0,0,0.1)',
             paddingTop: '8px',
@@ -364,8 +341,9 @@ const MegaMenu = ({ isOpen, items, type, onMouseEnter, onMouseLeave, onItemClick
                       */}
                       <Link
                         to={item.path}
+                        role="menuitem"
                         onClick={() => onItemClick && onItemClick()}
-                        className="flex items-center gap-3.5 px-3.5 py-3 rounded-xl relative overflow-hidden cursor-pointer transition-all duration-200"
+                        className="flex items-center gap-3.5 px-3.5 py-3 rounded-xl relative overflow-hidden cursor-pointer transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                         style={{
                           border: active ? `1px solid ${item.accent}30` : '1px solid transparent',
                           background: active
@@ -452,8 +430,10 @@ const MegaMenu = ({ isOpen, items, type, onMouseEnter, onMouseLeave, onItemClick
 const DesktopNavLink = ({
   title,
   path,
+  menu,
   hasDropdown,
   isActive,
+  isCurrentPage,
   onClick,
   onMouseEnter,
   onMouseLeave,
@@ -463,6 +443,7 @@ const DesktopNavLink = ({
   const baseColor  = scrolled ? 'rgba(15,23,42,0.65)'  : 'rgba(255,255,255,0.65)';
   const hoverColor = scrolled ? 'rgba(15,23,42,0.95)'  : 'rgba(255,255,255,0.95)';
   const activeColor = '#3b82f6';
+  const highlighted = isActive || isCurrentPage;
 
   const handleClick = () => {
     if (hasDropdown) {
@@ -483,16 +464,20 @@ const DesktopNavLink = ({
     <button
       type="button"
       onClick={handleClick}
+      aria-haspopup={hasDropdown ? 'menu' : undefined}
+      aria-expanded={hasDropdown ? isActive : undefined}
+      aria-controls={hasDropdown ? `${menu}-menu` : undefined}
+      aria-current={isCurrentPage ? 'page' : undefined}
       onMouseEnter={(e) => {
-        if (!isActive) e.currentTarget.style.color = hoverColor;
+        if (!highlighted) e.currentTarget.style.color = hoverColor;
         if (onMouseEnter) onMouseEnter(e);
       }}
       onMouseLeave={(e) => {
-        if (!isActive) e.currentTarget.style.color = baseColor;
+        if (!highlighted) e.currentTarget.style.color = baseColor;
         if (onMouseLeave) onMouseLeave(e);
       }}
-      className="relative h-full px-4 flex items-center gap-1 text-[13.5px] font-semibold tracking-wide transition-colors duration-200 focus:outline-none cursor-pointer bg-transparent border-0"
-      style={{ color: isActive ? activeColor : baseColor }}
+      className="relative h-full px-4 flex items-center gap-1 text-[13.5px] font-semibold tracking-wide transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset cursor-pointer bg-transparent border-0"
+      style={{ color: highlighted ? activeColor : baseColor }}
     >
       {title}
 
@@ -500,7 +485,7 @@ const DesktopNavLink = ({
         <ChevronDown
           className="w-3.5 h-3.5 transition-transform duration-300"
           style={{
-            color: isActive
+            color: highlighted
               ? activeColor
               : scrolled ? 'rgba(15,23,42,0.45)' : 'rgba(255,255,255,0.35)',
             transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -513,7 +498,7 @@ const DesktopNavLink = ({
         className="absolute bottom-0 left-3 right-3 h-0.5 rounded-t"
         style={{ background: 'linear-gradient(90deg, #3b82f6, #06b6d4)', originX: 0.5 }}
         initial={false}
-        animate={{ scaleX: isActive ? 1 : 0, opacity: isActive ? 1 : 0 }}
+        animate={{ scaleX: highlighted ? 1 : 0, opacity: highlighted ? 1 : 0 }}
         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
       />
     </button>
@@ -551,8 +536,9 @@ const MobileAccordionItem = ({ sec, onClose, delay }) => {
       {/* Row */}
       <button
         type="button"
-        className="w-full flex items-center justify-between py-4 cursor-pointer focus:outline-none bg-transparent border-0"
+        className="w-full flex items-center justify-between py-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-md bg-transparent border-0"
         onClick={handleRowClick}
+        aria-expanded={hasItems ? open : undefined}
       >
         <span
           className={`text-[15px] font-bold tracking-tight transition-colors duration-150 ${
@@ -587,7 +573,7 @@ const MobileAccordionItem = ({ sec, onClose, delay }) => {
                   to={item.path}
                   key={item.name}
                   onClick={onClose}
-                  className="flex items-center gap-3.5 px-3 py-3.5 rounded-xl border border-slate-100 bg-white active:bg-slate-50 transition-colors relative overflow-hidden group"
+                  className="flex items-center gap-3.5 px-3 py-3.5 rounded-xl border border-slate-100 bg-white active:bg-slate-50 transition-colors relative overflow-hidden group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                   style={{ minHeight: 60, textDecoration: 'none' }}
                 >
                   {/* Subtle left accent on press */}
@@ -621,8 +607,9 @@ const MobileAccordionItem = ({ sec, onClose, delay }) => {
 //   1. All section entries now use 'name' key (not 'title') — MobileAccordionItem reads sec.name.
 //   2. All plain items include a 'path' field so navigate(sec.path) works correctly.
 //
-const MobileMenu = ({ isOpen, onClose }) => {
+const MobileMenu = ({ isOpen, onClose, reduceMotion }) => {
   const navigate = useNavigate();
+  const panelRef = useFocusTrap(isOpen, onClose);
   // Every entry uses 'name' (not 'title') and includes a 'path' for non-dropdown items
   const sections = [
     { name: 'Home',      items: [],        path: '/'          },
@@ -645,12 +632,18 @@ const MobileMenu = ({ isOpen, onClose }) => {
           onClick={onClose}
         >
           <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
+            id="mobile-nav-menu"
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation"
+            tabIndex={-1}
+            initial={reduceMotion ? { opacity: 0 } : { x: '100%' }}
+            animate={reduceMotion ? { opacity: 1 } : { x: 0 }}
+            exit={reduceMotion ? { opacity: 0 } : { x: '100%' }}
+            transition={{ duration: reduceMotion ? 0.15 : 0.36, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="absolute bottom-0 right-0 top-0 flex w-[min(320px,85vw)] max-w-full flex-col bg-white shadow-2xl sm:w-80"
+            className="absolute bottom-0 right-0 top-0 flex w-[min(320px,85vw)] max-w-full flex-col bg-white shadow-2xl sm:w-80 outline-none"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
@@ -658,7 +651,8 @@ const MobileMenu = ({ isOpen, onClose }) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+                aria-label="Close menu"
+                className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -707,6 +701,8 @@ export default function Navbar() {
   const [ctaHovered, setCtaHovered] = useState(false);
   const navRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
+  const { pathname } = useLocation();
+  const reduceMotion = useReducedMotion();
 
   const openMenu = useCallback((menu) => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
@@ -747,6 +743,24 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [activeMenu, handleClickOutside]);
 
+  // Escape closes an open mega menu from anywhere on the page.
+  useEffect(() => {
+    if (!activeMenu) return undefined;
+    const onKeyDown = (e) => { if (e.key === 'Escape') setActiveMenu(null); };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [activeMenu]);
+
+  // Close the mobile drawer and any open mega menu whenever the route
+  // changes (covers back/forward navigation, not just in-menu clicks) —
+  // derived during render rather than synced via an effect.
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setMobileOpen(false);
+    setActiveMenu(null);
+  }
+
   // Desktop nav items configuration
   // - items WITH a 'menu' key open a mega-menu dropdown (hasDropdown = true)
   // - items WITHOUT a 'menu' key navigate directly to their 'path' on click
@@ -759,6 +773,9 @@ export default function Navbar() {
     { title: 'Contact',   path: '/contact'   },
   ];
 
+  const isCurrentPage = (path) =>
+    path === '/' ? pathname === '/' : pathname === path || pathname.startsWith(`${path}/`);
+
   return (
     <>
       <nav
@@ -769,8 +786,17 @@ export default function Navbar() {
           background: scrolled
             ? 'rgba(255, 255, 255, 0.85)'
             : 'rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          // A fixed, full-width backdrop-filter re-samples everything behind
+          // it on every scroll frame — the single most expensive thing a
+          // persistently-visible element can do. 14px (down from 20px) keeps
+          // the frosted-glass look while cutting that cost meaningfully;
+          // the translateZ/will-change hints keep this bar on its own
+          // compositor layer instead of forcing the browser to re-promote
+          // it (and repaint everything under it) on every scroll tick.
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
+          transform: 'translateZ(0)',
+          willChange: 'transform, background-color',
           borderBottom: scrolled
             ? '1px solid rgba(0,0,0,0.05)'
             : '1px solid rgba(255,255,255,0.05)',
@@ -792,13 +818,16 @@ export default function Navbar() {
         <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 sm:px-6">
 
           {/* Logo — use Link for SPA navigation */}
-          <Link to="/" className="shrink-0 group" style={{ textDecoration: 'none' }}>
-            <span
-              className="text-[15px] font-black tracking-[0.1em] transition-colors duration-200 sm:text-[19px] sm:tracking-[0.12em]"
-              style={{ color: scrolled ? '#0f172a' : 'rgba(255,255,255,0.95)' }}
-            >
-              AUROWINX
-            </span>
+          <Link to="/" className="shrink-0 group flex items-center" style={{ textDecoration: 'none' }}>
+            <img
+              src="/images/Aurowinx-logo.png"
+              alt="AurowinX Private Limited"
+              className="h-11 w-auto sm:h-13"
+              style={{
+                filter:
+                  'drop-shadow(0 0 1px rgba(255,255,255,0.95)) drop-shadow(0 0 7px rgba(255,255,255,0.6)) drop-shadow(0 1px 4px rgba(0,0,0,0.35))',
+              }}
+            />
           </Link>
 
           {/* Desktop nav */}
@@ -808,8 +837,10 @@ export default function Navbar() {
                 key={title}
                 title={title}
                 path={path}
+                menu={menu}
                 hasDropdown={!!menu}
                 isActive={!!menu && activeMenu === menu}
+                isCurrentPage={isCurrentPage(path)}
                 onClick={
                   menu
                     ? () => {
@@ -850,14 +881,16 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setMobileOpen((v) => !v)}
-              className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg transition-colors relative"
+              className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               style={{
                 color: scrolled ? 'rgba(15,23,42,0.8)' : 'rgba(255,255,255,0.7)',
                 background: scrolled
                   ? 'rgba(15,23,42,0.05)'
                   : 'rgba(255,255,255,0.07)',
               }}
-              aria-label="Toggle menu"
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-nav-menu"
             >
               <AnimatePresence mode="wait" initial={false}>
                 {mobileOpen ? (
@@ -896,6 +929,7 @@ export default function Navbar() {
           onMouseEnter={() => openMenu('solutions')}
           onMouseLeave={closeMenu}
           onItemClick={() => setActiveMenu(null)}
+          reduceMotion={reduceMotion}
         />
         <MegaMenu
           isOpen={activeMenu === 'products'}
@@ -904,10 +938,11 @@ export default function Navbar() {
           onMouseEnter={() => openMenu('products')}
           onMouseLeave={closeMenu}
           onItemClick={() => setActiveMenu(null)}
+          reduceMotion={reduceMotion}
         />
       </nav>
 
-      <MobileMenu isOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileMenu isOpen={mobileOpen} onClose={() => setMobileOpen(false)} reduceMotion={reduceMotion} />
     </>
   );
 }

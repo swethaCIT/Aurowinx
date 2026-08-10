@@ -13,6 +13,7 @@ const JobDetailPage = lazy(() => import("./pages/JobDetailPage"));
 const SolutionsRoutes = lazy(() => import("./routes/SolutionsRoutes"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const AdminRoutes = lazy(() => import("./admin/AdminRoutes"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 function ScrollToTopAndHash() {
   const { pathname, hash } = useLocation();
@@ -57,6 +58,7 @@ function PublicSite() {
           <Route path="/careers" element={<CareerPage />} />
           <Route path="/careers/:slug" element={<JobDetailPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </div>
